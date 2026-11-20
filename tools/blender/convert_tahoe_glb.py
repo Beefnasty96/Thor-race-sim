@@ -27,7 +27,7 @@ from mathutils import Matrix, Vector
 
 REAL_LENGTH = 5.057
 WB = 2.985
-TARGET_BODY_TRIS = 3800
+TARGET_BODY_TRIS = 5600       # total vehicle budget ~10,000 triangles
 
 # police / non-factory materials in the source model
 LIGHTBAR = {"material_27", "material_28", "material_29", "material_30", "material_31", "material_32",
@@ -84,9 +84,10 @@ def make_materials():
         "Headlamp": mat("Headlamp", (0.70, 0.73, 0.76), 0.75, 0.05, (1.0, 0.98, 0.92), 0.08),
         "Amber": mat("Amber", srgb(0.92, 0.50, 0.10), 0.3, 0.12, (1.0, 0.45, 0.05), 0.08),
         "Taillight": mat("Taillight", srgb(0.7, 0.05, 0.04), 0.2, 0.12, (0.9, 0.02, 0.0), 0.3),
-        "Interior": mat("Interior", srgb(0.42, 0.40, 0.37), 0.0, 0.85),   # neutral/grey cloth
-        "Headliner": mat("Headliner", srgb(0.62, 0.60, 0.56), 0.0, 0.95),
-        "Dash": mat("Dash", srgb(0.13, 0.13, 0.14), 0.0, 0.65),
+        "Interior": mat("Interior", srgb(0.20, 0.22, 0.27), 0.0, 0.55),   # blue-grey leather
+        "Headliner": mat("Headliner", srgb(0.30, 0.32, 0.38), 0.0, 0.95),
+        "ParkLamp": mat("ParkLamp", srgb(0.95, 0.70, 0.45), 0.4, 0.08, (1.0, 0.6, 0.2), 0.05),
+        "Dash": mat("Dash", srgb(0.13, 0.145, 0.19), 0.0, 0.6),
         "Gauge": mat("Gauge", srgb(0.025, 0.025, 0.03), 0.0, 0.3),
         "Tire": mat("Tire", srgb(0.07, 0.07, 0.07), 0.0, 0.9),
         "Rim": mat("Rim", srgb(0.78, 0.78, 0.8), 0.85, 0.22),
@@ -262,9 +263,7 @@ def classify(name, centre, normal, front_y):
     if name in PAINT:
         if nose:
             return "Black"                       # grille insert between the lamps
-        if name == "material" and centre.z > 1.24 and abs(normal.z) < 0.6:
-            return "Black"                       # window frames, blacked-out B/C pillars
-        return "Paint"
+        return "Paint"                           # B/C pillars and door frames are body colour
     if name in CHROME and centre.z > 1.77:
         return "Black"                           # roof-rack feet / rails
     if name in CHROME:
@@ -296,7 +295,7 @@ def two_tone(body, mats):
     pi = order.index("Paint")
     bm = bmesh.new()
     bm.from_mesh(body.data)
-    for z in (0.58, 0.69, 0.75):
+    for z in (0.58, 0.588, 0.682, 0.69, 0.75):
         geom = [f for f in bm.faces if f.material_index == pi]
         edges = list({e for f in geom for e in f.edges})
         verts = list({v for f in geom for v in f.verts})
@@ -308,8 +307,11 @@ def two_tone(body, mats):
         c = f.calc_center_median()
         if abs(f.normal.z) > 0.6:
             continue                     # leave horizontal surfaces (hood/roof) in body colour
+        ci = order.index("Chrome")
         if c.z < 0.58:
             f.material_index = li
+        elif c.z < 0.588 or 0.682 <= c.z < 0.69:
+            f.material_index = ci                # bright pinstripe edges of the molding band
         elif c.z < 0.69:
             f.material_index = si
         elif c.z < 0.75:
@@ -396,13 +398,24 @@ def build_interior(mats, cowl_y, belt_z, front_y):
     # dash top pad and lower face
     add_box(bm, (1.70, 0.46, 0.10), (0, dash_y + 0.13, belt_z - 0.02), D)   # top pad ahead of the cluster
     add_box(bm, (1.66, 0.12, 0.34), (0, dash_y - 0.12, belt_z - 0.24), D, tilt)
-    # instrument cluster hood + gauge face (speedo centre, tach right, small gauges left)
-    add_box(bm, (0.50, 0.16, 0.06), (-0.38, dash_y - 0.06, belt_z + 0.06), D)
-    add_box(bm, (0.46, 0.02, 0.15), (-0.38, dash_y - 0.135, belt_z - 0.04), G, tilt)
+    # wide hooded cluster like the '95+ GMT400: tach left, big speedo centre,
+    # four small gauges right (fuel, volts, oil pressure, coolant)
+    add_box(bm, (0.62, 0.17, 0.05), (-0.37, dash_y - 0.065, belt_z + 0.075), D)           # hood top
+    for sx in (-0.68, -0.06):
+        add_box(bm, (0.03, 0.17, 0.17), (sx, dash_y - 0.065, belt_z - 0.0), D)            # hood sides
+    add_box(bm, (0.58, 0.02, 0.15), (-0.37, dash_y - 0.135, belt_z - 0.035), G, tilt)     # black face
     global CLUSTER
-    face = Vector((-0.38, dash_y - 0.147, belt_z - 0.04))
-    CLUSTER = {"speedo": face + Vector((-0.02, 0, 0)), "tach": face + Vector((0.14, 0, 0)),
-               "small": face + Vector((-0.17, 0, 0)), "tilt_deg": -12}
+    face = Vector((-0.37, dash_y - 0.147, belt_z - 0.035))
+    CLUSTER = {"tilt_deg": -12,
+               "tach": face + Vector((-0.175, 0, 0.005)),
+               "speedo": face + Vector((0.0, 0, 0.008)),
+               "fuel": face + Vector((0.155, 0, 0.032)), "volts": face + Vector((0.215, 0, 0.032)),
+               "oil": face + Vector((0.155, 0, -0.025)), "temp": face + Vector((0.215, 0, -0.025))}
+    # air vents: left of the cluster and centre pair (slatted)
+    for vx, vw in ((-0.78, 0.09), (-0.03, 0.10), (0.11, 0.10), (0.72, 0.09)):
+        add_box(bm, (vw, 0.03, 0.10), (vx, dash_y - 0.12, belt_z - 0.06), B, tilt)
+        for k in range(3):
+            add_box(bm, (vw - 0.01, 0.035, 0.008), (vx, dash_y - 0.125, belt_z - 0.09 + k * 0.03), D, tilt)
     # centre stack: radio + HVAC with chrome-ish trim, then floor console
     add_box(bm, (0.30, 0.10, 0.30), (0.02, dash_y - 0.16, belt_z - 0.25), D, tilt)
     add_box(bm, (0.20, 0.02, 0.05), (0.02, dash_y - 0.215, belt_z - 0.17), G, tilt)    # radio display
@@ -419,9 +432,13 @@ def build_interior(mats, cowl_y, belt_z, front_y):
     back_y = eye_y - 0.16
     add_box(bm, (1.70, 2.9, 0.04), (0, cowl_y - 1.75, 0.62), B)
     for x in (-0.42, 0.42):
-        add_box(bm, (0.52, 0.50, 0.14), (x, back_y + 0.28, 0.86), I)
-        add_box(bm, (0.50, 0.13, 0.62), (x, back_y - 0.02, 1.20), I,
+        add_box(bm, (0.50, 0.50, 0.13), (x, back_y + 0.28, 0.86), I)
+        add_box(bm, (0.48, 0.12, 0.62), (x, back_y - 0.02, 1.20), I,
                 Matrix.Rotation(math.radians(-10), 3, "X"))
+        for bx in (-0.22, 0.22):                                                      # side bolsters
+            add_box(bm, (0.07, 0.15, 0.55), (x + bx, back_y + 0.0, 1.18), I,
+                    Matrix.Rotation(math.radians(-10), 3, "X"))
+            add_box(bm, (0.07, 0.48, 0.07), (x + bx, back_y + 0.28, 0.94), I)
         add_box(bm, (0.26, 0.10, 0.18), (x, back_y - 0.08, 1.58), I)
     add_box(bm, (1.55, 0.55, 0.14), (0, back_y - 0.62, 0.86), I)
     add_box(bm, (1.55, 0.14, 0.58), (0, back_y - 0.94, 1.18), I)
@@ -465,54 +482,91 @@ def front_face_y(body):
 
 
 def build_fascia(mats, fy, hw):
-    """'95-'99 GMT400 nose: stacked rectangular lamps (clear lens, amber outer
-    section, amber corner wrap), chrome-framed egg-crate grille in two rows and
-    a full-width chrome bar between the rows. No manufacturer badge."""
+    """'95-'99 GMT400 nose, from a straight-on photo of a 1995 Tahoe:
+    - upper row: wide clear composite headlamp (reflector bowl at the inner
+      end) with a thin amber strip on the outer corner
+    - lower row: amber-tinted park/turn lens with the amber corner strip
+    - grille openings between the lamps: black with horizontal slats
+    - chrome bar along the top under the hood, thick full-width centre bar
+      between the rows (plain centre, no badge), chrome bar along the bottom,
+      chrome uprights between grille and lamps."""
     order = list(mats.keys())
-    C, K, H, A, G = (order.index(k) for k in ("Chrome", "Black", "Headlamp", "Amber", "Grille"))
+    C, K, H, A, G, P = (order.index(k) for k in ("Chrome", "Black", "Headlamp", "Amber", "Grille", "ParkLamp"))
     bm = bmesh.new()
-    zb = 0.902                      # centre bar height
-    up = (0.925, 1.085)             # upper row z range
-    lo = (0.725, 0.880)             # lower row z range
-    d = 0.035                       # part depth (back face sits inside the nose)
+    up = (0.935, 1.075)
+    lo = (0.745, 0.870)
+    zb = 0.905
+    d = 0.035
     def box(x0, x1, z0, z1, front, mi, depth=d):
         add_box(bm, (x1 - x0, depth, z1 - z0), ((x0 + x1) / 2, fy + front - depth / 2, (z0 + z1) / 2), mi)
-    # grille: recessed black insert, egg-crate dividers, chrome surround
-    gx = 0.47
+    xo = min(0.915, hw - 0.02)          # outer edge of the lamp rows
+    gx = 0.47                           # grille half-width
+    # grille openings with horizontal slats
     for (z0, z1) in (up, lo):
-        box(-gx, gx, z0, z1, 0.004, G)
-        for k in range(1, 6):                                   # vertical dividers
-            x = -gx + 2 * gx * k / 6
-            box(x - 0.008, x + 0.008, z0, z1, 0.014, K)
-        zm = (z0 + z1) / 2
-        box(-gx, gx, zm - 0.007, zm + 0.007, 0.014, K)          # horizontal divider
-        box(-gx - 0.02, gx + 0.02, z1, z1 + 0.018, 0.022, C)    # chrome frame top/bottom
-        box(-gx - 0.02, gx + 0.02, z0 - 0.018, z0, 0.022, C)
+        box(-gx, gx, z0, z1, 0.002, G)
+        n = 4
+        for k in range(1, n):
+            z = z0 + (z1 - z0) * k / n
+            box(-gx, gx, z - 0.006, z + 0.006, 0.010, K)
+    # chrome: top bar, centre bar, bottom bar, uprights
+    box(-xo - 0.01, xo + 0.01, up[1], up[1] + 0.022, 0.022, C)
+    box(-0.955, 0.955, zb - 0.026, zb + 0.026, 0.034, C)
+    box(-0.10, 0.10, zb - 0.036, zb + 0.036, 0.040, C)       # plain centre blank
+    box(-xo - 0.01, xo + 0.01, lo[0] - 0.024, lo[0], 0.022, C)
     for sx in (-1, 1):
-        box(sx * gx - 0.012, sx * gx + 0.012, lo[0] - 0.018, up[1] + 0.018, 0.022, C)   # frame sides
-    # full-width chrome centre bar (runs across lamps and grille, centre blank)
-    box(-0.95, 0.95, zb - 0.022, zb + 0.022, 0.03, C)
-    box(-0.09, 0.09, zb - 0.034, zb + 0.034, 0.036, C)          # plain centre blank
-    # lamps, both sides -- kept inside the measured nose width
-    xo = min(0.915, hw - 0.035)                                 # outer edge of lamp
-    xa = xo - 0.085                                             # clear | amber split
-    xi = 0.505
+        box(sx * gx - 0.016, sx * gx + 0.016, lo[0], up[1], 0.026, C)
+    # lamps
     for sx in (-1, 1):
+        L = lambda a, b: (min(sx * a, sx * b), max(sx * a, sx * b))
+        xi = gx + 0.018
+        xa = xo - 0.035                                       # start of amber corner strip
+        # upper: clear headlamp with reflector bowl at the inner end
+        x0, x1 = L(xi, xa)
+        box(x0, x1, up[0] + 0.006, up[1] - 0.006, 0.010, H)
+        x0, x1 = L(xi + 0.015, xi + 0.115)
+        box(x0, x1, up[0] + 0.020, up[1] - 0.020, 0.013, C)   # reflector bowl
+        x0, x1 = L(xi + 0.040, xi + 0.090)
+        box(x0, x1, up[0] + 0.045, up[1] - 0.045, 0.016, H)   # bulb lens
+        x0, x1 = L(xa, xo)
+        box(x0, x1, up[0] + 0.006, up[1] - 0.006, 0.010, A)
+        # lower: amber-tinted park/turn lens + amber corner
+        x0, x1 = L(xi, xa)
+        box(x0, x1, lo[0] + 0.006, lo[1] - 0.006, 0.010, P)
+        x0, x1 = L(xa, xo)
+        box(x0, x1, lo[0] + 0.006, lo[1] - 0.006, 0.010, A)
+        # amber wraps onto the side of the fender at the corner
         for (z0, z1) in (up, lo):
-            lens = lambda a, b: (min(sx * a, sx * b), max(sx * a, sx * b))
-            x0, x1 = lens(xi, xa)
-            box(x0, x1, z0 + 0.008, z1 - 0.008, 0.008, C)       # chrome reflector bowl
-            x0, x1 = lens(xi + 0.02, xa - 0.02)
-            box(x0, x1, z0 + 0.022, z1 - 0.022, 0.013, H)       # clear lens over it
-            x0, x1 = lens(xa + 0.006, xo)
-            box(x0, x1, z0 + 0.008, z1 - 0.008, 0.012, A)       # amber outer section
-            x0, x1 = lens(xi - 0.012, xo + 0.008)
-            box(x0, x1, z1 - 0.008, z1 + 0.004, 0.016, C)       # chrome bezel top / bottom
-            box(x0, x1, z0 - 0.004, z0 + 0.008, 0.016, C)
+            add_box(bm, (0.012, 0.09, (z1 - z0) - 0.02), (sx * (hw + 0.004), fy - 0.05, (z0 + z1) / 2), A)
     me = bpy.data.meshes.new("Fascia")
     bm.to_mesh(me)
     bm.free()
     ob = bpy.data.objects.new("Fascia", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+def build_fuel_door(mats):
+    """Round fuel door on the left rear quarter (behind/above the rear arch)."""
+    order = list(mats.keys())
+    bm = bmesh.new()
+    for r, depth, mi, off in ((0.092, 0.004, order.index("Black"), 0.002), (0.085, 0.007, order.index("Paint"), 0.004)):
+        tmp = bmesh.new()
+        bmesh.ops.create_cone(tmp, cap_ends=True, segments=16, radius1=r, radius2=r, depth=depth)
+        bmesh.ops.rotate(tmp, verts=tmp.verts, cent=(0, 0, 0), matrix=Matrix.Rotation(math.pi / 2, 3, "Y"))
+        bmesh.ops.translate(tmp, vec=Vector((-0.975 - off, -2.16, 0.98)), verts=tmp.verts)
+        for f in tmp.faces:
+            f.material_index = mi
+        me = bpy.data.meshes.new("_f")
+        tmp.to_mesh(me)
+        tmp.free()
+        bm.from_mesh(me)
+        bpy.data.meshes.remove(me)
+    me = bpy.data.meshes.new("FuelDoor")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("FuelDoor", me)
     bpy.context.collection.objects.link(ob)
     for k in order:
         me.materials.append(mats[k])
@@ -616,29 +670,41 @@ def lathe(bm, prof, segs, mi):
 
 
 def build_wheel(mats):
-    """16 in aluminium 5-spoke on LT245/75R16 (r = 0.387 m), ~300 triangles."""
+    """1995-99 GM 16x7 aluminium wheel on LT245/75R16 (r = 0.387 m), ~520 tris:
+    flat machined face with five dark pockets near the rim, raised centre cap,
+    six lug nuts."""
     bm = bmesh.new()
-    lathe(bm, [(0.205, -0.11), (0.33, -0.125), (0.381, -0.10), (0.387, -0.06), (0.387, 0.06),
-               (0.381, 0.10), (0.33, 0.125), (0.205, 0.11)], 14, 0)
-    lathe(bm, [(0.203, -0.05), (0.203, 0.08), (0.209, 0.098), (0.185, 0.091)], 14, 1)
-    lathe(bm, [(0.185, 0.05), (0.06, 0.05)], 8, 2)
+    segs = 18
+    lathe(bm, [(0.205, -0.11), (0.30, -0.126), (0.36, -0.118), (0.381, -0.10), (0.387, -0.07),
+               (0.387, 0.07), (0.381, 0.10), (0.36, 0.118), (0.30, 0.126), (0.205, 0.11)], segs, 0)
+    lathe(bm, [(0.203, -0.05), (0.203, 0.082), (0.210, 0.099), (0.192, 0.096)], segs, 1)   # rim lip
+    lathe(bm, [(0.192, 0.088), (0.150, 0.094), (0.085, 0.097), (0.072, 0.104)], segs, 1)   # flat face
+    lathe(bm, [(0.072, 0.104), (0.055, 0.112), (0.0, 0.114)], 12, 1)                      # centre cap
+    # five dark pockets around the outer face
     for k in range(5):
-        a = 2 * math.pi * k / 5 + math.pi / 2
+        a0 = 2 * math.pi * k / 5 + 0.18
+        a1 = a0 + 0.62
+        r0, r1 = 0.118, 0.178
+        x = 0.0975
+        q = [Vector((x, r0 * math.cos(a0), r0 * math.sin(a0))), Vector((x, r1 * math.cos(a0 - 0.05), r1 * math.sin(a0 - 0.05))),
+             Vector((x, r1 * math.cos(a1 + 0.05), r1 * math.sin(a1 + 0.05))), Vector((x, r0 * math.cos(a1), r0 * math.sin(a1)))]
+        vs = [bm.verts.new(v) for v in q]
+        f = bm.faces.new(vs)
+        f.material_index = 2
+    # six lug nuts
+    for k in range(6):
+        a = 2 * math.pi * k / 6
         tmp = bmesh.new()
-        bmesh.ops.create_cube(tmp, size=1.0)
-        bmesh.ops.scale(tmp, vec=Vector((0.03, 0.13, 0.075)), verts=tmp.verts)
-        for v in tmp.verts:
-            v.co.z *= 1.4 if v.co.y > 0 else 0.7
-        bmesh.ops.translate(tmp, vec=Vector((0.075, 0.12, 0)), verts=tmp.verts)
-        bmesh.ops.rotate(tmp, verts=tmp.verts, cent=(0, 0, 0), matrix=Matrix.Rotation(a, 3, "X"))
+        bmesh.ops.create_cone(tmp, cap_ends=True, segments=6, radius1=0.011, radius2=0.011, depth=0.016)
+        bmesh.ops.rotate(tmp, verts=tmp.verts, cent=(0, 0, 0), matrix=Matrix.Rotation(math.pi / 2, 3, "Y"))
+        bmesh.ops.translate(tmp, vec=Vector((0.104, 0.062 * math.cos(a), 0.062 * math.sin(a))), verts=tmp.verts)
         for f in tmp.faces:
             f.material_index = 1
-        me = bpy.data.meshes.new("_s")
+        me = bpy.data.meshes.new("_l")
         tmp.to_mesh(me)
         tmp.free()
         bm.from_mesh(me)
         bpy.data.meshes.remove(me)
-    lathe(bm, [(0.075, 0.07), (0.055, 0.098), (0.0, 0.102)], 8, 1)
     me = bpy.data.meshes.new("Wheel")
     bm.to_mesh(me)
     bm.free()
@@ -648,7 +714,7 @@ def build_wheel(mats):
         me.materials.append(mats[k])
     for p in me.polygons:
         p.use_smooth = True
-    me.set_sharp_from_angle(angle=math.radians(50))
+    me.set_sharp_from_angle(angle=math.radians(40))
     return ob
 
 
@@ -704,7 +770,8 @@ def main():
     log("nose face y %.3f half-width %.3f" % (fy, hw))
     fascia = build_fascia(mats, fy + 0.004, hw)
     wells = build_wheel_wells(mats, wheels)
-    body = join([body, fascia, wells], "Body")
+    fuel = build_fuel_door(mats)
+    body = join([body, fascia, wells, fuel], "Body")
     for p in body.data.polygons:
         p.use_smooth = True
     body.data.set_sharp_from_angle(angle=math.radians(35))

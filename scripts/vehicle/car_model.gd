@@ -23,6 +23,7 @@ var _steering: Node3D
 var _steer_base := Transform3D.IDENTITY
 var _speedo: Node3D
 var _tach: Node3D
+var _small: Dictionary = {}          # fuel / volts / oil / temp needles
 
 func build(dir: String, paint: Dictionary) -> void:
 	for c in get_children():
@@ -133,7 +134,7 @@ func _dial(radius: float) -> MeshInstance3D:
 	mat.albedo_color = Color(0.04, 0.05, 0.05)
 	mat.emission_enabled = true
 	mat.emission = Color(0.35, 0.85, 0.55)      # green-lit 90s GM cluster
-	mat.emission_energy_multiplier = 0.55
+	mat.emission_energy_multiplier = 0.12
 	cm.material = mat
 	mi.mesh = cm
 	mi.rotation = Vector3(PI * 0.5, 0, 0)        # face the driver (+Z)
@@ -159,21 +160,29 @@ func _build_gauges() -> void:
 	if cl.is_empty():
 		return
 	var tilt := deg_to_rad(float(cl.get("tilt_deg", -12)))
-	for key in ["speedo", "tach"]:
+	for key in ["speedo", "tach", "fuel", "volts", "oil", "temp"]:
+		if not cl.has(key):
+			continue
 		var p: Array = cl[key]
 		var holder := Node3D.new()
 		holder.position = Vector3(p[0], p[1], p[2] + 0.004)
 		holder.rotation = Vector3(-tilt, 0, 0)
 		add_child(holder)
-		var r := 0.055 if key == "speedo" else 0.045
+		var r := 0.062 if key == "speedo" else (0.05 if key == "tach" else 0.024)
 		holder.add_child(_dial(r))
 		var n := _needle(r * 0.85, Color(1.0, 0.45, 0.1))
 		n.position = Vector3(0, 0, 0.003)
 		holder.add_child(n)
-		if key == "speedo":
-			_speedo = n
-		else:
-			_tach = n
+		match key:
+			"speedo": _speedo = n
+			"tach": _tach = n
+			_: _small[key] = n
+
+## Small gauges sweep 90 degrees, value 0..1.
+func _set_small(key: String, v: float) -> void:
+	var n: Node3D = _small.get(key)
+	if n:
+		n.rotation = Vector3(0, 0, PI * 0.25 - PI * 0.5 * clampf(v, 0.0, 1.0))
 
 func _process(_dt: float) -> void:
 	if car == null or not is_instance_valid(car):
@@ -187,6 +196,11 @@ func _process(_dt: float) -> void:
 	if _tach:
 		var rpm := clampf(car.engine.rpm(), 0.0, TACH_MAX_RPM)
 		_tach.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * rpm / TACH_MAX_RPM)
+	var rpm_now: float = car.engine.rpm()
+	_set_small("fuel", 0.75)
+	_set_small("volts", 0.55 if rpm_now > 400.0 else 0.4)                  # ~14 V running, ~12 V off
+	_set_small("oil", clampf(0.25 + rpm_now / 4000.0, 0.0, 0.9) if rpm_now > 300.0 else 0.0)
+	_set_small("temp", inverse_lerp(40.0, 130.0, car.engine.coolant_c))
 	var brake := car.in_brake > 0.05
 	for t in _tail_mats:
 		t.emission_energy_multiplier = 2.5 if brake else 0.35
