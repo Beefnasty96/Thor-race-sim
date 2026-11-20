@@ -136,6 +136,8 @@ func configure(car_def: Dictionary, setup: Dictionary, condition: Dictionary) ->
 		m * (L * L + W * W) / 12.0 * 0.85 * s[1],   # yaw   (about Y)
 		m * (W * W + H * H) / 12.0 * 0.85 * s[2])   # roll  (about Z)
 	can_sleep = false
+	collision_layer = 4                    # vehicles
+	collision_mask = 1 | 2 | 4             # world, props (cones), other vehicles
 	continuous_cd = true
 	linear_damp = 0.0
 	angular_damp = 0.02
@@ -240,6 +242,7 @@ func _physics_process(dt: float) -> void:
 		var ray_len := w.travel + w.radius + 0.25
 		var q := PhysicsRayQueryParameters3D.create(a + up * 0.25, a - up * ray_len)
 		q.exclude = ray_exclude
+		q.collision_mask = 1               # suspension only touches the world, not cones
 		var hit := space.intersect_ray(q)
 		var prev := w.compression
 		if hit.is_empty():

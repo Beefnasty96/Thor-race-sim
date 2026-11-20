@@ -6,7 +6,14 @@ enum State { MENU, EDITOR, SETTINGS, RACE, PAUSED }
 
 var state := State.MENU
 var world: Node3D
-var track: Track
+var track: Track                 # race circuit (lap timing)
+var map: MapBuilder              # data-driven map (proving ground, future town maps)
+var location := ""
+var tests := TestRig.new()
+const LOCATIONS := {
+	"proving_ground": {"name": "Proving Ground", "file": "res://data/maps/proving_ground.json"},
+	"ridgeview": {"name": "Ridgeview Circuit", "file": ""},
+}
 var car: Vehicle
 var model: TahoeModel
 var cam: ChaseCamera
@@ -34,11 +41,12 @@ func _ready() -> void:
 	ui.add_child(theme_root)
 	menu_root = theme_root
 	_build_world()
-	_spawn_car()
 	hud = HUD.new()
 	hud.visible = false
 	theme_root.add_child(hud)
-	hud.set_track(track)
+	_load_location(Game.settings.get("location", "proving_ground"))
+	_spawn_car()
+	tests.result.connect(func(t): hud.flash(t, 3.0))
 	_show_main_menu()
 	if "--shots" in OS.get_cmdline_user_args():
 		var d = load("res://scripts/tests/screenshot_driver.gd").new()
@@ -98,14 +106,50 @@ func _build_world() -> void:
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	world.add_child(sun)
 
-	track = Track.new()
-	world.add_child(track)
-	track.build()
-
 	cam = ChaseCamera.new()
 	cam.far = 2500.0
 	cam.current = true
 	world.add_child(cam)
+
+func _load_location(loc: String) -> void:
+	if not LOCATIONS.has(loc):
+		loc = "proving_ground"
+	if loc == location and (track or map):
+		return
+	if track:
+		track.queue_free()
+		track = null
+	if map:
+		map.queue_free()
+		map = null
+	location = loc
+	Game.settings["location"] = loc
+	if loc == "ridgeview":
+		track = Track.new()
+		world.add_child(track)
+		track.build()
+		hud.set_track(track)
+		hud.show_laps = true
+	else:
+		map = MapBuilder.new()
+		world.add_child(map)
+		map.build_from_file(LOCATIONS[loc]["file"])
+		hud.set_lines(map.minimap_lines())
+		hud.show_laps = map.data.get("laps", false)
+	if car:
+		car.reset_to(_spawn_xform())
+		_setup_tests()
+
+func location_name() -> String:
+	return LOCATIONS.get(location, {}).get("name", "")
+
+func _spawn_xform() -> Transform3D:
+	return track.start_transform(0) if track else map.spawn_transform()
+
+func _setup_tests() -> void:
+	tests.setup(car, map.data.get("zones", {}) if map else {})
+	tests.reset_run()
+	hud.tests = tests
 
 func _spawn_car() -> void:
 	if car:
@@ -122,7 +166,7 @@ func _spawn_car() -> void:
 	car.add_child(model)
 	for i in 4:
 		car.wheels[i].visual = model.wheel_nodes[i]
-	car.reset_to(track.start_transform(0))
+	car.reset_to(_spawn_xform())
 	cam.target = car
 	cam.snap()
 	if hud:
@@ -130,6 +174,8 @@ func _spawn_car() -> void:
 	_idx = -1
 	_checkpoints = 0
 	_lap_valid = false
+	if hud:
+		_setup_tests()
 
 # =====================================================================
 # Race loop
@@ -144,7 +190,9 @@ func _physics_process(dt: float) -> void:
 		return
 	if not "--shots" in OS.get_cmdline_user_args():
 		_read_driver_input(dt)
-	_lap_timing(dt)
+	if track:
+		_lap_timing(dt)
+	tests.update(dt)
 	# auto-recover if the truck ends up on its roof
 	if car.global_transform.basis.y.y < 0.25:
 		_upside_t += dt
@@ -257,7 +305,7 @@ func _lap_timing(dt: float) -> void:
 		if _checkpoints == 3 and _lap_valid:
 			var t := hud.lap_time
 			hud.last_lap = t
-			var key := Game.setup_key() + "|" + track.track_name
+			var key := Game.setup_key() + "|" + location_name()
 			var best: float = Game.best_laps.get(key, 0.0)
 			if best <= 0.0 or t < best:
 				Game.best_laps[key] = t
@@ -273,9 +321,18 @@ func _lap_timing(dt: float) -> void:
 	_rel_prev = rel
 
 func _reset_on_track() -> void:
-	var i := track.nearest_index(car.global_position, _idx)
-	var p := track.pts[i] + Vector3.UP * 0.4
-	car.reset_to(Transform3D(Basis.looking_at(track.tangents[i], Vector3.UP), p))
+	var p: Vector3
+	var t: Vector3
+	if track:
+		var i := track.nearest_index(car.global_position, _idx)
+		p = track.pts[i]
+		t = track.tangents[i]
+	else:
+		var r := map.nearest_road_point(car.global_position)
+		p = r[0]
+		t = r[1]
+	var flat := Vector3(t.x, 0, t.z).normalized()
+	car.reset_to(Transform3D(Basis.looking_at(flat, Vector3.UP), p + Vector3.UP * 0.4))
 	cam.snap()
 	hud.flash("RESET", 1.0)
 
@@ -323,15 +380,31 @@ func _show_main_menu() -> void:
 	var v := _panel(0.06, 300, 480)
 	v.add_child(UIKit.label("RACING SIM", 54, Color.WHITE))
 	var d := Game.car_def()
-	v.add_child(UIKit.label("%d %s %s  ·  %s" % [d["year"], d["make"], d["model"], track.track_name], 22, UIKit.DIM))
+	v.add_child(UIKit.label("%d %s %s  ·  %s" % [d["year"], d["make"], d["model"], location_name()], 22, UIKit.DIM))
 	v.add_child(HSeparator.new())
-	var first := _button(v, "Free Practice", _start_race)
+	var first := _button(v, "Free Practice", _show_locations)
 	_button(v, "Vehicle Editor", _show_editor)
 	_button(v, "Settings", _show_settings)
 	if OS.get_name() != "Web":
 		_button(v, "Quit", func(): Game.save_game(); get_tree().quit())
 	var hint := UIKit.label("Ⓐ select   Ⓑ back   D-pad navigate", 20, UIKit.DIM)
 	v.add_child(hint)
+	first.call_deferred("grab_focus")
+
+func _show_locations() -> void:
+	_clear_menu()
+	var v := _panel(0.06, 300, 520)
+	v.add_child(UIKit.label("CHOOSE LOCATION", 40, Color.WHITE))
+	var first: Button = null
+	for key in LOCATIONS:
+		var b := _button(v, LOCATIONS[key]["name"], func():
+			_clear_menu()
+			_load_location(key)
+			_start_race())
+		if first == null or key == location:
+			first = b
+	_button(v, "Back", _show_main_menu)
+	v.add_child(UIKit.label("Your town will appear here once its map data is imported.", 18, UIKit.DIM))
 	first.call_deferred("grab_focus")
 
 func _start_race() -> void:
@@ -343,11 +416,11 @@ func _start_race() -> void:
 	hud.lap = 1
 	hud.lap_time = 0.0
 	hud.last_lap = 0.0
-	hud.best_lap = Game.best_laps.get(Game.setup_key() + "|" + track.track_name, 0.0)
+	hud.best_lap = Game.best_laps.get(Game.setup_key() + "|" + location_name(), 0.0)
 	cam.mode = Game.settings.get("camera", 0) as ChaseCamera.Mode
 	cam.snap()
 	hud.cam_name = ChaseCamera.MODE_NAMES[cam.mode]
-	hud.flash("FREE PRACTICE", 2.0)
+	hud.flash(location_name().to_upper(), 2.0)
 
 func _pause() -> void:
 	state = State.PAUSED
@@ -355,7 +428,7 @@ func _pause() -> void:
 	var v := _panel(0.36, 280, 480)
 	v.add_child(UIKit.label("PAUSED", 44, Color.WHITE))
 	var r := _button(v, "Resume", _resume)
-	_button(v, "Restart from grid", func(): _resume(); car.reset_to(track.start_transform(0)); cam.snap(); hud.lap_time = 0.0; _lap_valid = false; _checkpoints = 0)
+	_button(v, "Restart from start", func(): _resume(); car.reset_to(_spawn_xform()); cam.snap(); hud.lap_time = 0.0; _lap_valid = false; _checkpoints = 0; tests.reset_run())
 	_button(v, "Reset to track", func(): _resume(); _reset_on_track())
 	_button(v, "Exit to menu", func(): _store_condition(); _show_main_menu())
 	v.add_child(UIKit.label("Controls: R2 throttle · L2 brake · L-stick steer\nR1/L1 shift (manual) · Ⓐ handbrake · Ⓨ camera · Ⓧ look back\nD-pad ↑ transfer case · D-pad ↓ auto/manual · Select telemetry", 18, UIKit.DIM))

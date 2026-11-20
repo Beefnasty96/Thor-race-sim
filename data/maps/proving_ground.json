@@ -1,0 +1,90 @@
+{
+  "name": "Proving Ground",
+  "description": "Vehicle test facility: drag strip with braking zone, 200 ft skidpad, slalom, handling course, grade hill and off-road loop.",
+  "seed": 1996,
+  "laps": false,
+  "spawn": {"pos": [0, 0, 22], "heading": 0},
+
+  "terrain": {"base": 0, "hill_amplitude": 14, "margin": 350, "resolution": 10, "trees": 700},
+
+  "zones": {
+    "drag_start": {"pos": [100, 0, 150], "dir": [0, 0, -1], "length": 402.34},
+    "skidpad": {"center": [-200, 0, 0], "radius": 30.48}
+  },
+
+  "pads": [
+    {"name": "paddock", "shape": "rect", "center": [0, 0, 0], "size": [180, 80], "surface": "asphalt", "lift": 0.01},
+    {"name": "skidpad", "shape": "disk", "center": [-200, 0, 0], "radius": 50, "surface": "asphalt", "lift": 0.01,
+     "paint": [
+       {"type": "ring", "radius": 30.48, "width": 0.35, "color": [0.95, 0.85, 0.1]},
+       {"type": "ring", "radius": 27.0, "width": 0.25},
+       {"type": "ring", "radius": 34.0, "width": 0.25}
+     ]},
+    {"name": "hill_turnaround", "shape": "disk", "center": [-30, 0, 748], "radius": 22, "surface": "asphalt", "lift": 0.01},
+    {"name": "gravel_pan", "shape": "rect", "center": [260, 0, 330], "size": [70, 70], "surface": "gravel", "lift": 0.0}
+  ],
+
+  "roads": [
+    {"name": "drag_strip", "points": [[100, 0, 200], [100, 0, -100], [100, 0, -620]],
+     "width": 20, "surface": "concrete", "shoulder": {"width": 3, "surface": "grass"},
+     "markings": {"edge": true, "center": "solid", "center_color": "white"},
+     "cross_lines": [
+       {"at": 50, "thickness": 0.6, "label": "START"},
+       {"at": 68.29, "thickness": 0.3, "label": "60 FT"},
+       {"at": 150.58, "thickness": 0.3, "label": "330 FT"},
+       {"at": 251.17, "thickness": 0.4, "label": "1/8 MILE"},
+       {"at": 354.8, "thickness": 0.3, "label": "1000 FT"},
+       {"at": 452.34, "thickness": 0.8, "color": [0.95, 0.85, 0.1], "label": "1/4 MILE"},
+       {"at": 560, "thickness": 0.6, "color": [0.9, 0.2, 0.15], "label": "BRAKE ZONE", "label_side": -1}
+     ]},
+    {"name": "skidpad_link", "points": [[-90, 0, 0], [-120, 0, 0], [-152, 0, 0]],
+     "width": 12, "surface": "asphalt", "shoulder": {"width": 2, "surface": "grass"}, "markings": {"edge": true}},
+    {"name": "handling_link", "points": [[0, 0, -40], [0, 0, -90], [0, 0, -130]],
+     "width": 10, "surface": "asphalt", "shoulder": {"width": 2, "surface": "grass"}, "markings": {"edge": true}},
+    {"name": "handling_course", "closed": true,
+     "points": [[0, 0, -130], [10, 0.3, -220], [-10, 1, -300], [-70, 3, -340], [-140, 6, -330], [-200, 9, -370],
+                [-210, 11, -450], [-150, 12, -500], [-60, 10, -520], [10, 7, -560], [30, 4, -630], [-50, 2, -665],
+                [-160, 2, -645], [-280, 3, -600], [-380, 5, -520], [-420, 6, -420], [-380, 5, -320], [-300, 3, -260],
+                [-220, 2, -185], [-130, 1, -150], [-60, 0, -130]],
+     "width": 10, "surface": "asphalt", "shoulder": {"width": 3, "surface": "grass"},
+     "markings": {"edge": true, "center": "dashed", "center_color": "white"}},
+    {"name": "grade_hill", "points": [[-30, 0, 40], [-30, 0, 110], [-30, 0.5, 130], [-30, 10, 225], [-30, 30, 325],
+                                       [-30, 60, 425], [-30, 61, 470], [-30, 31, 570], [-30, 1, 670], [-30, 0, 728]],
+     "width": 8, "surface": "asphalt", "shoulder": {"width": 2, "surface": "grass"},
+     "markings": {"edge": true, "center": "solid", "center_color": "yellow"},
+     "cross_lines": [
+       {"at": 90, "thickness": 0.4, "label": "10% GRADE"},
+       {"at": 190, "thickness": 0.4, "label": "20% GRADE"},
+       {"at": 290, "thickness": 0.4, "label": "30% GRADE - USE 4L"}
+     ]},
+    {"name": "offroad_link", "points": [[111, 0, 190], [135, 0, 196], [160, 0, 200]],
+     "width": 8, "surface": "dirt", "shoulder": {"width": 2, "surface": "grass"}},
+    {"name": "offroad_loop", "closed": true,
+     "points": [[160, 0, 200], [260, 1, 160], [360, 3, 200], [420, 6, 300], [400, 8, 420], [300, 6, 480],
+                [200, 4, 440], [150, 2, 340], [150, 0, 260]],
+     "width": 8, "surface": "dirt", "shoulder": {"width": 2.5, "surface": "grass"},
+     "bumps": [
+       {"from": 290, "to": 400, "amp": 0.28, "wavelength": 7.0},
+       {"from": 640, "to": 700, "amp": 0.035, "wavelength": 1.2}
+     ]}
+  ],
+
+  "buildings": [
+    {"center": [-45, 0, -58], "size": [52, 16], "height": 8, "doors": 4, "label": "PROVING GROUND",
+     "color": [0.88, 0.88, 0.85], "roof_color": [0.25, 0.32, 0.48]},
+    {"center": [45, 0, -56], "size": [30, 12], "height": 6, "color": [0.80, 0.80, 0.78], "label": "OFFICE"},
+    {"center": [126, 0, 135], "size": [8, 8], "height": 11, "color": [0.9, 0.9, 0.9], "roof_color": [0.7, 0.15, 0.12], "label": "TIMING"}
+  ],
+
+  "props": [
+    {"type": "cone_row", "from": [-75, 0.01, -15], "to": [75, 0.01, -15], "count": 11},
+    {"type": "cone_row", "from": [89.4, 0, -360], "to": [89.4, 0, -610], "count": 11},
+    {"type": "cone_row", "from": [110.6, 0, -360], "to": [110.6, 0, -610], "count": 11},
+    {"type": "sign", "pos": [-12, 0.01, -33], "heading": 0, "text": "SLALOM  15 m", "w": 4.0},
+    {"type": "sign", "pos": [-140, 0, 12], "heading": -90, "text": "SKIDPAD  200 FT", "w": 4.5},
+    {"type": "sign", "pos": [-40, 0, 50], "heading": 180, "text": "GRADE HILL", "w": 4.0},
+    {"type": "sign", "pos": [12, 0, -100], "heading": 0, "text": "HANDLING COURSE", "w": 5.0},
+    {"type": "sign", "pos": [150, 0, 186], "heading": -90, "text": "OFF-ROAD LOOP", "w": 4.5},
+    {"type": "sign", "pos": [80, 0.01, 30], "heading": 90, "text": "DRAG STRIP", "w": 4.0}
+  ]
+}
