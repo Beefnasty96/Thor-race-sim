@@ -2,7 +2,7 @@ extends Node
 ## Game flow: Main menu → Vehicle Editor / Race (free practice) → Pause.
 ## Builds the world (environment, track, car, camera) and wires player input.
 
-enum State { MENU, EDITOR, SETTINGS, RACE, PAUSED }
+enum State { MENU, EDITOR, SETTINGS, THANKS, RACE, PAUSED }
 
 var state := State.MENU
 var world: Node3D
@@ -292,6 +292,8 @@ func _unhandled_input(e: InputEvent) -> void:
 			_reset_on_track()
 	elif state == State.PAUSED and (e.is_action_pressed("pause") or e.is_action_pressed("ui_cancel")):
 		_resume()
+	elif state == State.THANKS and e.is_action_pressed("ui_cancel"):
+		_show_settings()
 	elif (state == State.EDITOR or state == State.SETTINGS) and e.is_action_pressed("ui_cancel"):
 		Game.save_game()
 		_show_main_menu()
@@ -402,7 +404,6 @@ func _show_main_menu() -> void:
 	var first := _button(v, "Free Practice", _show_locations)
 	_button(v, "Vehicle Editor", _show_editor)
 	_button(v, "Settings", _show_settings)
-	_button(v, "Credits", _show_credits)
 	if OS.get_name() != "Web":
 		_button(v, "Quit", func(): Game.save_game(); get_tree().quit())
 	var hint := UIKit.label("A select   B back   D-pad navigate", 20, UIKit.DIM)
@@ -631,26 +632,41 @@ func _update_specs() -> void:
 	spec_label.text = txt
 
 # ---------------------------------------------------------------------
-func _show_credits() -> void:
-	state = State.SETTINGS
+## "Thanks To" screen (reached from Settings). People and asset credits come
+## from data/thanks.json so names can be added without touching code.
+func _show_thanks() -> void:
+	state = State.THANKS
 	_clear_menu()
-	var v := _panel(0.06, 220, 900)
-	v.add_child(UIKit.label("CREDITS", 40, Color.WHITE))
-	var lines := []
-	var mi_path: String = Game.car_def().get("model_dir", "res://assets/cars/tahoe_1996") + "/model_info.json"
-	if FileAccess.file_exists(mi_path):
-		var mi: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(mi_path))
-		lines.append("1996 Chevrolet Tahoe 3D model based on \"%s\"" % mi.get("source", ""))
-		lines.append("Licensed %s · %s" % [mi.get("license", ""), mi.get("source_url", "")])
-		lines.append("Modified: %s" % mi.get("modifications", ""))
-	lines.append("")
-	lines.append("Engine: Godot Engine (MIT License) · godotengine.org")
-	lines.append("Vehicle names are used for identification only.")
-	var l := UIKit.label("\n".join(lines), 20, UIKit.TEXT)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(860, 0)
-	v.add_child(l)
-	var b := _button(v, "Back", _show_main_menu)
+	var data: Dictionary = {}
+	if FileAccess.file_exists("res://data/thanks.json"):
+		data = JSON.parse_string(FileAccess.get_file_as_string("res://data/thanks.json"))
+	var v := _panel(0.06, 120, 960)
+	v.add_child(UIKit.label(str(data.get("title", "Thanks To")).to_upper(), 40, Color.WHITE))
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(940, 640)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	v.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 10)
+	scroll.add_child(list)
+	var add_section := func(title: String, entries: Array) -> void:
+		if entries.is_empty():
+			return
+		list.add_child(UIKit.label(title, 22, UIKit.ACCENT))
+		for e in entries:
+			var name := UIKit.label(str(e.get("name", "")), 26, Color.WHITE)
+			list.add_child(name)
+			if str(e.get("for", "")) != "":
+				var why := UIKit.label(str(e["for"]), 19, UIKit.DIM)
+				why.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				why.custom_minimum_size = Vector2(900, 0)
+				list.add_child(why)
+		list.add_child(HSeparator.new())
+	add_section.call("SPECIAL THANKS", data.get("people", []))
+	add_section.call("ASSETS & TOOLS", data.get("assets", []))
+	if data.has("note"):
+		list.add_child(UIKit.label(str(data["note"]), 17, UIKit.DIM))
+	var b := _button(v, "Back", _show_settings)
 	b.call_deferred("grab_focus")
 
 func _show_settings() -> void:
@@ -696,5 +712,6 @@ func _show_settings() -> void:
 			Input.get_action_strength("steer_right") - Input.get_action_strength("steer_left"),
 			Input.get_action_strength("throttle"), Input.get_action_strength("brake")])
 	v.add_child(tmr)
+	_button(v, "Thanks To", func(): Game.save_game(); _show_thanks())
 	_button(v, "Back", func(): Game.save_game(); _show_main_menu())
 	r1.call_deferred("grab_focus")

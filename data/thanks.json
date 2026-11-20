@@ -1,0 +1,10 @@
+{
+  "title": "Thanks To",
+  "people": [
+  ],
+  "assets": [
+    {"name": "David_Holiday", "for": "Original 1996 Chevy Tahoe 3D model (CC-BY-4.0, sketchfab.com/David_Holiday), converted to factory spec for this game"},
+    {"name": "Godot Engine contributors", "for": "Godot Engine (MIT License), godotengine.org"}
+  ],
+  "note": "Vehicle names are used for identification only."
+}

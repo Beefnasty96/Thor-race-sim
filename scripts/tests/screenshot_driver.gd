@@ -50,7 +50,12 @@ func _process(dt: float) -> void:
 				return
 			if t < 1.0:
 				return
-			_shot("02a_settings")
+			if not has_meta("thanks"):
+				_shot("02a_settings")
+				set_meta("thanks", true)
+				main._show_thanks(); t = 0
+				return
+			_shot("02c_thanks")
 			main._show_editor(); step += 1; t = 0
 		2:
 			if t > 1.5:
