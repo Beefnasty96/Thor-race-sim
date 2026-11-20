@@ -16,7 +16,7 @@ const LOCATIONS := {
 	"ridgeview": {"name": "Ridgeview Circuit", "file": ""},
 }
 var car: Vehicle
-var model: TahoeModel
+var model: CarModel
 var cam: ChaseCamera
 var hud: HUD
 var ui: CanvasLayer
@@ -167,13 +167,15 @@ func _spawn_car() -> void:
 	car.name = "PlayerCar"
 	car.configure(def, Game.setup, Game.condition)
 	world.add_child(car)
-	model = TahoeModel.new()
+	model = CarModel.new()
 	var paints: Array = def["paints"]
-	model.build(car.body_def, paints[clampi(int(Game.setup.get("paint", 0)), 0, paints.size() - 1)],
-			def["tires"]["radius_m"], Game.setup.get("body", "4door") == "4door")
 	car.add_child(model)
+	model.build(def.get("model_dir", "res://assets/cars/tahoe_1996"),
+			paints[clampi(int(Game.setup.get("paint", 0)), 0, paints.size() - 1)])
+	model.car = car
 	for i in 4:
 		car.wheels[i].visual = model.wheel_nodes[i]
+	cam.cockpit_eye = model.driver_eye
 	car.reset_to(_spawn_xform())
 	rumble.mute()
 	cam.target = car
@@ -400,6 +402,7 @@ func _show_main_menu() -> void:
 	var first := _button(v, "Free Practice", _show_locations)
 	_button(v, "Vehicle Editor", _show_editor)
 	_button(v, "Settings", _show_settings)
+	_button(v, "Credits", _show_credits)
 	if OS.get_name() != "Web":
 		_button(v, "Quit", func(): Game.save_game(); get_tree().quit())
 	var hint := UIKit.label("A select   B back   D-pad navigate", 20, UIKit.DIM)
@@ -628,6 +631,28 @@ func _update_specs() -> void:
 	spec_label.text = txt
 
 # ---------------------------------------------------------------------
+func _show_credits() -> void:
+	state = State.SETTINGS
+	_clear_menu()
+	var v := _panel(0.06, 220, 900)
+	v.add_child(UIKit.label("CREDITS", 40, Color.WHITE))
+	var lines := []
+	var mi_path: String = Game.car_def().get("model_dir", "res://assets/cars/tahoe_1996") + "/model_info.json"
+	if FileAccess.file_exists(mi_path):
+		var mi: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(mi_path))
+		lines.append("1996 Chevrolet Tahoe 3D model based on \"%s\"" % mi.get("source", ""))
+		lines.append("Licensed %s · %s" % [mi.get("license", ""), mi.get("source_url", "")])
+		lines.append("Modified: %s" % mi.get("modifications", ""))
+	lines.append("")
+	lines.append("Engine: Godot Engine (MIT License) · godotengine.org")
+	lines.append("Vehicle names are used for identification only.")
+	var l := UIKit.label("\n".join(lines), 20, UIKit.TEXT)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(860, 0)
+	v.add_child(l)
+	var b := _button(v, "Back", _show_main_menu)
+	b.call_deferred("grab_focus")
+
 func _show_settings() -> void:
 	state = State.SETTINGS
 	_clear_menu()

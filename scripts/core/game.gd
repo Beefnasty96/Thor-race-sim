@@ -75,7 +75,7 @@ func default_setup(id: String) -> Dictionary:
 		"abs": d["brakes"]["abs"],
 		"tcs": false,
 		"speed_limiter": d["limits"]["speed_limiter_default"],
-		"paint": 1,
+		"paint": 0,
 		"camber_front_deg": -0.3,
 		"camber_rear_deg": 0.0,
 	}

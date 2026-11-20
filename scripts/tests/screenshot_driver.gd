@@ -9,6 +9,7 @@ var step := 0
 var out_dir := "user://shots/"
 var views := [
 	["05_drag_strip", Vector3(100, 0, 175), Vector3(0, 0, -1)],
+	["05b_cockpit", Vector3(100, 0, 120), Vector3(0, 0, -1)],
 	["06_skidpad", Vector3(-169.5, 0, 10), Vector3(0, 0, -1)],
 	["07_hill", Vector3(-30, 0, 170), Vector3(0, 0, 1)],
 	["08_offroad", Vector3(330, 0, 185), Vector3(1, 0, 0.4)],
@@ -78,6 +79,9 @@ func _process(dt: float) -> void:
 				var v: Array = views[view_i]
 				_place(v[1], v[2])
 			main.car.in_throttle = 0.25
+			var cockpit: bool = views[view_i][0] == "05b_cockpit"
+			main.cam.mode = ChaseCamera.Mode.COCKPIT if cockpit else ChaseCamera.Mode.CHASE_FAR
+			main.car.in_steer = 0.35 if cockpit else 0.0
 			if t > 2.5:
 				_shot(views[view_i][0])
 				view_i += 1

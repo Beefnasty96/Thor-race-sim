@@ -1,0 +1,36 @@
+{
+  "source": "West Virginia State Police Chevy Tahoe 1996 by David_Holiday",
+  "source_url": "https://sketchfab.com/3d-models/west-virginia-state-police-chevy-tahoe-1996-cd2b81eed57942c6b1c22049c4b036f2",
+  "license": "CC-BY-4.0",
+  "modifications": "Converted to factory paint, police equipment/livery/badges removed, decimated, new interior and wheels",
+  "steering_wheel_pivot": [
+    -0.38,
+    1.14,
+    -0.1659
+  ],
+  "steering_rake_deg": 24,
+  "driver_eye": [
+    -0.38,
+    1.46,
+    0.3841
+  ],
+  "cluster": {
+    "speedo": [
+      -0.4,
+      1.16,
+      -0.2989
+    ],
+    "tach": [
+      -0.24,
+      1.16,
+      -0.2989
+    ],
+    "small": [
+      -0.55,
+      1.16,
+      -0.2989
+    ],
+    "tilt_deg": -12
+  },
+  "triangles": 6810
+}

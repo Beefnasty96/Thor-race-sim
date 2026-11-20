@@ -41,7 +41,7 @@ controller, or any XInput-compatible pad all map the same way.
 | A | Handbrake · menu select |
 | B | Menu back |
 | X | Look back |
-| Y | Change camera (chase, near chase, hood, bumper) |
+| Y | Change camera: chase, near chase, **driver (first person)**, hood, bumper |
 | D-pad ↑ | Transfer case 2H → 4H → 4L (4L needs the truck stopped) |
 | D-pad ↓ | Toggle automatic / manual |
 | Back (View) | Telemetry panel on/off |
@@ -59,6 +59,17 @@ Keyboard (desktop testing): W/S throttle/brake, A/D steer, E/Q shift, Space
 handbrake, C camera, T telemetry, 4 transfer case, M trans mode, R reset, Esc pause.
 
 ---
+
+## The Tahoe model
+
+The 1996 Tahoe body is converted from a CC-BY-4.0 model (see Credits) by
+`tools/blender/convert_tahoe_glb.py`. The script strips the police equipment,
+livery and badges, applies the factory two-tone paint layout (body colour over a
+lower colour with a dark stripe band), reduces it to about 6,800 triangles, and
+adds a semi-accurate 1995-99 GMT400 interior: dash with a hooded, green-lit
+cluster (working speedometer and tach), centre stack, steering column, airbag
+steering wheel that turns with the front wheels, seats and headliner. Paint
+combinations are chosen in the Vehicle Editor.
 
 ## Getting the APK onto the Thor
 
@@ -179,3 +190,13 @@ Adding a car is mostly a JSON file in `data/cars/` plus a body model.
 6. More tracks, time of day, weather (wet grip)
 7. AI opponents and races, with the lap-test autopilot as a starting point
 8. Force-feedback rumble from tire slip on the Thor's motors
+
+## Credits
+
+- 1996 Chevrolet Tahoe 3D model based on "West Virginia State Police Chevy Tahoe 1996"
+  by David_Holiday (https://sketchfab.com/David_Holiday), licensed CC-BY-4.0
+  (http://creativecommons.org/licenses/by/4.0/). Modified: converted to factory
+  paint, police equipment, livery and badges removed, decimated, new interior
+  and wheels.
+- Built with Godot Engine (MIT License).
+- Vehicle names are used for identification only.

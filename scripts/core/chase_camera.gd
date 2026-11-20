@@ -3,8 +3,9 @@ extends Camera3D
 ## Racing cameras: far chase, near chase, hood, bumper. Plus an orbit mode
 ## for menus (slow turntable around the car, GT-style).
 
-enum Mode { CHASE_FAR, CHASE_NEAR, HOOD, BUMPER, ORBIT }
-const MODE_NAMES := ["Chase", "Near chase", "Hood", "Bumper"]
+enum Mode { CHASE_FAR, CHASE_NEAR, COCKPIT, HOOD, BUMPER, ORBIT }
+const MODE_NAMES := ["Chase", "Near chase", "Driver", "Hood", "Bumper"]
+const DRIVEN_MODES := 5
 
 var target: Vehicle
 var mode := Mode.CHASE_FAR
@@ -14,9 +15,11 @@ var _pos := Vector3.ZERO
 var _yaw_vel_dir := Vector3.FORWARD
 var _orbit := 2.4
 var _initialised := false
+var cockpit_eye := Vector3(-0.38, 1.46, 0.38)
+var _head := Vector3.ZERO
 
 func cycle() -> void:
-	mode = ((mode + 1) % 4) as Mode
+	mode = ((mode + 1) % DRIVEN_MODES) as Mode
 	_initialised = false
 
 func snap() -> void:
@@ -30,6 +33,7 @@ func _physics_process(dt: float) -> void:
 	var fwd := -b.z
 	var up := Vector3.UP
 	var body_len: float = target.body_def.get("length_m", 5.0)
+	near = 0.05
 	match mode:
 		Mode.ORBIT:
 			_orbit += dt * 0.18
@@ -57,6 +61,17 @@ func _physics_process(dt: float) -> void:
 			global_position = _pos
 			look_at(xf.origin + up * 1.1 + d * 2.0, Vector3.UP)
 			fov = 62.0 + clampf(target.speed_ms * 0.12, 0.0, 8.0)
+		Mode.COCKPIT:
+			# driver's eye; head leans against g-forces, turns with the right stick
+			var want_head := Vector3(-target.g_lat * 0.035, 0.0, target.g_long * 0.03)
+			_head = _head.lerp(want_head, clampf(dt * 6.0, 0, 1))
+			var eye := xf * (cockpit_eye + _head)
+			global_position = eye
+			var yaw := look_yaw + (PI if look_back else 0.0)
+			global_transform.basis = b * Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, deg_to_rad(-7.0))
+			fov = 70.0
+			near = 0.03
+			return
 		Mode.HOOD:
 			var p := xf * Vector3(0.0, 1.55, -body_len * 0.5 + 1.6)
 			global_position = p

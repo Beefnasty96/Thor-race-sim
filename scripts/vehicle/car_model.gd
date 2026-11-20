@@ -1,0 +1,192 @@
+class_name CarModel
+extends Node3D
+## Visual car built from the Blender-exported glTF assets:
+##   <dir>/tahoe_body.glb   body + interior + "SteeringWheel" node
+##   <dir>/tahoe_wheel.glb  one wheel (axis = X, outer face = +X)
+##   <dir>/model_info.json  driver eye, steering pivot, gauge positions, credits
+## Handles paint (body colour + two-tone lower), the steering wheel turning
+## with the front wheels, live speedometer/tach needles and brake lights.
+
+const STEERING_LOCK_RAD := 10.5     # ~1.7 turns each way (about 3.4 turns lock to lock)
+const SPEEDO_MAX_MPH := 100.0
+const TACH_MAX_RPM := 6000.0
+const NEEDLE_SWEEP := deg_to_rad(240.0)
+
+var car: Vehicle
+var info: Dictionary = {}
+var wheel_nodes: Array[Node3D] = []
+var driver_eye := Vector3(-0.38, 1.46, 0.38)
+var _paint_mat: StandardMaterial3D
+var _lower_mat: StandardMaterial3D
+var _tail_mats: Array[StandardMaterial3D] = []
+var _steering: Node3D
+var _steer_base := Transform3D.IDENTITY
+var _speedo: Node3D
+var _tach: Node3D
+
+func build(dir: String, paint: Dictionary) -> void:
+	for c in get_children():
+		c.queue_free()
+	wheel_nodes.clear()
+	_tail_mats.clear()
+	if FileAccess.file_exists(dir + "/model_info.json"):
+		info = JSON.parse_string(FileAccess.get_file_as_string(dir + "/model_info.json"))
+		var e: Array = info.get("driver_eye", [-0.38, 1.46, 0.38])
+		driver_eye = Vector3(e[0], e[1], e[2])
+	var body_scene: PackedScene = load(dir + "/tahoe_body.glb")
+	var body := body_scene.instantiate()
+	add_child(body)
+	_prepare_materials(body)
+	_steering = body.find_child("SteeringWheel", true, false) as Node3D
+	if _steering:
+		_steer_base = _steering.transform
+	var wheel_scene: PackedScene = load(dir + "/tahoe_wheel.glb")
+	for i in 4:
+		var wn := Node3D.new()
+		wn.name = ["FL", "FR", "RL", "RR"][i]
+		var inst := wheel_scene.instantiate() as Node3D
+		if i % 2 == 0:
+			inst.scale = Vector3(-1, 1, 1)       # left wheels: outer face toward -X
+		wn.add_child(inst)
+		add_child(wn)
+		wheel_nodes.append(wn)
+	_build_gauges()
+	set_paint(paint)
+
+## Duplicate the shared materials we animate/recolour so each car owns them.
+func _prepare_materials(root: Node) -> void:
+	for mi in root.find_children("*", "MeshInstance3D", true, false):
+		var m := mi as MeshInstance3D
+		for s in m.mesh.get_surface_count():
+			var mat := m.mesh.surface_get_material(s) as StandardMaterial3D
+			if mat == null:
+				continue
+			var n := mat.resource_name
+			if n == "Paint":
+				if _paint_mat == null:
+					_paint_mat = mat.duplicate()
+					_paint_mat.clearcoat_enabled = true
+					_paint_mat.clearcoat = 1.0
+					_paint_mat.clearcoat_roughness = 0.06
+				m.set_surface_override_material(s, _paint_mat)
+			elif n == "Lower":
+				if _lower_mat == null:
+					_lower_mat = mat.duplicate()
+					_lower_mat.clearcoat_enabled = true
+					_lower_mat.clearcoat = 1.0
+				m.set_surface_override_material(s, _lower_mat)
+			elif n == "Taillight":
+				var t := mat.duplicate() as StandardMaterial3D
+				t.emission_enabled = true
+				t.emission = Color(1.0, 0.05, 0.02)
+				m.set_surface_override_material(s, t)
+				_tail_mats.append(t)
+			elif n == "Glass":
+				var g := mat.duplicate() as StandardMaterial3D
+				g.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				g.albedo_color.a = 0.45
+				g.metallic = 0.2
+				g.roughness = 0.04
+				g.cull_mode = BaseMaterial3D.CULL_DISABLED
+				m.set_surface_override_material(s, g)
+
+func set_paint(paint: Dictionary) -> void:
+	var c: Array = paint.get("color", [0.2, 0.25, 0.45])
+	var body_col := Color(c[0], c[1], c[2])
+	var lc: Array = paint.get("lower", c)
+	var lower_col := Color(lc[0], lc[1], lc[2])
+	var metal: float = paint.get("metallic", 0.5)
+	if _paint_mat:
+		_paint_mat.albedo_color = body_col
+		_paint_mat.metallic = metal
+		_paint_mat.roughness = 0.28
+	if _lower_mat:
+		_lower_mat.albedo_color = lower_col
+		_lower_mat.metallic = paint.get("lower_metallic", metal)
+		_lower_mat.roughness = 0.3
+
+func _needle(len: float, col: Color) -> Node3D:
+	var pivot := Node3D.new()
+	var mi := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(0.006, len, 0.003)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = col
+	mat.emission_enabled = true
+	mat.emission = col
+	mat.emission_energy_multiplier = 2.5
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	bm.material = mat
+	mi.mesh = bm
+	mi.position = Vector3(0, len * 0.5, 0)
+	pivot.add_child(mi)
+	return pivot
+
+func _dial(radius: float) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = radius
+	cm.bottom_radius = radius
+	cm.height = 0.002
+	cm.radial_segments = 20
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.04, 0.05, 0.05)
+	mat.emission_enabled = true
+	mat.emission = Color(0.35, 0.85, 0.55)      # green-lit 90s GM cluster
+	mat.emission_energy_multiplier = 0.55
+	cm.material = mat
+	mi.mesh = cm
+	mi.rotation = Vector3(PI * 0.5, 0, 0)        # face the driver (+Z)
+	# white scale ring
+	var ring := MeshInstance3D.new()
+	var tm := TorusMesh.new()
+	tm.inner_radius = radius * 0.86
+	tm.outer_radius = radius * 0.94
+	tm.rings = 20
+	tm.ring_segments = 3
+	var rmat := StandardMaterial3D.new()
+	rmat.albedo_color = Color(0.9, 0.95, 0.9)
+	rmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	tm.material = rmat
+	ring.mesh = tm
+	ring.scale = Vector3(1, 0.2, 1)
+	ring.position = Vector3(0, 0.002, 0)
+	mi.add_child(ring)
+	return mi
+
+func _build_gauges() -> void:
+	var cl: Dictionary = info.get("cluster", {})
+	if cl.is_empty():
+		return
+	var tilt := deg_to_rad(float(cl.get("tilt_deg", -12)))
+	for key in ["speedo", "tach"]:
+		var p: Array = cl[key]
+		var holder := Node3D.new()
+		holder.position = Vector3(p[0], p[1], p[2] + 0.004)
+		holder.rotation = Vector3(-tilt, 0, 0)
+		add_child(holder)
+		var r := 0.055 if key == "speedo" else 0.045
+		holder.add_child(_dial(r))
+		var n := _needle(r * 0.85, Color(1.0, 0.45, 0.1))
+		n.position = Vector3(0, 0, 0.003)
+		holder.add_child(n)
+		if key == "speedo":
+			_speedo = n
+		else:
+			_tach = n
+
+func _process(_dt: float) -> void:
+	if car == null or not is_instance_valid(car):
+		return
+	if _steering:
+		var a := -car.steer_actual * STEERING_LOCK_RAD
+		_steering.transform = _steer_base * Transform3D(Basis(Vector3(0, 0, 1), a), Vector3.ZERO)
+	if _speedo:
+		var mph := clampf(absf(car.speed_ms) * 2.23694, 0.0, SPEEDO_MAX_MPH)
+		_speedo.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * mph / SPEEDO_MAX_MPH)
+	if _tach:
+		var rpm := clampf(car.engine.rpm(), 0.0, TACH_MAX_RPM)
+		_tach.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * rpm / TACH_MAX_RPM)
+	var brake := car.in_brake > 0.05
+	for t in _tail_mats:
+		t.emission_energy_multiplier = 2.5 if brake else 0.35
