@@ -43,6 +43,13 @@ func _process(dt: float) -> void:
 			if t > 3.0:
 				_shot("01_menu"); step += 1
 		1:
+			if not has_meta("settings"):
+				set_meta("settings", true)
+				main._show_settings(); t = 0
+				return
+			if t < 1.0:
+				return
+			_shot("02a_settings")
 			main._show_editor(); step += 1; t = 0
 		2:
 			if t > 1.5:

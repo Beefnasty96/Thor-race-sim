@@ -10,6 +10,7 @@ var track: Track                 # race circuit (lap timing)
 var map: MapBuilder              # data-driven map (proving ground, future town maps)
 var location := ""
 var tests := TestRig.new()
+var rumble := Rumble.new()
 const LOCATIONS := {
 	"proving_ground": {"name": "Proving Ground", "file": "res://data/maps/proving_ground.json"},
 	"ridgeview": {"name": "Ridgeview Circuit", "file": ""},
@@ -32,6 +33,13 @@ var _save_t := 0.0
 
 func _ready() -> void:
 	InputSetup.register()
+	InputSetup.apply_deadzones(Game.settings)
+	rumble.strength = Game.settings.get("rumble", 1.0)
+	Input.joy_connection_changed.connect(func(id, connected):
+		if hud and state == State.RACE:
+			hud.flash(("CONTROLLER CONNECTED" if connected else "CONTROLLER DISCONNECTED"), 2.0)
+		if not connected and state == State.RACE:
+			_pause())
 	ui = CanvasLayer.new()
 	add_child(ui)
 	var theme_root := Control.new()
@@ -167,6 +175,7 @@ func _spawn_car() -> void:
 	for i in 4:
 		car.wheels[i].visual = model.wheel_nodes[i]
 	car.reset_to(_spawn_xform())
+	rumble.mute()
 	cam.target = car
 	cam.snap()
 	if hud:
@@ -184,6 +193,10 @@ func _physics_process(dt: float) -> void:
 	if car == null:
 		return
 	if state != State.RACE:
+		if rumble.strong > 0.0 or rumble.weak > 0.0:
+			rumble.stop()
+			rumble.strong = 0.0
+			rumble.weak = 0.0
 		car.in_throttle = 0.0
 		car.in_brake = 1.0 if state != State.PAUSED else car.in_brake
 		car.in_steer = 0.0
@@ -193,6 +206,7 @@ func _physics_process(dt: float) -> void:
 	if track:
 		_lap_timing(dt)
 	tests.update(dt)
+	rumble.update(car, dt)
 	# auto-recover if the truck ends up on its roof
 	if car.global_transform.basis.y.y < 0.25:
 		_upside_t += dt
@@ -333,6 +347,7 @@ func _reset_on_track() -> void:
 		t = r[1]
 	var flat := Vector3(t.x, 0, t.z).normalized()
 	car.reset_to(Transform3D(Basis.looking_at(flat, Vector3.UP), p + Vector3.UP * 0.4))
+	rumble.mute()
 	cam.snap()
 	hud.flash("RESET", 1.0)
 
@@ -387,7 +402,7 @@ func _show_main_menu() -> void:
 	_button(v, "Settings", _show_settings)
 	if OS.get_name() != "Web":
 		_button(v, "Quit", func(): Game.save_game(); get_tree().quit())
-	var hint := UIKit.label("Ⓐ select   Ⓑ back   D-pad navigate", 20, UIKit.DIM)
+	var hint := UIKit.label("A select   B back   D-pad navigate", 20, UIKit.DIM)
 	v.add_child(hint)
 	first.call_deferred("grab_focus")
 
@@ -431,7 +446,7 @@ func _pause() -> void:
 	_button(v, "Restart from start", func(): _resume(); car.reset_to(_spawn_xform()); cam.snap(); hud.lap_time = 0.0; _lap_valid = false; _checkpoints = 0; tests.reset_run())
 	_button(v, "Reset to track", func(): _resume(); _reset_on_track())
 	_button(v, "Exit to menu", func(): _store_condition(); _show_main_menu())
-	v.add_child(UIKit.label("Controls: R2 throttle · L2 brake · L-stick steer\nR1/L1 shift (manual) · Ⓐ handbrake · Ⓨ camera · Ⓧ look back\nD-pad ↑ transfer case · D-pad ↓ auto/manual · Select telemetry", 18, UIKit.DIM))
+	v.add_child(UIKit.label("Controls (XInput): RT throttle · LT brake · Left stick steer\nRB/LB shift (manual) · A handbrake · Y camera · X look back\nD-pad ↑ transfer case · D-pad ↓ auto/manual · Back telemetry · RS reset", 18, UIKit.DIM))
 	get_tree().paused = false
 	car.in_throttle = 0.0
 	r.call_deferred("grab_focus")
@@ -624,8 +639,37 @@ func _show_settings() -> void:
 	var r2 := UIKit.OptionRow.new().setup("steer_sensitivity", "Steering sensitivity", sens_vals, sens_vals.map(func(x): return "%d%%" % roundi(x * 100)), st["steer_sensitivity"])
 	var lin_vals := [1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.4]
 	var r3 := UIKit.OptionRow.new().setup("steer_linearity", "Steering linearity", lin_vals, lin_vals.map(func(x): return "%.1f" % x), st["steer_linearity"])
-	for r in [r1, r2, r3]:
-		r.value_changed.connect(func(k, val): Game.settings[k] = val)
+	var dz_vals := [0.0, 0.03, 0.05, 0.08, 0.10, 0.12, 0.15, 0.20, 0.24]
+	var r4 := UIKit.OptionRow.new().setup("stick_deadzone", "Stick deadzone", dz_vals, dz_vals.map(func(x): return "%d%%" % roundi(x * 100) + ("  (XInput default)" if x == 0.24 else "")), st.get("stick_deadzone", 0.10))
+	var tz_vals := [0.0, 0.02, 0.04, 0.06, 0.08, 0.12, 0.16]
+	var r5 := UIKit.OptionRow.new().setup("trigger_deadzone", "Trigger deadzone", tz_vals, tz_vals.map(func(x): return "%d%%" % roundi(x * 100) + ("  (XInput default)" if x == 0.12 else "")), st.get("trigger_deadzone", 0.06))
+	var rb_vals := [0.0, 0.25, 0.5, 0.75, 1.0]
+	var r6 := UIKit.OptionRow.new().setup("rumble", "Rumble", rb_vals, rb_vals.map(func(x): return "Off" if x == 0.0 else "%d%%" % roundi(x * 100)), st.get("rumble", 1.0))
+	for r in [r1, r2, r3, r4, r5, r6]:
+		r.value_changed.connect(func(k, val):
+			Game.settings[k] = val
+			InputSetup.apply_deadzones(Game.settings)
+			rumble.strength = Game.settings.get("rumble", 1.0)
+			if k == "rumble" and val > 0.0:
+				for id in Input.get_connected_joypads():
+					Input.start_joy_vibration(id, 0.4 * val, 0.6 * val, 0.25))
 		v.add_child(r)
+	v.add_child(UIKit.label("Controller", 20, UIKit.ACCENT))
+	var info := UIKit.label(InputSetup.controller_info(), 20, UIKit.TEXT)
+	v.add_child(info)
+	var live := UIKit.label("", 18, UIKit.DIM)
+	v.add_child(live)
+	# live readout so deadzones can be checked by feel
+	var tmr := Timer.new()
+	tmr.wait_time = 0.1
+	tmr.autostart = true
+	tmr.timeout.connect(func():
+		if not is_instance_valid(live):
+			return
+		info.text = InputSetup.controller_info()
+		live.text = "Steer %+.2f   Throttle %.2f   Brake %.2f" % [
+			Input.get_action_strength("steer_right") - Input.get_action_strength("steer_left"),
+			Input.get_action_strength("throttle"), Input.get_action_strength("brake")])
+	v.add_child(tmr)
 	_button(v, "Back", func(): Game.save_game(); _show_main_menu())
 	r1.call_deferred("grab_focus")

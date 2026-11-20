@@ -5,6 +5,9 @@ extends SceneTree
 var map: MapBuilder
 var car: Vehicle
 var rig := TestRig.new()
+var rum := Rumble.new()
+var peak := [0.0, 0.0]
+var busy := [0.0, 0.0, 0.0]
 var def: Dictionary
 var phase := ""
 var t := 0.0
@@ -48,6 +51,10 @@ func _xf_on(line: PackedVector3Array, i: int) -> Transform3D:
 	return Transform3D(Basis.looking_at(fwd.normalized(), Vector3.UP), line[i] + Vector3.UP * 0.3)
 
 func _next() -> void:
+	if phase != "":
+		print("   rumble: strong peak %.2f, on %.0f%% of time | weak peak %.2f, on %.0f%% of time" % [peak[0], busy[0] / maxf(busy[2], 0.01) * 100.0, peak[1], busy[1] / maxf(busy[2], 0.01) * 100.0])
+	peak = [0.0, 0.0]
+	busy = [0.0, 0.0, 0.0]
 	phase = queue.pop_front()
 	t = 0.0
 	data = {}
@@ -84,6 +91,14 @@ func _process(dt: float) -> bool:
 		return true
 	t += dt
 	rig.update(dt)
+	if t < 0.02:
+		rum.mute()
+	rum.update(car, dt)
+	busy[2] += dt
+	if rum.strong > 0.15: busy[0] += dt
+	if rum.weak > 0.15: busy[1] += dt
+	peak[0] = maxf(peak[0], rum.strong)
+	peak[1] = maxf(peak[1], rum.weak)
 	var mph := car.speed_ms * 2.23694
 	match phase:
 		"drag":

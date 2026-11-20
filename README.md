@@ -25,23 +25,35 @@ elevation. That's the plan for town maps.
 
 ---
 
-## Controls (AYN Thor)
+## Controls (XInput / Xbox layout)
 
-| Input | Action |
+The game uses the XInput controller standard, so the AYN Thor's built-in
+controls (set to Xbox layout in the Thor's controller settings), an Xbox
+controller, or any XInput-compatible pad all map the same way.
+
+| XInput | Action |
 |---|---|
-| R2 (analog) | Throttle |
-| L2 (analog) | Brake. Hold at a standstill to select Reverse, hold again for Drive |
+| RT (analog) | Throttle |
+| LT (analog) | Brake. Hold at a standstill to select Reverse, hold again for Drive |
 | Left stick | Steer |
 | Right stick | Look around |
-| R1 / L1 | Shift up / down (manual mode) |
-| Ⓐ | Handbrake |
-| Ⓨ | Change camera (chase, near chase, hood, bumper) |
-| Ⓧ | Look back |
+| RB / LB | Shift up / down (manual mode) |
+| A | Handbrake · menu select |
+| B | Menu back |
+| X | Look back |
+| Y | Change camera (chase, near chase, hood, bumper) |
 | D-pad ↑ | Transfer case 2H → 4H → 4L (4L needs the truck stopped) |
 | D-pad ↓ | Toggle automatic / manual |
-| Select | Telemetry panel on/off |
-| Start | Pause |
-| R3 | Reset onto the track |
+| Back (View) | Telemetry panel on/off |
+| Start (Menu) | Pause |
+| RS click | Reset onto the road |
+
+**Rumble** uses XInput's two motors: the low-frequency motor for impacts
+(curbs, whoops, bottoming out, collisions, rev limiter) and the high-frequency
+motor for tire scrub past the grip limit, wheelspin, ABS pulsing and rough
+surfaces. **Settings** has stick and trigger deadzones (XInput defaults are
+24% / 12%; the Thor's hall-effect sticks work well around 10% / 6%), rumble
+strength, and a live readout of the connected controller.
 
 Keyboard (desktop testing): W/S throttle/brake, A/D steer, E/Q shift, Space
 handbrake, C camera, T telemetry, 4 transfer case, M trans mode, R reset, Esc pause.

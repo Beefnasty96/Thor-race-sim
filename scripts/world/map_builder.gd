@@ -88,7 +88,12 @@ func _resample(ctrl: Array, closed: bool, step: float) -> PackedVector3Array:
 		var p3: Vector3 = c[(i + 2) % n] if (closed or i + 2 < n) else p2 * 2.0 - p1
 		var k := maxi(4, int(p1.distance_to(p2) / 0.5))
 		for s in k:
-			dense.append(_catmull(p0, p1, p2, p3, float(s) / k))
+			var tt := float(s) / k
+			var q := _catmull(p0, p1, p2, p3, tt)
+			# elevation: straight grade between control points (no spline
+			# overshoot dipping the road into the ground); smoothed below
+			q.y = lerpf(p1.y, p2.y, tt)
+			dense.append(q)
 	if not closed:
 		dense.append(c[n - 1])
 	var out := PackedVector3Array()
@@ -106,7 +111,30 @@ func _resample(ctrl: Array, closed: bool, step: float) -> PackedVector3Array:
 		out.remove_at(out.size() - 1)
 	elif not closed and out[out.size() - 1].distance_to(dense[dense.size() - 1]) > 0.1:
 		out.append(dense[dense.size() - 1])
+	_smooth_elevation(out, closed, step, 12.0)
 	return out
+
+## Round off grade changes (vertical curves) with a moving average ~window m wide.
+func _smooth_elevation(pts: PackedVector3Array, closed: bool, step: float, window: float) -> void:
+	var n := pts.size()
+	var half := maxi(1, int(window * 0.5 / step))
+	for _pass in 2:
+		var ys := PackedFloat32Array()
+		ys.resize(n)
+		for i in n:
+			var s := 0.0
+			var c := 0
+			for k in range(-half, half + 1):
+				var j := i + k
+				if closed:
+					j = (j + n) % n
+				elif j < 0 or j >= n:
+					continue
+				s += pts[j].y
+				c += 1
+			ys[i] = s / c
+		for i in n:
+			pts[i].y = ys[i]
 
 func _build_road(r: Dictionary) -> void:
 	var closed: bool = r.get("closed", false)
@@ -436,7 +464,7 @@ func ground_height(x: float, z: float) -> float:
 	if ns.is_empty():
 		return hills(x, z)
 	var t := smoothstep(6.0, 140.0, ns[0])
-	return lerpf(ns[1] - 0.3, hills(x, z), t)
+	return lerpf(ns[1] - 0.7, hills(x, z), t)
 
 func _build_terrain(cfg: Dictionary) -> void:
 	var margin: float = cfg.get("margin", 350.0)

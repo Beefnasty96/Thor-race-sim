@@ -24,6 +24,9 @@ var settings: Dictionary = {
 	"steer_linearity": 1.6,      # >1 = finer control near center
 	"camera": 0,
 	"show_telemetry": true,
+	"stick_deadzone": 0.10,      # XInput-style deadzones (fraction of travel)
+	"trigger_deadzone": 0.06,
+	"rumble": 1.0,               # XInput vibration motors strength
 }
 
 var best_laps: Dictionary = {}   # "track|car|body|drive" -> seconds
