@@ -27,7 +27,7 @@ from mathutils import Matrix, Vector
 
 REAL_LENGTH = 5.057
 WB = 2.985
-TARGET_BODY_TRIS = 4300
+TARGET_BODY_TRIS = 3800
 
 # police / non-factory materials in the source model
 LIGHTBAR = {"material_27", "material_28", "material_29", "material_30", "material_31", "material_32",
@@ -80,8 +80,9 @@ def make_materials():
         "Chrome": mat("Chrome", (0.9, 0.9, 0.92), 1.0, 0.08),
         "Glass": mat("Glass", srgb(0.05, 0.06, 0.07), 0.0, 0.05, alpha=0.55),
         "Black": mat("Black", srgb(0.07, 0.07, 0.075), 0.0, 0.6),
-        "Headlamp": mat("Headlamp", (0.82, 0.84, 0.86), 0.6, 0.06, (1.0, 0.98, 0.9), 0.15),
-        "Amber": mat("Amber", srgb(0.95, 0.55, 0.12), 0.2, 0.15, (1.0, 0.5, 0.05), 0.2),
+        "Grille": mat("Grille", srgb(0.025, 0.025, 0.028), 0.3, 0.45),
+        "Headlamp": mat("Headlamp", (0.70, 0.73, 0.76), 0.75, 0.05, (1.0, 0.98, 0.92), 0.08),
+        "Amber": mat("Amber", srgb(0.92, 0.50, 0.10), 0.3, 0.12, (1.0, 0.45, 0.05), 0.08),
         "Taillight": mat("Taillight", srgb(0.7, 0.05, 0.04), 0.2, 0.12, (0.9, 0.02, 0.0), 0.3),
         "Interior": mat("Interior", srgb(0.42, 0.40, 0.37), 0.0, 0.85),   # neutral/grey cloth
         "Headliner": mat("Headliner", srgb(0.62, 0.60, 0.56), 0.0, 0.95),
@@ -168,10 +169,15 @@ def strip(meshes, wheel_zones, cabin):
         for wc, d in wheel_zones:
             if (centre - wc).length < d * 0.55 and abs(centre.x) > 0.55:
                 drop = True
-        # interior: anything wholly inside the cabin volume
+        # interior: anything wholly inside the cabin volume -- except roof skin
+        # pieces (mostly upward-facing surface at roof height)
         if (cabin[0].x < mn.x and mx.x < cabin[1].x and cabin[0].y < mn.y and mx.y < cabin[1].y
                 and cabin[0].z < mn.z and mx.z < cabin[1].z):
-            drop = True
+            up = sum(p.area for p in o.data.polygons
+                     if abs(p.normal.z) > 0.8 and p.center.z > 1.74 * SCALE_Z)
+            total = sum(p.area for p in o.data.polygons) or 1.0
+            if not (up / total > 0.5 and up > 0.02):
+                drop = True
         if drop:
             bpy.data.objects.remove(o, do_unlink=True)
             killed += 1
@@ -182,6 +188,8 @@ def strip(meshes, wheel_zones, cabin):
         for f in bm.faces:
             n = names[f.material_index] if f.material_index < len(names) else ""
             c = f.calc_center_median()
+            if n == "material_11" and c.z > 1.70 * SCALE_Z:
+                continue                         # blue roof band is the roof skin itself: keep, repaint
             if n in LIGHTBAR or n in LIVERY or n in ANTENNA_GEAR or n in PARTITION:
                 kill.append(f)
             elif n in ROOF_GRAPHIC and c.z > 1.88 * SCALE_Z:
@@ -241,11 +249,8 @@ SCALE_Z = 1.0
 
 def classify(name, centre, normal, front_y):
     nose = centre.y > front_y - 0.22 and 0.68 < centre.z < 1.13 and normal.y > 0.6
-    if nose and abs(centre.x) > 0.5 and name not in GLASS:
-        # stacked composite lamps; amber section at the outer end of the lower lamp
-        if abs(centre.x) > 0.84 and centre.z < 0.90:
-            return "Amber"
-        return "Headlamp"
+    if nose and abs(centre.x) < 0.97 and name not in GLASS:
+        return "Black"                           # backing behind the rebuilt lamps + grille
     if name in GLASS:
         if centre.z > 1.70 and abs(normal.z) > 0.7:
             return "Paint"                       # police roof hatch glass -> solid roof (no factory sunroof)
@@ -260,6 +265,8 @@ def classify(name, centre, normal, front_y):
         if name == "material" and centre.z > 1.24 and abs(normal.z) < 0.6:
             return "Black"                       # window frames, blacked-out B/C pillars
         return "Paint"
+    if name in CHROME and centre.z > 1.77:
+        return "Black"                           # roof-rack feet / rails
     if name in CHROME:
         # headlamp lenses: front face, outboard of the grille
         if centre.y > front_y - 0.18 and abs(centre.x) > 0.5 and 0.72 < centre.z < 1.12:
@@ -420,7 +427,7 @@ def build_interior(mats, cowl_y, belt_z, front_y):
     add_box(bm, (1.55, 0.14, 0.58), (0, back_y - 0.94, 1.18), I)
     # headliner under the roof skin (hides the inside of the roof and old police console)
     H = order.index("Headliner")
-    add_box(bm, (1.66, cowl_y - 0.95 - (-2.55), 0.02), (0, (cowl_y - 0.95 + -2.55) / 2, 1.745), H)
+    add_box(bm, (1.62, cowl_y - 0.95 - (-2.20), 0.02), (0, (cowl_y - 0.95 + -2.20) / 2, 1.73), H)
     # sun visors
     for x in (-0.40, 0.40):
         add_box(bm, (0.40, 0.17, 0.02), (x, cowl_y - 1.02, 1.715), H, Matrix.Rotation(math.radians(10), 3, "X"))
@@ -438,6 +445,117 @@ def build_interior(mats, cowl_y, belt_z, front_y):
 
 
 CLUSTER = {}
+
+
+def front_face_y(body):
+    """Typical y of the front-facing nose surface and its half-width."""
+    ys, xs = [], []
+    M = body.matrix_world
+    for p in body.data.polygons:
+        c = M @ p.center
+        if 0.72 < c.z < 1.1 and p.normal.y > 0.6:
+            if abs(c.x) < 0.9:
+                ys.append(c.y)
+            xs.append(abs(c.x))
+    ys.sort()
+    xs.sort()
+    fy = ys[int(len(ys) * 0.85)] if ys else 2.3
+    hw = xs[int(len(xs) * 0.97)] if xs else 0.9
+    return fy, hw
+
+
+def build_fascia(mats, fy, hw):
+    """'95-'99 GMT400 nose: stacked rectangular lamps (clear lens, amber outer
+    section, amber corner wrap), chrome-framed egg-crate grille in two rows and
+    a full-width chrome bar between the rows. No manufacturer badge."""
+    order = list(mats.keys())
+    C, K, H, A, G = (order.index(k) for k in ("Chrome", "Black", "Headlamp", "Amber", "Grille"))
+    bm = bmesh.new()
+    zb = 0.902                      # centre bar height
+    up = (0.925, 1.085)             # upper row z range
+    lo = (0.725, 0.880)             # lower row z range
+    d = 0.035                       # part depth (back face sits inside the nose)
+    def box(x0, x1, z0, z1, front, mi, depth=d):
+        add_box(bm, (x1 - x0, depth, z1 - z0), ((x0 + x1) / 2, fy + front - depth / 2, (z0 + z1) / 2), mi)
+    # grille: recessed black insert, egg-crate dividers, chrome surround
+    gx = 0.47
+    for (z0, z1) in (up, lo):
+        box(-gx, gx, z0, z1, 0.004, G)
+        for k in range(1, 6):                                   # vertical dividers
+            x = -gx + 2 * gx * k / 6
+            box(x - 0.008, x + 0.008, z0, z1, 0.014, K)
+        zm = (z0 + z1) / 2
+        box(-gx, gx, zm - 0.007, zm + 0.007, 0.014, K)          # horizontal divider
+        box(-gx - 0.02, gx + 0.02, z1, z1 + 0.018, 0.022, C)    # chrome frame top/bottom
+        box(-gx - 0.02, gx + 0.02, z0 - 0.018, z0, 0.022, C)
+    for sx in (-1, 1):
+        box(sx * gx - 0.012, sx * gx + 0.012, lo[0] - 0.018, up[1] + 0.018, 0.022, C)   # frame sides
+    # full-width chrome centre bar (runs across lamps and grille, centre blank)
+    box(-0.95, 0.95, zb - 0.022, zb + 0.022, 0.03, C)
+    box(-0.09, 0.09, zb - 0.034, zb + 0.034, 0.036, C)          # plain centre blank
+    # lamps, both sides -- kept inside the measured nose width
+    xo = min(0.915, hw - 0.035)                                 # outer edge of lamp
+    xa = xo - 0.085                                             # clear | amber split
+    xi = 0.505
+    for sx in (-1, 1):
+        for (z0, z1) in (up, lo):
+            lens = lambda a, b: (min(sx * a, sx * b), max(sx * a, sx * b))
+            x0, x1 = lens(xi, xa)
+            box(x0, x1, z0 + 0.008, z1 - 0.008, 0.008, C)       # chrome reflector bowl
+            x0, x1 = lens(xi + 0.02, xa - 0.02)
+            box(x0, x1, z0 + 0.022, z1 - 0.022, 0.013, H)       # clear lens over it
+            x0, x1 = lens(xa + 0.006, xo)
+            box(x0, x1, z0 + 0.008, z1 - 0.008, 0.012, A)       # amber outer section
+            x0, x1 = lens(xi - 0.012, xo + 0.008)
+            box(x0, x1, z1 - 0.008, z1 + 0.004, 0.016, C)       # chrome bezel top / bottom
+            box(x0, x1, z0 - 0.004, z0 + 0.008, 0.016, C)
+    me = bpy.data.meshes.new("Fascia")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("Fascia", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+def build_wheel_wells(mats, wheels):
+    """Black inner-fender liners: an arched shell over each wheel plus an inner
+    wall, so you don't see through the wheel openings into empty space."""
+    order = list(mats.keys())
+    K = order.index("Black")
+    bm = bmesh.new()
+    segs = 14
+    for (c, dia) in wheels:
+        side = 1.0 if c.x > 0 else -1.0
+        r = 0.49
+        zc = c.z + 0.02
+        x_in, x_out = side * 0.58, side * 0.955
+        a0, a1 = math.radians(-12), math.radians(192)
+        prev = None
+        arc = []
+        for i in range(segs + 1):
+            a = a0 + (a1 - a0) * i / segs
+            y = c.y + r * math.cos(a)
+            z = zc + r * math.sin(a)
+            pair = (bm.verts.new((x_in, y, z)), bm.verts.new((x_out, y, z)))
+            arc.append(pair[0])
+            if prev:
+                f = bm.faces.new((prev[0], prev[1], pair[1], pair[0]))
+                f.material_index = K
+            prev = pair
+        # inner wall: arc closed along the bottom chord
+        f = bm.faces.new(arc)
+        f.material_index = K
+    bmesh.ops.triangulate(bm, faces=bm.faces)
+    me = bpy.data.meshes.new("Wells")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("Wells", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
 
 
 def build_steering_wheel(mats, centre):
@@ -582,6 +700,11 @@ def main():
     log("body tris before reduce:", tri_count(body))
     reduce(body, TARGET_BODY_TRIS)
     two_tone(body, mats)
+    fy, hw = front_face_y(body)
+    log("nose face y %.3f half-width %.3f" % (fy, hw))
+    fascia = build_fascia(mats, fy + 0.004, hw)
+    wells = build_wheel_wells(mats, wheels)
+    body = join([body, fascia, wells], "Body")
     for p in body.data.polygons:
         p.use_smooth = True
     body.data.set_sharp_from_angle(angle=math.radians(35))
