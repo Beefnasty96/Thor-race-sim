@@ -111,10 +111,10 @@
   },
 
   "tires": {
-    "size": "P235/75R15 all-season",
-    "radius_m": 0.367,
-    "width_m": 0.235,
-    "wheel_inertia_kgm2": 1.9,
+    "size": "LT245/75R16 all-season (4WD factory fit; 2WD used P235/75R15)",
+    "radius_m": 0.387,
+    "width_m": 0.245,
+    "wheel_inertia_kgm2": 2.3,
     "cold_pressure_psi": 35,
     "tread_depth_new_mm": 9.5,
     "compound": "all_season_1990s"
