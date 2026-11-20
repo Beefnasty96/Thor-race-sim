@@ -8,8 +8,20 @@ bloom and haze, running at a steady frame rate on a handheld.
 
 **Current car:** 1996 Chevrolet Tahoe (GMT400). 4-door or 2-door, 2WD or 4WD,
 switchable in the Vehicle Editor.
-**Current track:** Ridgeview Circuit, a fictional 2.15 km circuit with
-elevation, curbs, gravel traps and barriers.
+
+**Locations** (Free Practice → Choose Location):
+- **Proving Ground** (default): drag strip with ¼-mile markings and braking
+  zone, 200 ft skidpad, slalom, handling course with elevation, 10/20/30%
+  grade hill (try 2H vs 4L), off-road loop with whoops and washboard.
+  Automatic test timing: 0–60, ¼ mile + trap speed, 60–0, skidpad g, top speed.
+- **Ridgeview Circuit**: a fictional 2.15 km circuit with elevation, curbs,
+  gravel traps, barriers and lap timing.
+
+### Maps
+Maps are data files in `data/maps/*.json`: roads (polylines with elevation,
+width, surface, bumps, markings), paved areas, buildings, props and signs. The
+format is designed so real towns can be generated from OpenStreetMap data plus
+elevation. That's the plan for town maps.
 
 ---
 
@@ -121,6 +133,8 @@ Run `godot --headless --fixed-fps 120 -s res://scripts/tests/physics_test.gd`
 
 `scripts/tests/lap_test.gd` drives an autopilot around the circuit and reports
 lap times, tire and brake temperatures, tread, and fluid temperatures per lap.
+`scripts/tests/proving_test.gd` drives every proving-ground area (drag, braking,
+skidpad, 30% hill in 2H/4L, whoops).
 
 ---
 
@@ -130,7 +144,10 @@ lap times, tire and brake temperatures, tread, and fluid temperatures per lap.
 data/cars/*.json            Car definitions (real specs, variants, paints)
 scripts/core/               Game state & save, main flow/menus, input, cameras
 scripts/vehicle/            Tire, engine, transmission, vehicle, Tahoe body model
-scripts/track/track.gd      Procedural circuit + surfaces + scenery
+scripts/track/track.gd      Procedural race circuit + surfaces + scenery
+scripts/world/map_builder.gd  Builds any map from data/maps/*.json
+data/maps/*.json            Map definitions (proving ground, future towns)
+tools/blender/              Scripted Blender car models (exported to assets/)
 scripts/ui/                 HUD, theme, option rows
 scripts/tests/              Headless physics + lap tests, screenshot tool
 tools/sign_apk.py           Local APK v2 signer (when apksigner isn't available)
