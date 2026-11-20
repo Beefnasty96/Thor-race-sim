@@ -1,0 +1,97 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.5.1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools build-tools;34.0.0 platforms;android-34"
+
+      - name: Cache Godot + export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip -q Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot && rm *.zip
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip -q Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          rm -rf templates *.tpz
+
+      # Signing: use the project's persistent key (repo secrets
+      # ANDROID_KEYSTORE_B64 + ANDROID_KEYSTORE_PASSWORD) so every build
+      # installs as an update over the last one. Falls back to a throwaway key.
+      - name: Signing keystore + editor settings
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > $HOME/signing.keystore
+            KS_USER=racingsim
+          else
+            echo "::warning::No ANDROID_KEYSTORE_B64 secret: signing with a throwaway key (uninstall before installing this build)"
+            KS_PASS=android; KS_USER=androiddebugkey
+            keytool -genkeypair -keystore $HOME/signing.keystore -storetype PKCS12 -storepass $KS_PASS \
+              -alias $KS_USER -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          echo "KS_USER=$KS_USER" >> $GITHUB_ENV
+          echo "::add-mask::$KS_PASS"
+          echo "KS_PASS=$KS_PASS" >> $GITHUB_ENV
+          mkdir -p ~/.config/godot
+          for f in editor_settings-4.tres editor_settings-4.5.tres; do
+            printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/android_sdk_path = "%s"\nexport/android/java_sdk_path = "%s"\nexport/android/debug_keystore = "%s"\nexport/android/debug_keystore_user = "%s"\nexport/android/debug_keystore_pass = "%s"\n' \
+              "$ANDROID_SDK_ROOT" "$JAVA_HOME" "$HOME/signing.keystore" "$KS_USER" "$KS_PASS" > ~/.config/godot/$f
+          done
+
+      - name: Import project
+        run: |
+          ~/godot/godot --headless --import || true
+          ~/godot/godot --headless --import || true
+
+      - name: Physics validation (prints real-world comparison)
+        run: timeout 600 ~/godot/godot --headless --fixed-fps 120 -s res://scripts/tests/physics_test.gd || true
+
+      - name: Export APK
+        run: |
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$HOME/signing.keystore
+          export GODOT_ANDROID_KEYSTORE_DEBUG_USER=$KS_USER
+          export GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=$KS_PASS
+          mkdir -p build
+          ~/godot/godot --headless --export-debug "Android" build/racing-sim.apk
+          ls -la build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racing-sim-apk
+          path: build/racing-sim.apk
+          if-no-files-found: error
