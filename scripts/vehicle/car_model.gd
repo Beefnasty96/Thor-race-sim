@@ -16,7 +16,9 @@ var car: Vehicle
 var info: Dictionary = {}
 var wheel_nodes: Array[Node3D] = []
 var driver_eye := Vector3(-0.38, 1.46, 0.38)
-var _paint_mat: StandardMaterial3D
+var body_drop := 0.0
+var _paint_mat: ShaderMaterial
+const PAINT_SHADER := preload("res://assets/shaders/body_paint.gdshader")
 var _lower_mat: StandardMaterial3D
 var _tail_mats: Array[StandardMaterial3D] = []
 var _steering: Node3D
@@ -42,9 +44,11 @@ func build(dir: String, paint: Dictionary) -> void:
 	if FileAccess.file_exists(dir + "/model_info.json"):
 		info = JSON.parse_string(FileAccess.get_file_as_string(dir + "/model_info.json"))
 		var e: Array = info.get("driver_eye", [-0.38, 1.46, 0.38])
-		driver_eye = Vector3(e[0], e[1], e[2])
+		body_drop = float(info.get("body_drop", 0.0))
+		driver_eye = Vector3(e[0], e[1] + body_drop, e[2])
 	var body_scene: PackedScene = load(dir + "/tahoe_body.glb")
 	var body := body_scene.instantiate()
+	body.position.y = body_drop          # seat the body over the factory-size tyres
 	add_child(body)
 	_prepare_materials(body)
 	_steering = body.find_child("SteeringWheel", true, false) as Node3D
@@ -75,10 +79,8 @@ func _prepare_materials(root: Node) -> void:
 			var n := mat.resource_name
 			if n == "Paint":
 				if _paint_mat == null:
-					_paint_mat = mat.duplicate()
-					_paint_mat.clearcoat_enabled = true
-					_paint_mat.clearcoat = 1.0
-					_paint_mat.clearcoat_roughness = 0.06
+					_paint_mat = ShaderMaterial.new()
+					_paint_mat.shader = PAINT_SHADER
 				m.set_surface_override_material(s, _paint_mat)
 			elif n == "Lower":
 				if _lower_mat == null:
@@ -148,9 +150,11 @@ func set_paint(paint: Dictionary) -> void:
 	var lower_col := Color(lc[0], lc[1], lc[2])
 	var metal: float = paint.get("metallic", 0.5)
 	if _paint_mat:
-		_paint_mat.albedo_color = body_col
-		_paint_mat.metallic = metal
-		_paint_mat.roughness = 0.28
+		_paint_mat.set_shader_parameter("body_color", body_col)
+		_paint_mat.set_shader_parameter("lower_color", lower_col)
+		_paint_mat.set_shader_parameter("body_metallic", metal)
+		_paint_mat.set_shader_parameter("lower_metallic", paint.get("lower_metallic", metal))
+		_paint_mat.set_shader_parameter("two_tone", paint.has("lower"))
 	if _lower_mat:
 		_lower_mat.albedo_color = lower_col
 		_lower_mat.metallic = paint.get("lower_metallic", metal)
@@ -213,7 +217,7 @@ func _build_gauges() -> void:
 			continue
 		var p: Array = cl[key]
 		var holder := Node3D.new()
-		holder.position = Vector3(p[0], p[1], p[2] + 0.004)
+		holder.position = Vector3(p[0], p[1] + body_drop, p[2] + 0.004)
 		holder.rotation = Vector3(-tilt, 0, 0)
 		add_child(holder)
 		var r := 0.062 if key == "speedo" else (0.05 if key == "tach" else 0.024)

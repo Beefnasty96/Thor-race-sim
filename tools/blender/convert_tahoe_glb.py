@@ -73,6 +73,66 @@ def srgb(r, g, b):
     return tuple(pow(c, 2.2) for c in (r, g, b))
 
 
+def make_image(name, w, h, fn):
+    """Procedural texture -> packed Blender image (exported inside the GLB)."""
+    import numpy as np
+    ys, xs = np.mgrid[0:h, 0:w]
+    u = (xs + 0.5) / w
+    v = (ys + 0.5) / h            # v = 0 bottom
+    rgb = fn(u, v, np)
+    px = np.ones((h, w, 4), dtype=np.float32)
+    px[..., :3] = np.clip(rgb, 0, 1)
+    img = bpy.data.images.new(name, w, h)
+    img.pixels.foreach_set(px.ravel())
+    img.pack()
+    return img
+
+
+def tex_grille(u, v, np):
+    """'94-'98 grille: black with horizontal bars and a few vertical ribs."""
+    c = np.full(u.shape + (3,), 0.025)
+    bars = (np.abs(((v * 4.0) % 1.0) - 0.5) > 0.36)
+    ribs = (np.abs(((u * 9.0) % 1.0) - 0.5) > 0.46)
+    c[bars | ribs] = 0.11
+    return c
+
+
+def tex_headlamp(u, v, np):
+    """Composite headlamp lens: fine vertical flutes over a bright reflector."""
+    flutes = 0.80 + 0.10 * np.cos(u * 2 * np.pi * 26)
+    refl = np.exp(-(((u - 0.5) / 0.30) ** 2 + ((v - 0.5) / 0.45) ** 2))
+    lum = flutes * (0.80 + 0.22 * refl)
+    return np.stack([lum, lum * 1.0, lum * 1.03], -1)
+
+
+def tex_park(u, v, np):
+    """Clear park/turn lens: vertical ribs, amber bulb glowing behind."""
+    ribs = 0.78 + 0.14 * np.cos(u * 2 * np.pi * 34)
+    bulb = np.exp(-(((u - 0.62) / 0.12) ** 2 + ((v - 0.5) / 0.35) ** 2))
+    return np.stack([ribs + 0.15 * bulb, ribs + 0.02 * bulb, ribs - 0.25 * bulb], -1)
+
+
+def tex_amber(u, v, np):
+    ribs = 0.85 + 0.15 * np.cos(v * 2 * np.pi * 10)
+    return np.stack([1.0 * ribs, 0.50 * ribs, 0.08 * ribs], -1)
+
+
+def textured(m, img):
+    nt = m.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    t = nt.nodes.new("ShaderNodeTexImage")
+    t.image = img
+    nt.links.new(t.outputs["Color"], bsdf.inputs["Base Color"])
+    return m
+
+
+def _texture_lamps(m):
+    textured(m["Headlamp"], make_image("headlamp_lens", 128, 64, tex_headlamp))
+    textured(m["Amber"], make_image("amber_lens", 16, 64, tex_amber))
+    textured(m["Grille"], make_image("grille", 256, 64, tex_grille))
+    return m
+
+
 def make_materials():
     return {
         "Paint": mat("Paint", srgb(0.17, 0.22, 0.42), 0.55, 0.28),       # Indigo Blue Metallic
@@ -87,7 +147,8 @@ def make_materials():
         "Taillight": mat("Taillight", srgb(0.7, 0.05, 0.04), 0.2, 0.12, (0.9, 0.02, 0.0), 0.3),
         "Interior": mat("Interior", srgb(0.20, 0.22, 0.27), 0.0, 0.55),   # blue-grey leather
         "Headliner": mat("Headliner", srgb(0.30, 0.32, 0.38), 0.0, 0.95),
-        "ParkLamp": mat("ParkLamp", srgb(0.88, 0.88, 0.86), 0.1, 0.12),
+        "ParkLamp": textured(mat("ParkLamp", srgb(0.88, 0.88, 0.86), 0.1, 0.12),
+                             make_image("park_lens", 128, 32, tex_park)),
         "Dash": mat("Dash", srgb(0.13, 0.145, 0.19), 0.0, 0.6),
         "Gauge": mat("Gauge", srgb(0.025, 0.025, 0.03), 0.0, 0.3),
         "Tire": mat("Tire", srgb(0.07, 0.07, 0.07), 0.0, 0.9),
@@ -533,11 +594,17 @@ def cpanel(bm, fy, x0, x1, z0, z1, off, depth, mi, n=None):
     xs = [x0 + (x1 - x0) * i / n for i in range(n + 1)]
     F = [(bm.verts.new((x, nose_y(fy, x) + off, z0)), bm.verts.new((x, nose_y(fy, x) + off, z1))) for x in xs]
     B = [(bm.verts.new((x, nose_y(fy, x) + off - depth, z0)), bm.verts.new((x, nose_y(fy, x) + off - depth, z1))) for x in xs]
-    def q(a, b, c, d):
+    uvl = bm.loops.layers.uv.verify()
+    def q(a, b, c, d, uvs=None):
         f = bm.faces.new((a, b, c, d))
         f.material_index = mi
+        for lp, uv in zip(f.loops, uvs or ((0.02, 0.02),) * 4):
+            lp[uvl].uv = uv
     for i in range(n):
-        q(F[i][0], F[i + 1][0], F[i + 1][1], F[i][1])
+        u0, u1 = i / n, (i + 1) / n
+        if x1 < x0:
+            u0, u1 = 1 - u0, 1 - u1
+        q(F[i][0], F[i + 1][0], F[i + 1][1], F[i][1], ((u0, 0), (u1, 0), (u1, 1), (u0, 1)))
         q(F[i][1], F[i + 1][1], B[i + 1][1], B[i][1])
         q(F[i][0], B[i][0], B[i + 1][0], F[i + 1][0])
     q(F[0][0], F[0][1], B[0][1], B[0][0])
@@ -562,10 +629,7 @@ def build_fascia(mats, fy, hw):
     dep = 0.12                 # pieces run back into the body so no gaps show
     # grille openings + bars
     for (z0, z1) in (up, lo):
-        cpanel(bm, fy, -gx, gx, z0, z1, -0.008, dep, G, 4)
-        for k in (1, 2):
-            z = z0 + (z1 - z0) * k / 3
-            cpanel(bm, fy, -gx, gx, z - 0.007, z + 0.007, -0.002, 0.03, K, 4)
+        cpanel(bm, fy, -gx, gx, z0, z1, -0.008, dep, G, 4)      # bars come from the grille texture
     # chrome: grille top bar, uprights, full-width centre bar with plain centre boss
     cpanel(bm, fy, -xo - 0.005, xo + 0.005, up[1], 1.108, 0.010, dep, C, 8)       # top frame under the hood
     cpanel(bm, fy, -xo - 0.005, xo + 0.005, 0.728, lo[0], 0.008, dep, C, 8)       # bottom frame over the bumper
@@ -748,7 +812,7 @@ def build_wheel_wells(mats, wheels):
         side = 1.0 if c.x > 0 else -1.0
         front = c.y > 0
         r = ARCH_R + 0.012                # just outside the new arch opening
-        zc = c.z + 0.02
+        zc = c.z
         # outer edge just inside the fender skin (front ~0.92, rear ~0.966)
         x_in, x_out = side * (0.50 if front else 0.56), side * (0.905 if front else 0.95)
         a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / r)))
@@ -786,7 +850,95 @@ def build_wheel_wells(mats, wheels):
     return ob
 
 
-ARCH_R = 0.465          # wheel opening radius after the fender panels (tyre r 0.387)
+ARCH_R = 0.475          # wheel opening radius (tyre r 0.387): ~9 cm above the tyre like the real truck
+
+
+def fill_small_holes(body, mats):
+    """Badge removal left a few small holes (they showed as black slots)."""
+    order = list(mats.keys())
+    bm = bmesh.new()
+    bm.from_mesh(body.data)
+    before = len(bm.faces)
+    edges = [e for e in bm.edges if e.is_boundary]
+    res = bmesh.ops.holes_fill(bm, edges=edges, sides=10)
+    big = [f for f in res["faces"] if f.calc_area() > 0.015]
+    for f in res["faces"]:
+        f.material_index = order.index("Paint")
+    bmesh.ops.delete(bm, geom=big, context="FACES_ONLY")
+    bm.to_mesh(body.data)
+    bm.free()
+    return len(body.data.polygons) - before
+
+
+def deform_arches(body, wheels):
+    """Pull the source model's loose wheel openings in to ARCH_R by moving the
+    fender's own vertices (blending out to R_OUT). Runs on the dense source
+    mesh before decimation so the arch edge is finely sampled. The original
+    opening edge is measured by ray-casting the painted fender."""
+    me = body.data
+    names = [m.name for m in me.materials]
+    paint_v = set()
+    for p in me.polygons:
+        if names[p.material_index] == "Paint":
+            paint_v.update(p.vertices)
+    R_OUT = 0.78
+    NA = 49
+    moved = 0
+    for (c, dia) in wheels:
+        side = 1.0 if c.x > 0 else -1.0
+        zc = c.z
+        angs = [-0.25 + (math.pi + 0.5) * k / (NA - 1) for k in range(NA)]
+        edge = []
+        for a in angs:
+            re = 0.575
+            r = 0.40
+            while r < 0.74:
+                y, z = c.y + r * math.cos(a), zc + r * math.sin(a)
+                if z < 0.36:
+                    break
+                hit, loc, n, idx = body.ray_cast(Vector((side * 3.0, y, z)), Vector((-side, 0, 0)))
+                if hit and abs(loc.x) > 0.84 and names[me.polygons[idx].material_index] == "Paint":
+                    re = r
+                    break
+                r += 0.004
+            edge.append(min(0.70, max(0.47, re)))
+        edge = [sorted(edge[max(0, k - 2):k + 3])[len(edge[max(0, k - 2):k + 3]) // 2] for k in range(NA)]
+        log("arch edge", "F" if c.y > 0 else "R", "L" if side < 0 else "R", " ".join("%.2f" % e for e in edge[::4]))
+        def edge_at(a):
+            t = (a - angs[0]) / (angs[-1] - angs[0]) * (NA - 1)
+            t = min(NA - 1.001, max(0.0, t))
+            k = int(t)
+            return edge[k] + (edge[k + 1] - edge[k]) * (t - k)
+        for v in me.vertices:
+            if v.index not in paint_v or v.co.x * side < 0.70 or v.co.z < 0.36:
+                continue
+            dy, dz = v.co.y - c.y, v.co.z - zc
+            r, a = math.hypot(dy, dz), math.atan2(dz, dy)
+            if r >= R_OUT or r < 0.30 or a < angs[0] or a > angs[-1]:
+                continue
+            ro = edge_at(a)
+            e2 = ARCH_R + 0.01
+            if r <= ro + 0.01:
+                r2 = r - (ro - ARCH_R)
+            else:
+                t = (r - ro - 0.01) / (R_OUT - ro - 0.01)
+                r2 = e2 + t * (R_OUT - e2)
+            v.co.y = c.y + r2 * math.cos(a)
+            v.co.z = zc + r2 * math.sin(a)
+            moved += 1
+    me.update()
+    return moved
+
+
+def recolour(body, mats, test, new):
+    order = list(mats.keys())
+    names = [m.name for m in body.data.materials]
+    n = 0
+    for p in body.data.polygons:
+        if test(names[p.material_index], p.center):
+            p.material_index = order.index(new)
+            n += 1
+    return n
 
 
 def build_arch_panels(mats, wheels, body):
@@ -802,7 +954,7 @@ def build_arch_panels(mats, wheels, body):
     z_bot = 0.40
     for (c, dia) in wheels:
         side = 1.0 if c.x > 0 else -1.0
-        zc = c.z + 0.02
+        zc = c.z
         default_x = 0.915 if c.y > 0 else 0.962
         a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / ARCH_R)))
         inner, outer = [], []
@@ -840,14 +992,20 @@ def build_arch_moldings(mats, wheels, arch):
     # arch panel x per wheel/angle: reuse the panel's inner edge
     for wi, (c, dia) in enumerate(wheels):
         side = 1.0 if c.x > 0 else -1.0
-        zc = c.z + 0.02
+        zc = c.z
         a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / ARCH_R)))
-        xs = arch[wi]
         rows = []
         for i in range(segs + 1):
             a = a0 + (math.pi - 2 * a0) * i / segs
             ca, sa = math.cos(a), math.sin(a)
-            x = xs[i]
+            best = None
+            for dr in (0.006, 0.02, 0.04):         # outermost point of the lip near the edge
+                hit, loc, n, idx = arch.ray_cast(Vector((side * 3.0, c.y + (ARCH_R + dr) * ca, zc + (ARCH_R + dr) * sa)),
+                                                 Vector((-side, 0, 0)))
+                if hit and 0.84 < abs(loc.x) < 1.02 and \
+                        arch.data.materials[arch.data.polygons[idx].material_index].name == "Paint":
+                    best = abs(loc.x) if best is None else max(best, abs(loc.x))
+            x = side * (best if best is not None else (0.915 if c.y > 0 else 0.962))
             rows.append([bm.verts.new((x + side * 0.004, c.y + (ARCH_R + 0.018) * ca, zc + (ARCH_R + 0.018) * sa)),
                          bm.verts.new((x + side * 0.006, c.y + ARCH_R * ca, zc + ARCH_R * sa)),
                          bm.verts.new((x - side * 0.035, c.y + ARCH_R * ca, zc + ARCH_R * sa))])
@@ -1056,21 +1214,20 @@ def main():
     cabin = (Vector((-0.80, -2.0, 0.55)), Vector((0.80, front_y - 1.15, 1.785)))   # up to the roof skin
     meshes = strip(meshes, wheels, cabin)
     meshes = remove_badges(meshes, length)
-    mats = make_materials()
+    mats = _texture_lamps(make_materials())
     remap_materials(meshes, mats, front_y)
     body = join(meshes, "Body")
     symmetrise(body)
+    log("filled small holes: %d faces" % fill_small_holes(body, mats))
+    log("arch vertices moved: %d" % deform_arches(body, [w for w in wheels if w[0].x > 0]))
+    symmetrise(body)                  # left arches = mirror of the reshaped right ones
     log("body tris before reduce:", tri_count(body))
     reduce(body, TARGET_BODY_TRIS)
-    arch = build_arch_panels(mats, wheels, body)
-    ARCH_XS[:] = []
-    segs = 16
-    for wi in range(len(wheels)):              # remember the panel x along each arch for the moldings
-        vs = arch.data.vertices
-        base = wi * (segs + 1) * 2
-        ARCH_XS.append([vs[base + 2 * i + 1].co.x for i in range(segs + 1)])
-    body = join([body, arch], "Body")
-    two_tone(body, mats)
+    log("filled small holes after reduce: %d faces" % fill_small_holes(body, mats))
+    # two-tone bands, black molding band and pinstripes are now drawn by the
+    # game's body-paint shader (crisper, no extra geometry) — no mesh cuts
+    log("door handles -> black: %d" % recolour(body, mats, lambda m, c: m == "Chrome" and abs(c.x) > 0.85
+                                                and 0.92 < c.z < 1.18 and -1.6 < c.y < 0.7, "Black"))
     nf = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y > 2.0 and c.z < 0.75)
     nr = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y < -2.42 and c.z < 0.73)
     log("removed source bumpers: front %d rear %d faces" % (nf, nr))
@@ -1084,7 +1241,7 @@ def main():
     fuel = build_fuel_door(mats)
     roof = build_roof_patch(mats)
     bumpers = build_bumpers(mats)
-    moldings = build_arch_moldings(mats, wheels, ARCH_XS)
+    moldings = build_arch_moldings(mats, wheels, body)
     glass = build_windshield(mats)
     body = join([body, fascia, wells, fuel, roof, bumpers, glass, moldings], "Body")
     for p in body.data.polygons:
@@ -1124,6 +1281,9 @@ def main():
             "cluster": {k: ([round(v.x, 4), round(v.z, 4), round(-v.y, 4)] if hasattr(v, "x") else v)
                         for k, v in CLUSTER.items()},
             "triangles": total,
+            # source model rode on bigger tyres (hub 0.415 m); on the factory
+            # P245/75R16 (r 0.387) the body sits this much lower over the hubs
+            "body_drop": round(-(sum(w[0].z for w in wheels) / len(wheels) - 0.387), 4),
         }, f, indent=2)
     global EYE_Y
     EYE_Y = col_top.y - 0.55
