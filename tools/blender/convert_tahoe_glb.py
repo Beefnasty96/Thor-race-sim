@@ -27,7 +27,8 @@ from mathutils import Matrix, Vector
 
 REAL_LENGTH = 5.057
 WB = 2.985
-TARGET_BODY_TRIS = 5600       # total vehicle budget ~10,000 triangles
+TARGET_BODY_TRIS = 5000
+ARCH_XS = []       # total vehicle budget ~10,000 triangles
 
 # police / non-factory materials in the source model
 LIGHTBAR = {"material_27", "material_28", "material_29", "material_30", "material_31", "material_32",
@@ -81,12 +82,12 @@ def make_materials():
         "Glass": mat("Glass", srgb(0.05, 0.06, 0.07), 0.0, 0.05, alpha=0.55),
         "Black": mat("Black", srgb(0.07, 0.07, 0.075), 0.0, 0.6),
         "Grille": mat("Grille", srgb(0.025, 0.025, 0.028), 0.3, 0.45),
-        "Headlamp": mat("Headlamp", (0.70, 0.73, 0.76), 0.75, 0.05, (1.0, 0.98, 0.92), 0.08),
+        "Headlamp": mat("Headlamp", srgb(0.86, 0.88, 0.90), 0.15, 0.06, (1.0, 0.98, 0.92), 0.10),
         "Amber": mat("Amber", srgb(0.92, 0.50, 0.10), 0.3, 0.12, (1.0, 0.45, 0.05), 0.08),
         "Taillight": mat("Taillight", srgb(0.7, 0.05, 0.04), 0.2, 0.12, (0.9, 0.02, 0.0), 0.3),
         "Interior": mat("Interior", srgb(0.20, 0.22, 0.27), 0.0, 0.55),   # blue-grey leather
         "Headliner": mat("Headliner", srgb(0.30, 0.32, 0.38), 0.0, 0.95),
-        "ParkLamp": mat("ParkLamp", srgb(0.95, 0.70, 0.45), 0.4, 0.08, (1.0, 0.6, 0.2), 0.05),
+        "ParkLamp": mat("ParkLamp", srgb(0.88, 0.88, 0.86), 0.1, 0.12),
         "Dash": mat("Dash", srgb(0.13, 0.145, 0.19), 0.0, 0.6),
         "Gauge": mat("Gauge", srgb(0.025, 0.025, 0.03), 0.0, 0.3),
         "Tire": mat("Tire", srgb(0.07, 0.07, 0.07), 0.0, 0.9),
@@ -386,71 +387,109 @@ def add_box(bm, size, loc, mi, rot=None):
 
 
 def build_interior(mats, cowl_y, belt_z, front_y):
-    """1995-99 GMT400 interior, semi-accurate: wide flat-topped dash with a
-    hooded instrument cluster in front of the driver, centre stack (radio over
-    HVAC), glovebox, steering column, 4-spoke airbag steering wheel, bucket
-    seats and a rear bench. Driver sits on the LEFT (-X)."""
+    """'95-'99 GMT400 interior from reference photos. Driver sits on the LEFT (-X).
+    - one-piece dark dash pad swept across the cab (profile extrusion), with the
+      defroster slots along the windshield and two cupholders in the passenger top
+    - lower dash and knee bolster in the lighter interior colour
+    - hooded cluster ahead of the driver (tach | big speedo | 4 small gauges)
+    - square louvred vents: outer left, either side of the radio, two passenger
+    - centre stack: radio over HVAC over ashtray; headlamp switch under left vent
+    - glovebox, column shroud, big centre console with armrest, buckets, bench."""
     order = list(mats.keys())
     D, I, B, G, C = (order.index(k) for k in ("Dash", "Interior", "Black", "Gauge", "Chrome"))
     bm = bmesh.new()
-    dash_y = cowl_y - 0.42           # dash face (deep '95-'99 dash)
+    dash_y = cowl_y - 0.42
+    ws_y = cowl_y + 0.06             # windshield base (inside)
     tilt = Matrix.Rotation(math.radians(-12), 3, "X")
-    # dash top pad and lower face
-    add_box(bm, (1.70, 0.46, 0.10), (0, dash_y + 0.13, belt_z - 0.02), D)   # top pad ahead of the cluster
-    add_box(bm, (1.66, 0.12, 0.34), (0, dash_y - 0.12, belt_z - 0.24), D, tilt)
-    # wide hooded cluster like the '95+ GMT400: tach left, big speedo centre,
-    # four small gauges right (fuel, volts, oil pressure, coolant)
-    add_box(bm, (0.62, 0.17, 0.05), (-0.37, dash_y - 0.065, belt_z + 0.075), D)           # hood top
-    for sx in (-0.68, -0.06):
-        add_box(bm, (0.03, 0.17, 0.17), (sx, dash_y - 0.065, belt_z - 0.0), D)            # hood sides
-    add_box(bm, (0.58, 0.02, 0.15), (-0.37, dash_y - 0.135, belt_z - 0.035), G, tilt)     # black face
+    bz = belt_z
+    # --- dash body: side profile (y, z, material of the segment that follows)
+    prof = [(ws_y, bz + 0.062, D), (dash_y + 0.21, bz + 0.062, D), (dash_y - 0.02, bz + 0.048, D),
+            (dash_y - 0.09, bz + 0.015, D), (dash_y - 0.105, bz - 0.03, I),
+            (dash_y - 0.08, bz - 0.05, I), (dash_y - 0.09, bz - 0.27, I),
+            (dash_y - 0.16, bz - 0.37, I), (dash_y - 0.13, bz - 0.50, I), (dash_y + 0.01, bz - 0.56, I)]
+    xs = [-0.84, -0.70, -0.40, -0.06, 0.25, 0.55, 0.84]
+    grid = [[bm.verts.new((x, y, z)) for (y, z, _) in prof] for x in xs]
+    for a in range(len(xs) - 1):
+        for k in range(len(prof) - 1):
+            f = bm.faces.new((grid[a][k], grid[a][k + 1], grid[a + 1][k + 1], grid[a + 1][k]))
+            f.material_index = prof[k][2]
+    for col in (grid[0], grid[-1]):                      # end caps against the doors
+        f = bm.faces.new(col)
+        f.material_index = I
+    face_y = dash_y - 0.085                              # vertical face of the lower dash
+    # defroster slots along the glass + side demisters; passenger cupholders
+    add_box(bm, (0.95, 0.05, 0.006), (0.0, ws_y - 0.07, bz + 0.064), B)
+    for x in (-0.74, 0.74):
+        add_box(bm, (0.10, 0.04, 0.006), (x, ws_y - 0.09, bz + 0.064), B)
+    for x in (0.40, 0.55):
+        add_box(bm, (0.085, 0.085, 0.012), (x, dash_y + 0.03, bz + 0.052), B)
+    # --- hooded instrument cluster (gauge face position is used by the game)
+    add_box(bm, (0.66, 0.22, 0.045), (-0.37, dash_y - 0.06, bz + 0.085), D,
+            Matrix.Rotation(math.radians(4), 3, "X"))                               # brow
+    for sx in (-0.69, -0.05):
+        add_box(bm, (0.035, 0.20, 0.17), (sx, dash_y - 0.07, bz + 0.0), D)          # hood cheeks
+    add_box(bm, (0.66, 0.15, 0.035), (-0.37, dash_y - 0.085, bz - 0.11), D)         # lower lip
+    add_box(bm, (0.60, 0.02, 0.16), (-0.37, dash_y - 0.135, bz - 0.035), G, tilt)   # black face
     global CLUSTER
-    face = Vector((-0.37, dash_y - 0.147, belt_z - 0.035))
+    face = Vector((-0.37, dash_y - 0.147, bz - 0.035))
     CLUSTER = {"tilt_deg": -12,
                "tach": face + Vector((-0.175, 0, 0.005)),
                "speedo": face + Vector((0.0, 0, 0.008)),
                "fuel": face + Vector((0.155, 0, 0.032)), "volts": face + Vector((0.215, 0, 0.032)),
                "oil": face + Vector((0.155, 0, -0.025)), "temp": face + Vector((0.215, 0, -0.025))}
-    # air vents: left of the cluster and centre pair (slatted)
-    for vx, vw in ((-0.78, 0.09), (-0.03, 0.10), (0.11, 0.10), (0.72, 0.09)):
-        add_box(bm, (vw, 0.03, 0.10), (vx, dash_y - 0.12, belt_z - 0.06), B, tilt)
-        for k in range(3):
-            add_box(bm, (vw - 0.01, 0.035, 0.008), (vx, dash_y - 0.125, belt_z - 0.09 + k * 0.03), D, tilt)
-    # centre stack: radio + HVAC with chrome-ish trim, then floor console
-    add_box(bm, (0.30, 0.10, 0.30), (0.02, dash_y - 0.16, belt_z - 0.25), D, tilt)
-    add_box(bm, (0.20, 0.02, 0.05), (0.02, dash_y - 0.215, belt_z - 0.17), G, tilt)    # radio display
-    add_box(bm, (0.22, 0.02, 0.08), (0.02, dash_y - 0.24, belt_z - 0.31), B, tilt)    # HVAC knobs
-    add_box(bm, (0.30, 0.55, 0.22), (0.0, dash_y - 0.75, 0.80), D)                    # console
-    # glovebox outline
-    add_box(bm, (0.42, 0.02, 0.16), (0.48, dash_y - 0.175, belt_z - 0.22), B, tilt)
-    # steering column
-    col_top = Vector((-0.38, dash_y - 0.28, belt_z - 0.06))
-    add_box(bm, (0.08, 0.36, 0.08), (-0.38, dash_y - 0.15, belt_z - 0.12),
+    # --- square louvred vents
+    def vent(x, z, w=0.11, h=0.095):
+        add_box(bm, (w, 0.03, h), (x, face_y - 0.005, z), B)
+        for k in (-1, 1):
+            add_box(bm, (w - 0.014, 0.012, 0.010), (x, face_y - 0.024, z + k * h * 0.22), D)
+    vent(-0.775, bz - 0.09)
+    vent(-0.005, bz - 0.10, 0.08)
+    vent(0.275, bz - 0.10, 0.08)
+    vent(0.42, bz - 0.20)
+    vent(0.775, bz - 0.20)
+    add_box(bm, (0.07, 0.02, 0.04), (-0.775, face_y - 0.012, bz - 0.20), B)        # headlamp switch
+    # --- centre stack: radio, HVAC panel, ashtray
+    add_box(bm, (0.24, 0.025, 0.24), (0.135, face_y - 0.010, bz - 0.17), B)
+    add_box(bm, (0.17, 0.012, 0.045), (0.135, face_y - 0.026, bz - 0.09), G)        # radio display
+    add_box(bm, (0.18, 0.012, 0.012), (0.135, face_y - 0.026, bz - 0.19), C)        # HVAC slider strip
+    add_box(bm, (0.17, 0.012, 0.04), (0.135, face_y - 0.026, bz - 0.25), D)         # ashtray door
+    # --- glovebox door and handle
+    add_box(bm, (0.36, 0.022, 0.15), (0.60, face_y - 0.022, bz - 0.33), I)
+    add_box(bm, (0.08, 0.02, 0.02), (0.60, face_y - 0.036, bz - 0.27), B)
+    # --- steering column + shroud
+    col_top = Vector((-0.38, dash_y - 0.28, bz - 0.06))
+    add_box(bm, (0.07, 0.36, 0.07), (-0.38, dash_y - 0.15, bz - 0.12),
             B, Matrix.Rotation(math.radians(24), 3, "X"))
-    # floor + carpet, seats
+    add_box(bm, (0.12, 0.16, 0.12), (-0.38, dash_y - 0.14, bz - 0.14),
+            D, Matrix.Rotation(math.radians(24), 3, "X"))
+    # --- floor, centre console, seats
     eye_y = col_top.y - 0.55
     back_y = eye_y - 0.16
     add_box(bm, (1.70, 2.9, 0.04), (0, cowl_y - 1.75, 0.62), B)
+    add_box(bm, (0.30, 0.70, 0.26), (0.0, back_y + 0.30, 0.77), I)                 # console body
+    add_box(bm, (0.30, 0.42, 0.045), (0.0, back_y + 0.17, 0.92), D)                # armrest lid
+    add_box(bm, (0.20, 0.13, 0.02), (0.0, back_y + 0.55, 0.905), B)                # cupholders
     for x in (-0.42, 0.42):
         add_box(bm, (0.50, 0.50, 0.13), (x, back_y + 0.28, 0.86), I)
         add_box(bm, (0.48, 0.12, 0.62), (x, back_y - 0.02, 1.20), I,
                 Matrix.Rotation(math.radians(-10), 3, "X"))
-        for bx in (-0.22, 0.22):                                                      # side bolsters
+        for bx in (-0.22, 0.22):
             add_box(bm, (0.07, 0.15, 0.55), (x + bx, back_y + 0.0, 1.18), I,
                     Matrix.Rotation(math.radians(-10), 3, "X"))
             add_box(bm, (0.07, 0.48, 0.07), (x + bx, back_y + 0.28, 0.94), I)
         add_box(bm, (0.26, 0.10, 0.18), (x, back_y - 0.08, 1.58), I)
     add_box(bm, (1.55, 0.55, 0.14), (0, back_y - 0.62, 0.86), I)
     add_box(bm, (1.55, 0.14, 0.58), (0, back_y - 0.94, 1.18), I)
-    # headliner under the roof skin (hides the inside of the roof and old police console)
+    # --- headliner, visors
     H = order.index("Headliner")
-    add_box(bm, (1.40, cowl_y - 0.95 - (-2.20), 0.02), (0, (cowl_y - 0.95 + -2.20) / 2, 1.715), H)   # stays inside the roof edges
-    # sun visors
+    add_box(bm, (1.40, cowl_y - 0.95 - (-2.20), 0.02), (0, (cowl_y - 0.95 + -2.20) / 2, 1.715), H)
     for x in (-0.40, 0.40):
         add_box(bm, (0.40, 0.17, 0.02), (x, cowl_y - 1.02, 1.715), H, Matrix.Rotation(math.radians(10), 3, "X"))
-    # door panels (inner)
-    for s in (-1, 1):
-        add_box(bm, (0.04, 2.1, 0.45), (s * 0.86, cowl_y - 1.3, 0.92), D)
+    # --- door panels: dark upper, interior-colour lower with armrest
+    for sx in (-1, 1):
+        add_box(bm, (0.04, 2.1, 0.30), (sx * 0.86, cowl_y - 1.3, 0.85), I)
+        add_box(bm, (0.045, 2.1, 0.14), (sx * 0.86, cowl_y - 1.3, 1.07), D)
+        add_box(bm, (0.07, 0.42, 0.06), (sx * 0.82, eye_y + 0.12, 0.98), I)
     me = bpy.data.meshes.new("Interior")
     bm.to_mesh(me)
     bm.free()
@@ -481,66 +520,184 @@ def front_face_y(body):
     return fy, hw
 
 
+def nose_y(fy, x):
+    """Plan-view curve of the GMT400 nose at lamp height, measured from the
+    model: flat across the grille, falling back ~12 cm to the fender corners."""
+    return fy + 0.006 - 0.171 * abs(x) ** 2.35
+
+
+def cpanel(bm, fy, x0, x1, z0, z1, off, depth, mi, n=None):
+    """A box whose front face follows the nose curve (so lamps sit flush)."""
+    if n is None:
+        n = max(1, int(math.ceil(abs(x1 - x0) / 0.12)))
+    xs = [x0 + (x1 - x0) * i / n for i in range(n + 1)]
+    F = [(bm.verts.new((x, nose_y(fy, x) + off, z0)), bm.verts.new((x, nose_y(fy, x) + off, z1))) for x in xs]
+    B = [(bm.verts.new((x, nose_y(fy, x) + off - depth, z0)), bm.verts.new((x, nose_y(fy, x) + off - depth, z1))) for x in xs]
+    def q(a, b, c, d):
+        f = bm.faces.new((a, b, c, d))
+        f.material_index = mi
+    for i in range(n):
+        q(F[i][0], F[i + 1][0], F[i + 1][1], F[i][1])
+        q(F[i][1], F[i + 1][1], B[i + 1][1], B[i][1])
+        q(F[i][0], B[i][0], B[i + 1][0], F[i + 1][0])
+    q(F[0][0], F[0][1], B[0][1], B[0][0])
+    q(F[-1][0], B[-1][0], B[-1][1], F[-1][1])
+
+
 def build_fascia(mats, fy, hw):
-    """'95-'99 GMT400 nose, from a straight-on photo of a 1995 Tahoe:
-    - upper row: wide clear composite headlamp (reflector bowl at the inner
-      end) with a thin amber strip on the outer corner
-    - lower row: amber-tinted park/turn lens with the amber corner strip
-    - grille openings between the lamps: black with horizontal slats
-    - chrome bar along the top under the hood, thick full-width centre bar
-      between the rows (plain centre, no badge), chrome bar along the bottom,
-      chrome uprights between grille and lamps."""
+    """'94-'98 GMT400 nose from reference photos, built flush on the nose curve:
+    - grille: two black openings with horizontal bars, chrome surround
+    - full-width chrome bar between the upper and lower rows
+    - composite headlamp: chrome bezel, clear lens split into two reflector cells
+    - clear ribbed park/turn lamp below it, chrome bezel
+    - stacked amber corner lamps that wrap around onto the fender side."""
     order = list(mats.keys())
     C, K, H, A, G, P = (order.index(k) for k in ("Chrome", "Black", "Headlamp", "Amber", "Grille", "ParkLamp"))
     bm = bmesh.new()
     up = (0.935, 1.075)
-    lo = (0.745, 0.870)
-    zb = 0.905
-    d = 0.035
-    def box(x0, x1, z0, z1, front, mi, depth=d):
-        add_box(bm, (x1 - x0, depth, z1 - z0), ((x0 + x1) / 2, fy + front - depth / 2, (z0 + z1) / 2), mi)
-    xo = min(0.915, hw - 0.02)          # outer edge of the lamp rows
-    gx = 0.47                           # grille half-width
-    # grille openings with horizontal slats
+    lo = (0.748, 0.872)
+    gx = 0.47
+    xo = 0.905                 # outer edge of the front lamps (nose corner)
+    xa = 0.845                 # amber corner lamp starts here
+    dep = 0.12                 # pieces run back into the body so no gaps show
+    # grille openings + bars
     for (z0, z1) in (up, lo):
-        box(-gx, gx, z0, z1, 0.002, G)
-        n = 4
-        for k in range(1, n):
-            z = z0 + (z1 - z0) * k / n
-            box(-gx, gx, z - 0.006, z + 0.006, 0.010, K)
-    # chrome: top bar, centre bar, bottom bar, uprights
-    box(-xo - 0.01, xo + 0.01, up[1], up[1] + 0.022, 0.022, C)
-    box(-0.955, 0.955, zb - 0.026, zb + 0.026, 0.034, C)
-    box(-0.10, 0.10, zb - 0.036, zb + 0.036, 0.040, C)       # plain centre blank
-    box(-xo - 0.01, xo + 0.01, lo[0] - 0.024, lo[0], 0.022, C)
+        cpanel(bm, fy, -gx, gx, z0, z1, -0.008, dep, G, 4)
+        for k in (1, 2):
+            z = z0 + (z1 - z0) * k / 3
+            cpanel(bm, fy, -gx, gx, z - 0.007, z + 0.007, -0.002, 0.03, K, 4)
+    # chrome: grille top bar, uprights, full-width centre bar with plain centre boss
+    cpanel(bm, fy, -xo - 0.005, xo + 0.005, up[1], 1.108, 0.010, dep, C, 8)       # top frame under the hood
+    cpanel(bm, fy, -xo - 0.005, xo + 0.005, 0.728, lo[0], 0.008, dep, C, 8)       # bottom frame over the bumper
     for sx in (-1, 1):
-        box(sx * gx - 0.016, sx * gx + 0.016, lo[0], up[1], 0.026, C)
-    # lamps
+        cpanel(bm, fy, sx * gx - 0.012, sx * gx + 0.012, lo[0], up[1], 0.010, dep, C, 1)
+    cpanel(bm, fy, -xo - 0.005, xo + 0.005, lo[1], up[0], 0.012, dep, C, 8)
+    cpanel(bm, fy, -0.09, 0.09, lo[1] - 0.008, up[0] + 0.008, 0.016, 0.03, C, 1)
     for sx in (-1, 1):
-        L = lambda a, b: (min(sx * a, sx * b), max(sx * a, sx * b))
-        xi = gx + 0.018
-        xa = xo - 0.035                                       # start of amber corner strip
-        # upper: clear headlamp with reflector bowl at the inner end
-        x0, x1 = L(xi, xa)
-        box(x0, x1, up[0] + 0.006, up[1] - 0.006, 0.010, H)
-        x0, x1 = L(xi + 0.015, xi + 0.115)
-        box(x0, x1, up[0] + 0.020, up[1] - 0.020, 0.013, C)   # reflector bowl
-        x0, x1 = L(xi + 0.040, xi + 0.090)
-        box(x0, x1, up[0] + 0.045, up[1] - 0.045, 0.016, H)   # bulb lens
-        x0, x1 = L(xa, xo)
-        box(x0, x1, up[0] + 0.006, up[1] - 0.006, 0.010, A)
-        # lower: amber-tinted park/turn lens + amber corner
-        x0, x1 = L(xi, xa)
-        box(x0, x1, lo[0] + 0.006, lo[1] - 0.006, 0.010, P)
-        x0, x1 = L(xa, xo)
-        box(x0, x1, lo[0] + 0.006, lo[1] - 0.006, 0.010, A)
-        # amber wraps onto the side of the fender at the corner
+        def X(a, b):
+            return (min(sx * a, sx * b), max(sx * a, sx * b))
+        xi = gx + 0.012
+        # headlamp: bezel, two lens cells, divider
+        x0, x1 = X(xi, xa)
+        cpanel(bm, fy, x0, x1, up[0], up[1], 0.004, dep, C, 3)
+        xm = (xi + xa) / 2
+        for (a, b) in ((xi + 0.012, xm - 0.006), (xm + 0.006, xa - 0.010)):
+            x0, x1 = X(a, b)
+            cpanel(bm, fy, x0, x1, up[0] + 0.012, up[1] - 0.012, 0.008, 0.03, H, 2)
+        # park lamp: bezel + clear lens
+        x0, x1 = X(xi, xa)
+        cpanel(bm, fy, x0, x1, lo[0], lo[1], 0.004, dep, C, 3)
+        x0, x1 = X(xi + 0.012, xa - 0.010)
+        cpanel(bm, fy, x0, x1, lo[0] + 0.012, lo[1] - 0.012, 0.008, 0.03, P, 3)
+        # amber corner lamps (upper + lower) and their wrap onto the fender side
         for (z0, z1) in (up, lo):
-            add_box(bm, (0.012, 0.09, (z1 - z0) - 0.02), (sx * (hw + 0.004), fy - 0.05, (z0 + z1) / 2), A)
+            x0, x1 = X(xa, xo)
+            cpanel(bm, fy, x0, x1, z0 + 0.004, z1 - 0.004, 0.006, dep, A, 1)
+            yc = nose_y(fy, xo) + 0.006
+            add_box(bm, (0.012, 0.11, (z1 - z0) - 0.008), (sx * (xo + 0.004), yc - 0.055, (z0 + z1) / 2), A)
     me = bpy.data.meshes.new("Fascia")
     bm.to_mesh(me)
     bm.free()
     ob = bpy.data.objects.new("Fascia", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+def sweep(bm, path, profile, seg_mats):
+    """Sweep a (d, z) profile along a plan-view path; d is measured outward
+    (away from the middle of the truck)."""
+    rows = []
+    for i, (x, y) in enumerate(path):
+        a = Vector(path[max(0, i - 1)])
+        b = Vector(path[min(len(path) - 1, i + 1)])
+        t = (b - a).normalized()
+        n = Vector((t.y, -t.x))
+        if n.dot(Vector((x, y))) < 0:
+            n = -n
+        rows.append([bm.verts.new((x + n.x * d, y + n.y * d, z)) for (d, z) in profile])
+    for i in range(len(rows) - 1):
+        for j in range(len(profile) - 1):
+            f = bm.faces.new((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]))
+            f.material_index = seg_mats[j]
+
+
+def mirror_path(right):
+    """right: points from the outer end to the centre (x >= 0)."""
+    return [(-x, y) for (x, y) in right] + [(x, y) for (x, y) in reversed(right[:-1])]
+
+
+def build_bumpers(mats):
+    """Front: chrome face wrapping the corners, black rubber impact strip,
+    black lower valance, plate bracket. Rear: chrome step bumper with a black
+    rubber step pad on top, plate recess and hitch receiver."""
+    order = list(mats.keys())
+    C, K = order.index("Chrome"), order.index("Black")
+    bm = bmesh.new()
+    front = [(0.975, 2.05), (0.955, 2.165), (0.90, 2.228), (0.72, 2.278), (0.40, 2.323), (0.0, 2.337)]
+    sweep(bm, mirror_path(front),
+          [(-0.08, 0.748), (0.0, 0.748), (0.004, 0.735), (0.016, 0.731), (0.016, 0.690),
+           (0.007, 0.686), (0.006, 0.62), (0.003, 0.545), (-0.05, 0.535)],
+          [C, C, K, K, K, C, C, C])
+    sweep(bm, mirror_path(front[1:]),
+          [(-0.05, 0.535), (-0.035, 0.47), (-0.06, 0.41), (-0.22, 0.40)], [K, K, K])
+    add_box(bm, (0.32, 0.012, 0.16), (0.0, 2.337 + 0.026, 0.645), K)          # plate bracket
+    rear = [(0.975, -2.555), (0.965, -2.665), (0.92, -2.722), (0.78, -2.742), (0.40, -2.748), (0.0, -2.748)]
+    sweep(bm, mirror_path(rear),
+          [(-0.17, 0.705), (-0.012, 0.705), (0.0, 0.695), (0.006, 0.64), (0.004, 0.52),
+           (-0.02, 0.475), (-0.12, 0.465)],
+          [K, K, C, C, C, C])
+    add_box(bm, (0.34, 0.012, 0.15), (0.0, -2.748 - 0.002, 0.585), K)         # plate recess
+    add_box(bm, (0.07, 0.24, 0.07), (0.0, -2.70, 0.42), K)                    # hitch receiver
+    me = bpy.data.meshes.new("Bumpers")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("Bumpers", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+def delete_faces(body, test):
+    bm = bmesh.new()
+    bm.from_mesh(body.data)
+    names = [m.name for m in body.data.materials]
+    mw = body.matrix_world
+    kill = [f for f in bm.faces if test(names[f.material_index], mw @ f.calc_center_median())]
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    bm.to_mesh(body.data)
+    bm.free()
+    return len(kill)
+
+
+def build_windshield(mats):
+    """The source windshield was inside the police-cabin cut; rebuild it in the
+    opening (cowl ~1.29 m to header ~1.745 m), set 12 mm inside the frame."""
+    order = list(mats.keys())
+    Gl = order.index("Glass")
+    base = Vector((0, 0.97, 1.268))
+    top = Vector((0, 0.40, 1.775))
+    along = (top - base)
+    L = along.length
+    along.normalize()
+    n = Vector((0, -along.z, along.y)).normalized()
+    if n.y < 0:
+        n = -n
+    bm = bmesh.new()
+    rows = []
+    for t, hw in ((0.02, 0.835), (0.38, 0.795), (0.745, 0.70)):
+        p = base + along * t - n * 0.012          # t in metres up the glass
+        rows.append([bm.verts.new(p + Vector((x, 0, 0))) for x in (-hw, -hw / 3, hw / 3, hw)])
+    for i in range(2):
+        for j in range(3):
+            f = bm.faces.new((rows[i][j], rows[i][j + 1], rows[i + 1][j + 1], rows[i + 1][j]))
+            f.material_index = Gl
+    me = bpy.data.meshes.new("Windshield")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("Windshield", me)
     bpy.context.collection.objects.link(ob)
     for k in order:
         me.materials.append(mats[k])
@@ -581,7 +738,7 @@ def build_wheel_wells(mats, wheels):
     order = list(mats.keys())
     K = order.index("Black")
     bm = bmesh.new()
-    segs = 18
+    segs = 14
     z_bot = 0.40                          # bottom edge of the body / rockers
     def quad(a, b, c, d):
         f = bm.faces.new([bm.verts.new(v) for v in (a, b, c, d)])
@@ -590,8 +747,8 @@ def build_wheel_wells(mats, wheels):
     for (c, dia) in wheels:
         side = 1.0 if c.x > 0 else -1.0
         front = c.y > 0
-        r = 0.58                          # body arch openings reach ~0.57 m from the hub
-        zc = c.z + 0.03
+        r = ARCH_R + 0.012                # just outside the new arch opening
+        zc = c.z + 0.02
         # outer edge just inside the fender skin (front ~0.92, rear ~0.966)
         x_in, x_out = side * (0.50 if front else 0.56), side * (0.905 if front else 0.95)
         a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / r)))
@@ -623,6 +780,85 @@ def build_wheel_wells(mats, wheels):
     bm.to_mesh(me)
     bm.free()
     ob = bpy.data.objects.new("Wells", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+ARCH_R = 0.465          # wheel opening radius after the fender panels (tyre r 0.387)
+
+
+def build_arch_panels(mats, wheels, body):
+    """The source model's wheel openings are ~0.57 m radius, far looser than
+    the real GMT400 (about 9 cm above the tyre). Body-colour panels follow the
+    fender surface (ray-cast) and close the opening down to ARCH_R. They are
+    Paint so the two-tone pass cuts the tan / black band / pinstripes on them."""
+    order = list(mats.keys())
+    P = order.index("Paint")
+    bm = bmesh.new()
+    segs = 16
+    r_out = 0.64
+    z_bot = 0.40
+    for (c, dia) in wheels:
+        side = 1.0 if c.x > 0 else -1.0
+        zc = c.z + 0.02
+        default_x = 0.915 if c.y > 0 else 0.962
+        a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / ARCH_R)))
+        inner, outer = [], []
+        for i in range(segs + 1):
+            a = a0 + (math.pi - 2 * a0) * i / segs
+            yo, zo = c.y + r_out * math.cos(a), max(z_bot - 0.01, zc + r_out * math.sin(a))
+            hit, loc, n, idx = body.ray_cast(Vector((side * 3.0, yo, zo)), Vector((-side, 0, 0)))
+            x = abs(loc.x) if hit and 0.85 < abs(loc.x) < 1.02 else default_x
+            x = side * (x + 0.003)
+            outer.append(bm.verts.new((x, yo, zo)))
+            inner.append(bm.verts.new((x, c.y + ARCH_R * math.cos(a), zc + ARCH_R * math.sin(a))))
+        for i in range(segs):
+            f = bm.faces.new((inner[i], inner[i + 1], outer[i + 1], outer[i]))
+            f.material_index = P
+            if f.normal.x * side < 0:
+                f.normal_flip()
+    me = bpy.data.meshes.new("ArchPanels")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("ArchPanels", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+def build_arch_moldings(mats, wheels, arch):
+    """Bright wheel-opening molding around each arch (LS/LT trim) with a black
+    inward lip that meets the liner."""
+    order = list(mats.keys())
+    C, K = order.index("Chrome"), order.index("Black")
+    bm = bmesh.new()
+    segs = 16
+    z_bot = 0.40
+    # arch panel x per wheel/angle: reuse the panel's inner edge
+    for wi, (c, dia) in enumerate(wheels):
+        side = 1.0 if c.x > 0 else -1.0
+        zc = c.z + 0.02
+        a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / ARCH_R)))
+        xs = arch[wi]
+        rows = []
+        for i in range(segs + 1):
+            a = a0 + (math.pi - 2 * a0) * i / segs
+            ca, sa = math.cos(a), math.sin(a)
+            x = xs[i]
+            rows.append([bm.verts.new((x + side * 0.004, c.y + (ARCH_R + 0.018) * ca, zc + (ARCH_R + 0.018) * sa)),
+                         bm.verts.new((x + side * 0.006, c.y + ARCH_R * ca, zc + ARCH_R * sa)),
+                         bm.verts.new((x - side * 0.035, c.y + ARCH_R * ca, zc + ARCH_R * sa))])
+        for i in range(segs):
+            for j, mi in ((0, C), (1, K)):
+                f = bm.faces.new((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]))
+                f.material_index = mi
+    me = bpy.data.meshes.new("ArchMoldings")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("ArchMoldings", me)
     bpy.context.collection.objects.link(ob)
     for k in order:
         me.materials.append(mats[k])
@@ -698,7 +934,7 @@ def build_steering_wheel(mats, centre):
                 f.material_index = B
         prev = quad
     # airbag hub (the '95-'99 rounded-rectangle pad) and four spokes
-    add_box(bm, (0.15, 0.06, 0.11), (0, -0.02, 0), D)
+    add_box(bm, (0.17, 0.065, 0.13), (0, -0.022, 0.005), D)
     for ang in (0, 180, 235, 305):
         a = math.radians(ang)
         mid = Vector((math.cos(a), 0, math.sin(a))) * (r * 0.55)
@@ -756,7 +992,7 @@ def build_wheel(mats):
     for k in range(6):
         a = 2 * math.pi * k / 6
         tmp = bmesh.new()
-        bmesh.ops.create_cone(tmp, cap_ends=True, segments=6, radius1=0.011, radius2=0.011, depth=0.016)
+        bmesh.ops.create_cone(tmp, cap_ends=False, segments=6, radius1=0.011, radius2=0.011, depth=0.016)
         bmesh.ops.rotate(tmp, verts=tmp.verts, cent=(0, 0, 0), matrix=Matrix.Rotation(math.pi / 2, 3, "Y"))
         bmesh.ops.translate(tmp, vec=Vector((0.104, 0.062 * math.cos(a), 0.062 * math.sin(a))), verts=tmp.verts)
         for f in tmp.faces:
@@ -826,14 +1062,31 @@ def main():
     symmetrise(body)
     log("body tris before reduce:", tri_count(body))
     reduce(body, TARGET_BODY_TRIS)
+    arch = build_arch_panels(mats, wheels, body)
+    ARCH_XS[:] = []
+    segs = 16
+    for wi in range(len(wheels)):              # remember the panel x along each arch for the moldings
+        vs = arch.data.vertices
+        base = wi * (segs + 1) * 2
+        ARCH_XS.append([vs[base + 2 * i + 1].co.x for i in range(segs + 1)])
+    body = join([body, arch], "Body")
     two_tone(body, mats)
+    nf = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y > 2.0 and c.z < 0.75)
+    nr = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y < -2.42 and c.z < 0.73)
+    log("removed source bumpers: front %d rear %d faces" % (nf, nr))
     fy, hw = front_face_y(body)
     log("nose face y %.3f half-width %.3f" % (fy, hw))
+    nn = delete_faces(body, lambda m, c: m not in ("Paint", "Lower", "Stripe") and c.y > 1.95
+                      and 0.70 < c.z < 1.12 and abs(c.x) < 0.95)
+    log("removed source lamp/grille housings: %d faces" % nn)
     fascia = build_fascia(mats, fy + 0.004, hw)
     wells = build_wheel_wells(mats, wheels)
     fuel = build_fuel_door(mats)
     roof = build_roof_patch(mats)
-    body = join([body, fascia, wells, fuel, roof], "Body")
+    bumpers = build_bumpers(mats)
+    moldings = build_arch_moldings(mats, wheels, ARCH_XS)
+    glass = build_windshield(mats)
+    body = join([body, fascia, wells, fuel, roof, bumpers, glass, moldings], "Body")
     for p in body.data.polygons:
         p.use_smooth = True
     body.data.set_sharp_from_angle(angle=math.radians(35))

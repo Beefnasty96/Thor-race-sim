@@ -181,10 +181,8 @@ func _dial(radius: float) -> MeshInstance3D:
 	cm.height = 0.002
 	cm.radial_segments = 20
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.04, 0.05, 0.05)
-	mat.emission_enabled = true
-	mat.emission = Color(0.35, 0.85, 0.55)      # green-lit 90s GM cluster
-	mat.emission_energy_multiplier = 0.12
+	mat.albedo_color = Color(0.025, 0.025, 0.03)  # black faces, white scales ('95-'99 cluster)
+	mat.roughness = 0.6
 	cm.material = mat
 	mi.mesh = cm
 	mi.rotation = Vector3(PI * 0.5, 0, 0)        # face the driver (+Z)
