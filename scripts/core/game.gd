@@ -76,7 +76,10 @@ func default_setup(id: String) -> Dictionary:
 		"tcs": false,
 		"speed_limiter": d["limits"]["speed_limiter_default"],
 		"paint": 0,
-		"camber_front_deg": -0.3,
+		"camber_front_deg": d.get("alignment", {}).get("camber_deg", 0.0),
+		"caster_deg": d.get("alignment", {}).get("caster_deg", 3.0),
+		"toe_total_in": d.get("alignment", {}).get("toe_total_in", 0.0),
+		"tire_size": d["tires"].get("default_option", ""),
 		"camber_rear_deg": 0.0,
 	}
 

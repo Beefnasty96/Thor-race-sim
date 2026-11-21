@@ -491,15 +491,24 @@ func _show_editor() -> void:
 	rows.append(_row(list, "trans_mode", "Transmission", ["auto", "manual"], ["Automatic (D)", "Manual shift (L1/R1)"], s["trans_mode"]))
 	rows.append(_row(list, "paint", "Paint", paint_idx, paint_names, s["paint"]))
 	rows.append(_section(list, "TIRES & SUSPENSION"))
-	rows.append(_row_range(list, "tire_psi_front", "Tire pressure front", 24, 46, 1, s["tire_psi_front"], " psi"))
-	rows.append(_row_range(list, "tire_psi_rear", "Tire pressure rear", 24, 46, 1, s["tire_psi_rear"], " psi"))
+	var topts: Dictionary = d["tires"].get("options", {})
+	if not topts.is_empty():
+		var tk := []
+		var tl := []
+		for k in topts:
+			tk.append(k); tl.append(topts[k]["label"])
+		rows.append(_row(list, "tire_size", "Tire size", tk, tl, s.get("tire_size", tk[0])))
+	rows.append(_row_range(list, "tire_psi_front", "Tire pressure front (placard 35)", 24, 44, 1, s["tire_psi_front"], " psi"))
+	rows.append(_row_range(list, "tire_psi_rear", "Tire pressure rear (placard 35)", 24, 44, 1, s["tire_psi_rear"], " psi"))
 	rows.append(_row_pct(list, "spring_scale_front", "Front springs (torsion bars)", 0.7, 1.6, 0.05, s["spring_scale_front"]))
 	rows.append(_row_pct(list, "spring_scale_rear", "Rear leaf springs", 0.7, 1.6, 0.05, s["spring_scale_rear"]))
 	rows.append(_row_pct(list, "damper_scale", "Shock absorbers", 0.7, 1.8, 0.05, s["damper_scale"]))
 	rows.append(_row_pct(list, "arb_scale_front", "Front anti-roll bar", 0.0, 2.5, 0.1, s["arb_scale_front"]))
 	rows.append(_row(list, "arb_scale_rear", "Rear anti-roll bar", [1.0, 1.5, 2.0, 2.5], ["None (stock)", "Light", "Medium", "Heavy"], s["arb_scale_rear"]))
 	rows.append(_row_range(list, "ride_height_offset_mm", "Ride height", -50, 100, 25, s["ride_height_offset_mm"], " mm"))
-	rows.append(_row_range(list, "camber_front_deg", "Front camber", -2.0, 1.0, 0.25, s["camber_front_deg"], "°"))
+	rows.append(_row_range(list, "camber_front_deg", "Front camber (factory +0.65)", -2.0, 1.5, 0.05, s["camber_front_deg"], "°"))
+	rows.append(_row_range(list, "caster_deg", "Caster (factory 3.0)", 1.0, 6.0, 0.25, s.get("caster_deg", 3.0), "°"))
+	rows.append(_row_range(list, "toe_total_in", "Toe-in, total (factory 0.12)", -0.24, 0.48, 0.02, s.get("toe_total_in", 0.12), " in"))
 	rows.append(_section(list, "BRAKES & ASSISTS"))
 	rows.append(_row_pct(list, "brake_bias_front", "Brake bias (front)", 0.55, 0.80, 0.01, s["brake_bias_front"]))
 	rows.append(_row_pct(list, "brake_power", "Brake pads", 0.85, 1.3, 0.05, s["brake_power"]))

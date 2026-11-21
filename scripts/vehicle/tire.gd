@@ -61,7 +61,7 @@ func setup(def: Dictionary, psi_cold: float, tread_state: float) -> void:
 	tread_new_mm = def.get("tread_depth_new_mm", tread_new_mm)
 	cold_psi = psi_cold
 	psi = psi_cold
-	var tr: float = tread_new_mm if tread_state < 0.0 else tread_state
+	var tr: float = tread_new_mm if tread_state < 0.0 else minf(tread_state, tread_new_mm)
 	tread_mm = [tr, tr, tr]
 
 func avg_temp() -> float:

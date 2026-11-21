@@ -76,6 +76,10 @@ var limiter_on := true
 var brake_bias := 0.69
 var brake_front_max := 4200.0
 var brake_rear_max := 1900.0
+var caster_deg := 3.0          # factory 3.0° +/- 1.0
+var toe_rad := 0.0             # per-wheel toe-in (front)
+var rear_stage_m := 0.0        # 2-stage rear leaf: overload leaf engagement (m past ride height)
+var rear_stage_scale := 1.0
 var arb_front := 28000.0
 var arb_rear := 0.0
 var max_steer := deg_to_rad(33.0)
@@ -158,7 +162,18 @@ func configure(car_def: Dictionary, setup: Dictionary, condition: Dictionary) ->
 func _build_wheels(m: float, f: float, setup: Dictionary, condition: Dictionary) -> void:
 	wheels.clear()
 	var sus: Dictionary = def["suspension"]
-	var tdef: Dictionary = def["tires"]
+	var tdef: Dictionary = def["tires"].duplicate()
+	var opts: Dictionary = tdef.get("options", {})
+	var opt: String = setup.get("tire_size", tdef.get("default_option", ""))
+	if opts.has(opt):
+		tdef.merge(opts[opt], true)
+	var al: Dictionary = def.get("alignment", {})
+	caster_deg = setup.get("caster_deg", al.get("caster_deg", 3.0))
+	# total toe is measured across the tread at hub height: angle per wheel = atan(toe/2 / diameter)
+	var toe_in_m: float = setup.get("toe_total_in", al.get("toe_total_in", 0.0)) * 0.0254
+	toe_rad = atan(toe_in_m * 0.5 / (2.0 * float(tdef["radius_m"])))
+	rear_stage_m = sus.get("rear_second_stage_m", 0.0)
+	rear_stage_scale = sus.get("rear_second_stage_scale", 1.0)
 	var g := 9.81
 	var treads: Array = condition.get("tire_tread_mm", [-1, -1, -1, -1])
 	var names := ["FL", "FR", "RL", "RR"]
@@ -191,7 +206,7 @@ func _build_wheels(m: float, f: float, setup: Dictionary, condition: Dictionary)
 		w.driven = (not w.front) or (drivetrain == "4wd" and transfer != "2H")
 		w.solid_axle = not w.front
 		w.roll_center_h = 0.06 if w.front else 0.28
-		w.camber_static = setup.get("camber_front_deg" if w.front else "camber_rear_deg", 0.0)
+		w.camber_static = setup.get("camber_front_deg", al.get("camber_deg", 0.0)) if w.front else setup.get("camber_rear_deg", 0.0)
 		w.camber_gain = -15.0 if w.front else 0.0
 		w.brake_fade_start = def["brakes"]["front_fade_start_c"] if w.front else def["brakes"]["rear_fade_start_c"]
 		var psi: float = setup.get("tire_psi_front" if w.front else "tire_psi_rear", 35.0)
@@ -273,6 +288,11 @@ func _physics_process(dt: float) -> void:
 			continue
 		var cmp := minf(w.compression, w.travel)
 		var fs := w.k * (cmp + w.spring_preload)
+		# rear 2-stage leaf pack: the overload leaves pick up when the axle is loaded
+		if not w.front and rear_stage_m > 0.0:
+			var over := cmp - (w.travel * 0.55 + rear_stage_m)
+			if over > 0.0:
+				fs += w.k * (rear_stage_scale - 1.0) * over
 		var fd := w.comp_vel * (w.c_bump if w.comp_vel > 0.0 else w.c_rebound)
 		fd = clampf(fd, -12000.0, 18000.0)
 		var fb := 0.0
@@ -315,6 +335,9 @@ func _physics_process(dt: float) -> void:
 			w.camber_ground = w.camber_static
 		else:
 			var cam_body := w.camber_static + w.camber_gain * (w.compression - w.travel * 0.55)
+			# caster: steering the wheel leans it — outside wheel goes negative, inside positive
+			var wsteer := -w.steer          # back to "positive = right"
+			cam_body += -caster_deg * sin(wsteer) * (1.0 if w.left else -1.0)
 			w.camber_ground = cam_body + (roll if w.left else -roll)
 		w.fx_acc = 0.0
 		w.fy_acc = 0.0
@@ -391,6 +414,9 @@ func _update_steering(dt: float) -> void:
 	else:
 		wheels[0].steer = -inner
 		wheels[1].steer = -outer
+	# static toe-in: left wheel points slightly right, right wheel slightly left
+	wheels[0].steer -= toe_rad
+	wheels[1].steer += toe_rad
 
 func _driver_throttle(dt: float) -> float:
 	var thr := in_throttle

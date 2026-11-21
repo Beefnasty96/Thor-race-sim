@@ -7,7 +7,7 @@ extends Node3D
 ## Handles paint (body colour + two-tone lower), the steering wheel turning
 ## with the front wheels, live speedometer/tach needles and brake lights.
 
-const STEERING_LOCK_RAD := 10.5     # ~1.7 turns each way (about 3.4 turns lock to lock)
+var steering_lock_rad := 3.0 * PI   # half of lock-to-lock (3.0 turns factory) — set from car data
 const SPEEDO_MAX_MPH := 100.0
 const TACH_MAX_RPM := 6000.0
 const NEEDLE_SWEEP := deg_to_rad(240.0)
@@ -26,6 +26,8 @@ var _tach: Node3D
 var _small: Dictionary = {}          # fuel / volts / oil / temp needles
 var _tire_mats: Array[ShaderMaterial] = []
 var _tire_meshes: Array[MeshInstance3D] = []
+var _tire_scale: Array[float] = []
+var _wheels_sized := false
 const TIRE_SHADER := preload("res://assets/shaders/tire_squash.gdshader")
 
 func build(dir: String, paint: Dictionary) -> void:
@@ -35,6 +37,8 @@ func build(dir: String, paint: Dictionary) -> void:
 	_tail_mats.clear()
 	_tire_mats.clear()
 	_tire_meshes.clear()
+	_tire_scale.clear()
+	_wheels_sized = false
 	if FileAccess.file_exists(dir + "/model_info.json"):
 		info = JSON.parse_string(FileAccess.get_file_as_string(dir + "/model_info.json"))
 		var e: Array = info.get("driver_eye", [-0.38, 1.46, 0.38])
@@ -117,6 +121,16 @@ func _setup_tire(root: Node) -> void:
 
 func _update_tires() -> void:
 	var n := mini(_tire_mats.size(), car.wheels.size())
+	if not _wheels_sized and n > 0:
+		_wheels_sized = true
+		steering_lock_rad = car.def["steering"].get("lock_to_lock_turns", 3.0) * PI
+		for i in n:                     # optional tyre sizes: scale the wheel mesh
+			var w0 = car.wheels[i]
+			var sc: float = w0.radius / 0.387
+			var wn: Node3D = wheel_nodes[i].get_child(0)
+			var sx: float = signf(wn.scale.x) * (w0.tire.width / 0.245)   # tread width
+			wn.scale = Vector3(sx, sc, sc)
+			_tire_scale.append(sc)
 	for i in n:
 		var w = car.wheels[i]
 		var mi := _tire_meshes[i]
@@ -124,7 +138,8 @@ func _update_tires() -> void:
 		var down_l := (mi.global_basis.inverse() * down_w).normalized()
 		var sm := _tire_mats[i]
 		sm.set_shader_parameter("down_dir", down_l)
-		sm.set_shader_parameter("squash", w.tire_defl if w.contact else 0.0)
+		var sc: float = _tire_scale[i] if i < _tire_scale.size() else 1.0
+		sm.set_shader_parameter("squash", (w.tire_defl / sc) if w.contact else 0.0)
 
 func set_paint(paint: Dictionary) -> void:
 	var c: Array = paint.get("color", [0.2, 0.25, 0.45])
@@ -223,7 +238,7 @@ func _process(_dt: float) -> void:
 	if car == null or not is_instance_valid(car):
 		return
 	if _steering:
-		var a := -car.steer_actual * STEERING_LOCK_RAD
+		var a := -car.steer_actual * steering_lock_rad
 		_steering.transform = _steer_base * Transform3D(Basis(Vector3(0, 0, 1), a), Vector3.ZERO)
 	if _speedo:
 		var mph := clampf(absf(car.speed_ms) * 2.23694, 0.0, SPEEDO_MAX_MPH)
