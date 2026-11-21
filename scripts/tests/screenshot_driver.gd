@@ -104,11 +104,18 @@ func _process(dt: float) -> void:
 				cam.current = true
 		9:
 			var cam: Camera3D = main.car.get_node("TireCam")
-			cam.look_at(main.car.to_global(Vector3(-0.8, 0.35, -1.5)))
+			if not has_meta("flat_done"):
+				cam.look_at(main.car.to_global(Vector3(-0.8, 0.35, -1.5)))
 			if t > 2.5 and not has_meta("tire_ok"):
 				set_meta("tire_ok", true)
 				_shot("11a_tire_inflated")
 				main.car.wheels[0].tire.puncture()
-			if t > 6.5:
+			if t > 6.5 and not has_meta("flat_done"):
+				set_meta("flat_done", true)
 				_shot("11b_tire_flat")
+				cam.position = Vector3(-2.4, 0.09, 0.4)
+			if has_meta("flat_done"):
+				cam.look_at(main.car.to_global(Vector3(0.2, 0.42, -0.2)))
+			if t > 7.5:
+				_shot("11c_underside")
 				get_tree().quit()

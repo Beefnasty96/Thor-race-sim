@@ -47,6 +47,12 @@
       -0.2989
     ]
   },
-  "triangles": 8817,
-  "body_drop": -0.0283
+  "triangles": 8981,
+  "body_drop": -0.0283,
+  "baked": {
+    "detail": "body_detail.png",
+    "mask": "body_mask.png",
+    "size": 1024
+  },
+  "triangles_body_shell": 3499
 }

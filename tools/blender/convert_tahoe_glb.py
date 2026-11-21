@@ -681,6 +681,12 @@ def sweep(bm, path, profile, seg_mats):
         if n.dot(Vector((x, y))) < 0:
             n = -n
         rows.append([bm.verts.new((x + n.x * d, y + n.y * d, z)) for (d, z) in profile])
+    for r in (rows[0], rows[-1]):                 # end caps
+        try:
+            f = bm.faces.new(r)
+            f.material_index = seg_mats[len(seg_mats) // 2]
+        except ValueError:
+            pass
     for i in range(len(rows) - 1):
         for j in range(len(profile) - 1):
             f = bm.faces.new((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]))
@@ -833,11 +839,11 @@ def build_wheel_wells(mats, wheels):
     # underbody: centre strip full length plus between-axle sides
     yf = max(y for y, _ in ys) + 0.55
     yr = min(y for y, _ in ys) - 0.55
-    quad((-0.56, yr, 0.42), (-0.56, yf, 0.42), (0.56, yf, 0.42), (0.56, yr, 0.42))
+    quad((-0.56, yr, 0.66), (-0.56, yf, 0.66), (0.56, yf, 0.66), (0.56, yr, 0.66))       # floor pan
     fy = max(y for y, _ in ys) - 0.58
     ry = min(y for y, _ in ys) + 0.58
     for sx in (-1, 1):
-        quad((sx * 0.56, ry, 0.40), (sx * 0.56, fy, 0.40), (sx * 0.96, fy, 0.40), (sx * 0.96, ry, 0.40))
+        quad((sx * 0.56, ry, 0.62), (sx * 0.56, fy, 0.62), (sx * 0.96, fy, 0.62), (sx * 0.96, ry, 0.62))
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bmesh.ops.triangulate(bm, faces=bm.faces)
     me = bpy.data.meshes.new("Wells")
@@ -987,9 +993,12 @@ def build_arch_moldings(mats, wheels, arch):
     order = list(mats.keys())
     C, K = order.index("Chrome"), order.index("Black")
     bm = bmesh.new()
-    segs = 16
+    segs = 32
     z_bot = 0.40
-    # arch panel x per wheel/angle: reuse the panel's inner edge
+    # profile across the molding: (radial offset from the opening, x offset from the fender skin)
+    prof = [(0.024, 0.002), (0.016, 0.007), (0.007, 0.009), (0.001, 0.006), (-0.002, -0.002),
+            (0.0, -0.022), (0.0, -0.045)]
+    pm = [C, C, C, C, C, K]
     for wi, (c, dia) in enumerate(wheels):
         side = 1.0 if c.x > 0 else -1.0
         zc = c.z
@@ -1006,11 +1015,10 @@ def build_arch_moldings(mats, wheels, arch):
                         arch.data.materials[arch.data.polygons[idx].material_index].name == "Paint":
                     best = abs(loc.x) if best is None else max(best, abs(loc.x))
             x = side * (best if best is not None else (0.915 if c.y > 0 else 0.962))
-            rows.append([bm.verts.new((x + side * 0.004, c.y + (ARCH_R + 0.018) * ca, zc + (ARCH_R + 0.018) * sa)),
-                         bm.verts.new((x + side * 0.006, c.y + ARCH_R * ca, zc + ARCH_R * sa)),
-                         bm.verts.new((x - side * 0.035, c.y + ARCH_R * ca, zc + ARCH_R * sa))])
+            rows.append([bm.verts.new((x + side * dx, c.y + (ARCH_R + dr) * ca, zc + (ARCH_R + dr) * sa))
+                         for (dr, dx) in prof])
         for i in range(segs):
-            for j, mi in ((0, C), (1, K)):
+            for j, mi in enumerate(pm):
                 f = bm.faces.new((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]))
                 f.material_index = mi
     me = bpy.data.meshes.new("ArchMoldings")
@@ -1020,6 +1028,9 @@ def build_arch_moldings(mats, wheels, arch):
     bpy.context.collection.objects.link(ob)
     for k in order:
         me.materials.append(mats[k])
+    for p in me.polygons:
+        p.use_smooth = True
+    me.set_sharp_from_angle(angle=math.radians(60))
     return ob
 
 
@@ -1228,7 +1239,7 @@ def main():
     # game's body-paint shader (crisper, no extra geometry) — no mesh cuts
     log("door handles -> black: %d" % recolour(body, mats, lambda m, c: m == "Chrome" and abs(c.x) > 0.85
                                                 and 0.92 < c.z < 1.18 and -1.6 < c.y < 0.7, "Black"))
-    nf = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y > 2.0 and c.z < 0.75)
+    nf = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y > 1.95 and c.z < 0.76)
     nr = delete_faces(body, lambda m, c: m in ("Black", "Chrome") and c.y < -2.42 and c.z < 0.73)
     log("removed source bumpers: front %d rear %d faces" % (nf, nr))
     fy, hw = front_face_y(body)
@@ -1243,7 +1254,7 @@ def main():
     bumpers = build_bumpers(mats)
     moldings = build_arch_moldings(mats, wheels, body)
     glass = build_windshield(mats)
-    body = join([body, fascia, wells, fuel, roof, bumpers, glass, moldings], "Body")
+    body = join([body, fascia, wells, fuel, roof, bumpers, glass], "Body")
     for p in body.data.polygons:
         p.use_smooth = True
     body.data.set_sharp_from_angle(angle=math.radians(35))
@@ -1252,14 +1263,14 @@ def main():
     interior, col_top = build_interior(mats, cowl_y, 1.20, front_y)
     sw = build_steering_wheel(mats, col_top)
     wheel = build_wheel(mats)
-    total = tri_count(body) + tri_count(interior) + tri_count(sw) + 4 * tri_count(wheel)
+    total = tri_count(body) + tri_count(interior) + tri_count(sw) + tri_count(moldings) + 4 * tri_count(wheel)
     log(f"TRIANGLES body {tri_count(body)} interior {tri_count(interior)} steering {tri_count(sw)} "
         f"wheel {tri_count(wheel)} x4 => TOTAL {total}")
     log("wheel centres:", [tuple(round(v, 3) for v in w[0]) for w in wheels])
     os.makedirs(out, exist_ok=True)
     # body glb: Body + Interior + SteeringWheel (separate node so it can turn)
     bpy.ops.object.select_all(action="DESELECT")
-    for o in (body, interior, sw):
+    for o in (body, interior, sw, moldings):
         o.select_set(True)
     bpy.ops.export_scene.gltf(filepath=os.path.join(out, "tahoe_body.glb"), export_format="GLB",
                               use_selection=True, export_apply=True, export_yup=True)
