@@ -93,5 +93,22 @@ func _process(dt: float) -> void:
 				t = 0
 		8:
 			if t > 1.5:
-				_shot("10_orbit"); step += 1
+				_shot("10_orbit"); step += 1; t = 0
+				main.car.in_throttle = 0.0
+				main.car.in_brake = 1.0
+				var cam := Camera3D.new()
+				cam.name = "TireCam"
+				main.car.add_child(cam)
+				cam.position = Vector3(-2.3, 0.55, -2.6)
+				cam.fov = 40
+				cam.current = true
+		9:
+			var cam: Camera3D = main.car.get_node("TireCam")
+			cam.look_at(main.car.to_global(Vector3(-0.8, 0.35, -1.5)))
+			if t > 2.5 and not has_meta("tire_ok"):
+				set_meta("tire_ok", true)
+				_shot("11a_tire_inflated")
+				main.car.wheels[0].tire.puncture()
+			if t > 6.5:
+				_shot("11b_tire_flat")
 				get_tree().quit()

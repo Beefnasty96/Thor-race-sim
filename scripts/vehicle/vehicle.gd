@@ -10,6 +10,7 @@ extends RigidBody3D
 ## applied to the rigid body once.
 
 const SUBSTEPS := 6
+const PINCH_DEFL := 0.20           # m of raw sidewall squash (~55 kN at 35 psi) that cuts the tyre on the rim
 const AIR_DENSITY := 1.225
 
 signal engine_damaged(health: float)
@@ -35,6 +36,7 @@ class Wheel:
 	var tire := Tire.new()
 	# state
 	var compression := 0.0
+	var tire_defl := 0.0         # m the tyre is squashed at the contact patch
 	var comp_vel := 0.0
 	var contact := false
 	var hit_point := Vector3.ZERO
@@ -251,7 +253,7 @@ func _physics_process(dt: float) -> void:
 			w.comp_vel = (w.compression - prev) / dt
 			continue
 		var dist: float = (hit["position"] - a).dot(-up)    # anchor → ground along -up
-		var c := w.radius + w.travel - dist
+		var c := (w.radius - w.tire_defl) + w.travel - dist    # squashed tyre: effective radius
 		w.contact = c > 0.0
 		w.compression = clampf(c, 0.0, w.travel + 0.06)
 		w.comp_vel = (w.compression - prev) / dt
@@ -267,6 +269,7 @@ func _physics_process(dt: float) -> void:
 		var w := wheels[i]
 		if not w.contact:
 			w.load = 0.0
+			w.tire_defl = move_toward(w.tire_defl, 0.0, dt * 0.5)
 			continue
 		var cmp := minf(w.compression, w.travel)
 		var fs := w.k * (cmp + w.spring_preload)
@@ -283,6 +286,11 @@ func _physics_process(dt: float) -> void:
 		else:
 			farb = arb_r if i == 2 else -arb_r
 		w.load = maxf(0.0, fs + fd + fb + farb)
+		# tyre squash follows the load (low-passed: the tyre is in series with the spring)
+		w.tire_defl += (w.tire.deflection_for(w.load) - w.tire_defl) * minf(1.0, dt * 30.0)
+		# a hard hit that slams the sidewall into the rim pinches the tyre flat
+		if not w.tire.blown and w.tire.raw_deflection(w.load) > PINCH_DEFL and w.comp_vel > 2.5:
+			w.tire.puncture()
 		# suspension force along body up at the wheel's position
 		var wp := xf * Vector3(w.anchor.x, w.anchor.y - w.travel + w.compression, w.anchor.z)
 		apply_force(up * w.load, wp - global_position)
@@ -583,6 +591,7 @@ func reset_to(xform: Transform3D) -> void:
 		w.omega = 0.0
 		w.tire.defl_x = 0.0
 		w.tire.defl_y = 0.0
+		w.tire_defl = 0.0
 	if trans.gear <= 0:
 		trans.gear = 1
 		trans.target_gear = 1

@@ -15,6 +15,8 @@ var log_t := 0.0
 var data := {}
 var queue := ["drag", "skidpad", "hill_2h", "hill_4l", "whoops", "done"]
 var only := OS.get_cmdline_user_args()
+var max_raw := 0.0
+var max_defl := 0.0
 
 func _initialize() -> void:
 	def = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1996.json"))
@@ -88,7 +90,14 @@ func _next() -> void:
 
 func _process(dt: float) -> bool:
 	if phase == "done":
+		var flats := []
+		for w in car.wheels:
+			if w.tire.blown: flats.append(w.name)
+		print("tyre squash: max %.1f cm, worst load would squash %.1f cm (pinch at %.1f cm), flats: %s" % [max_defl * 100.0, max_raw * 100.0, Vehicle.PINCH_DEFL * 100.0, str(flats)])
 		return true
+	for w in car.wheels:
+		max_raw = maxf(max_raw, w.tire.raw_deflection(w.load))
+		max_defl = maxf(max_defl, w.tire_defl)
 	t += dt
 	rig.update(dt)
 	if t < 0.02:

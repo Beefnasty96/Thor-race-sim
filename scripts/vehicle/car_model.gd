@@ -24,12 +24,17 @@ var _steer_base := Transform3D.IDENTITY
 var _speedo: Node3D
 var _tach: Node3D
 var _small: Dictionary = {}          # fuel / volts / oil / temp needles
+var _tire_mats: Array[ShaderMaterial] = []
+var _tire_meshes: Array[MeshInstance3D] = []
+const TIRE_SHADER := preload("res://assets/shaders/tire_squash.gdshader")
 
 func build(dir: String, paint: Dictionary) -> void:
 	for c in get_children():
 		c.queue_free()
 	wheel_nodes.clear()
 	_tail_mats.clear()
+	_tire_mats.clear()
+	_tire_meshes.clear()
 	if FileAccess.file_exists(dir + "/model_info.json"):
 		info = JSON.parse_string(FileAccess.get_file_as_string(dir + "/model_info.json"))
 		var e: Array = info.get("driver_eye", [-0.38, 1.46, 0.38])
@@ -51,6 +56,7 @@ func build(dir: String, paint: Dictionary) -> void:
 		wn.add_child(inst)
 		add_child(wn)
 		wheel_nodes.append(wn)
+		_setup_tire(inst)
 	_build_gauges()
 	set_paint(paint)
 
@@ -90,6 +96,35 @@ func _prepare_materials(root: Node) -> void:
 				g.roughness = 0.04
 				g.cull_mode = BaseMaterial3D.CULL_DISABLED
 				m.set_surface_override_material(s, g)
+
+## Swap the tyre surface for the squash shader (one material per wheel so each
+## can deform on its own).
+func _setup_tire(root: Node) -> void:
+	for mi in root.find_children("*", "MeshInstance3D", true, false):
+		var m := mi as MeshInstance3D
+		for s in m.mesh.get_surface_count():
+			var mat := m.mesh.surface_get_material(s) as StandardMaterial3D
+			if mat and mat.resource_name == "Tire":
+				var sm := ShaderMaterial.new()
+				sm.shader = TIRE_SHADER
+				sm.set_shader_parameter("albedo", mat.albedo_color)
+				sm.set_shader_parameter("roughness", mat.roughness)
+				m.set_surface_override_material(s, sm)
+				m.extra_cull_margin = 0.2
+				_tire_mats.append(sm)
+				_tire_meshes.append(m)
+				return
+
+func _update_tires() -> void:
+	var n := mini(_tire_mats.size(), car.wheels.size())
+	for i in n:
+		var w = car.wheels[i]
+		var mi := _tire_meshes[i]
+		var down_w: Vector3 = -w.hit_normal if w.contact else -car.global_basis.y
+		var down_l := (mi.global_basis.inverse() * down_w).normalized()
+		var sm := _tire_mats[i]
+		sm.set_shader_parameter("down_dir", down_l)
+		sm.set_shader_parameter("squash", w.tire_defl if w.contact else 0.0)
 
 func set_paint(paint: Dictionary) -> void:
 	var c: Array = paint.get("color", [0.2, 0.25, 0.45])
@@ -201,6 +236,7 @@ func _process(_dt: float) -> void:
 	_set_small("volts", 0.55 if rpm_now > 400.0 else 0.4)                  # ~14 V running, ~12 V off
 	_set_small("oil", clampf(0.25 + rpm_now / 4000.0, 0.0, 0.9) if rpm_now > 300.0 else 0.0)
 	_set_small("temp", inverse_lerp(40.0, 130.0, car.engine.coolant_c))
+	_update_tires()
 	var brake := car.in_brake > 0.05
 	for t in _tail_mats:
 		t.emission_energy_multiplier = 2.5 if brake else 0.35

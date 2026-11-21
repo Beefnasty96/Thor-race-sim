@@ -37,6 +37,7 @@ var health := 1.0                    # permanent damage from overheating (bliste
 var defl_x := 0.0                    # contact patch deflection (m)
 var defl_y := 0.0
 var blown := false
+var air := 1.0                       # fraction of the cold air charge still inside
 
 # ---------- outputs (for telemetry) ----------
 var fx := 0.0
@@ -199,7 +200,9 @@ func _thermal(p_slide: float, p_roll: float, lat_force: float, speed: float,
 	var q_carc_out := (4.0 + 0.9 * speed) * (t_carcass - AMBIENT)
 	t_carcass += (q_carc_in + q_from_zones - q_carc_out) / C_CARCASS * dt
 	# inflation gas follows carcass temperature
-	psi = (cold_psi + 14.7) * (t_carcass + 273.15) / (AMBIENT + 273.15) - 14.7
+	if blown:                        # air escapes in a second or two
+		air = move_toward(air, 14.7 / (cold_psi + 14.7), dt * 0.8)
+	psi = maxf(0.0, (cold_psi + 14.7) * air * (t_carcass + 273.15) / (AMBIENT + 273.15) - 14.7)
 	# overheating permanently damages the tread surface
 	var hottest := maxf(t_zone[0], maxf(t_zone[1], t_zone[2]))
 	if hottest > 125.0:
@@ -214,3 +217,24 @@ func _wear(p_slide: float, dt: float) -> void:
 		tread_mm[i] = maxf(0.0, tread_mm[i] - rate * p_slide / 3.0 * dt)
 	if avg_tread() <= 0.05 and not blown:
 		blown = true
+
+# ---------- vertical compliance (tyre squash) ----------
+## Radial stiffness of an LT245/75R16: carcass ~45 kN/m plus ~6.6 kN/m per psi
+## (about 275 kN/m at 35 psi -> ~2 cm static squash under a 5 kN corner).
+func vertical_stiffness() -> float:
+	return 45000.0 + 6600.0 * psi
+
+## Raw (unclamped) deflection the load asks for.
+func raw_deflection(fz: float) -> float:
+	return maxf(fz, 0.0) / vertical_stiffness()
+
+## Deflection after the sidewall bottoms out on the rim (flat tyre ~8 cm).
+func deflection_for(fz: float) -> float:
+	var d := raw_deflection(fz)
+	if d > 0.075:
+		d = 0.075 + (d - 0.075) * 0.2
+	return minf(d, 0.11)
+
+## Puncture / pinch flat: the tyre deflates over the next second or so.
+func puncture() -> void:
+	blown = true

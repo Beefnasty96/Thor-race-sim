@@ -444,7 +444,7 @@ def build_interior(mats, cowl_y, belt_z, front_y):
     add_box(bm, (1.55, 0.14, 0.58), (0, back_y - 0.94, 1.18), I)
     # headliner under the roof skin (hides the inside of the roof and old police console)
     H = order.index("Headliner")
-    add_box(bm, (1.62, cowl_y - 0.95 - (-2.20), 0.02), (0, (cowl_y - 0.95 + -2.20) / 2, 1.73), H)
+    add_box(bm, (1.40, cowl_y - 0.95 - (-2.20), 0.02), (0, (cowl_y - 0.95 + -2.20) / 2, 1.715), H)   # stays inside the roof edges
     # sun visors
     for x in (-0.40, 0.40):
         add_box(bm, (0.40, 0.17, 0.02), (x, cowl_y - 1.02, 1.715), H, Matrix.Rotation(math.radians(10), 3, "X"))
@@ -574,38 +574,99 @@ def build_fuel_door(mats):
 
 
 def build_wheel_wells(mats, wheels):
-    """Black inner-fender liners: an arched shell over each wheel plus an inner
-    wall, so you don't see through the wheel openings into empty space."""
+    """Black inner-fender wells that close the wheel openings completely:
+    arched roof over the tyre, inner wall down to the bottom of the body,
+    front and rear walls, plus a flat black underbody between the wells so
+    you can't see through the truck from any low angle."""
     order = list(mats.keys())
     K = order.index("Black")
     bm = bmesh.new()
-    segs = 14
+    segs = 18
+    z_bot = 0.40                          # bottom edge of the body / rockers
+    def quad(a, b, c, d):
+        f = bm.faces.new([bm.verts.new(v) for v in (a, b, c, d)])
+        f.material_index = K
+    ys = []
     for (c, dia) in wheels:
         side = 1.0 if c.x > 0 else -1.0
-        r = 0.49
-        zc = c.z + 0.02
-        x_in, x_out = side * 0.58, side * 0.955
-        a0, a1 = math.radians(-12), math.radians(192)
-        prev = None
-        arc = []
+        front = c.y > 0
+        r = 0.58                          # body arch openings reach ~0.57 m from the hub
+        zc = c.z + 0.03
+        # outer edge just inside the fender skin (front ~0.92, rear ~0.966)
+        x_in, x_out = side * (0.50 if front else 0.56), side * (0.905 if front else 0.95)
+        a0 = math.asin(max(-1.0, min(1.0, (z_bot - zc) / r)))
+        a1 = math.pi - a0
+        arc_in, arc_out = [], []
         for i in range(segs + 1):
             a = a0 + (a1 - a0) * i / segs
             y = c.y + r * math.cos(a)
             z = zc + r * math.sin(a)
-            pair = (bm.verts.new((x_in, y, z)), bm.verts.new((x_out, y, z)))
-            arc.append(pair[0])
-            if prev:
-                f = bm.faces.new((prev[0], prev[1], pair[1], pair[0]))
-                f.material_index = K
-            prev = pair
-        # inner wall: arc closed along the bottom chord
-        f = bm.faces.new(arc)
+            arc_in.append(bm.verts.new((x_in, y, z)))
+            arc_out.append(bm.verts.new((x_out, y, z)))
+        for i in range(segs):
+            f = bm.faces.new((arc_in[i], arc_out[i], arc_out[i + 1], arc_in[i + 1]))
+            f.material_index = K
+        f = bm.faces.new(arc_in)          # inner wall closed along the bottom
         f.material_index = K
+        ys.append((c.y, r))
+    # underbody: centre strip full length plus between-axle sides
+    yf = max(y for y, _ in ys) + 0.55
+    yr = min(y for y, _ in ys) - 0.55
+    quad((-0.56, yr, 0.42), (-0.56, yf, 0.42), (0.56, yf, 0.42), (0.56, yr, 0.42))
+    fy = max(y for y, _ in ys) - 0.58
+    ry = min(y for y, _ in ys) + 0.58
+    for sx in (-1, 1):
+        quad((sx * 0.56, ry, 0.40), (sx * 0.56, fy, 0.40), (sx * 0.96, fy, 0.40), (sx * 0.96, ry, 0.40))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bmesh.ops.triangulate(bm, faces=bm.faces)
     me = bpy.data.meshes.new("Wells")
     bm.to_mesh(me)
     bm.free()
     ob = bpy.data.objects.new("Wells", me)
+    bpy.context.collection.objects.link(ob)
+    for k in order:
+        me.materials.append(mats[k])
+    return ob
+
+
+def build_roof_patch(mats):
+    """Fill the hole left where the police overhead console/light-bar mount was
+    cut out (over the front seats), following the roof crown."""
+    order = list(mats.keys())
+    P, H = order.index("Paint"), order.index("Headliner")
+    bm = bmesh.new()
+    xs = [-0.66 + 1.32 * i / 6 for i in range(7)]
+    y0, y1 = -0.46, 0.34
+    crown = lambda x: 1.812 - 0.083 * x * x
+    top = [(bm.verts.new((x, y0, crown(x) + 0.004)), bm.verts.new((x, y1, crown(x) + 0.004))) for x in xs]
+    bot = [(bm.verts.new((x, y0, crown(x) - 0.03)), bm.verts.new((x, y1, crown(x) - 0.03))) for x in xs]
+    for i in range(6):
+        f = bm.faces.new((top[i][0], top[i + 1][0], top[i + 1][1], top[i][1]))   # faces up
+        f.material_index = P
+        f = bm.faces.new((bot[i][0], bot[i][1], bot[i + 1][1], bot[i + 1][0]))   # faces down (headliner)
+        f.material_index = H
+    # roof side edges: the source roof skin stops ~0.66 m out but the side glass
+    # tops sit at ~0.80 m, leaving a strip where the headliner showed through
+    for sx in (-1, 1):
+        ys_ = [-2.22 + 1.80 * i / 6 for i in range(7)]          # y -2.22 .. -0.42
+        inner = [bm.verts.new((sx * 0.58, y, crown(0.58) + 0.004)) for y in ys_]
+        outer = [bm.verts.new((sx * 0.81, y, 1.705)) for y in ys_]
+        inner_b = [bm.verts.new((sx * 0.58, y, crown(0.58) - 0.03)) for y in ys_]
+        outer_b = [bm.verts.new((sx * 0.80, y, 1.69)) for y in ys_]
+        for i in range(6):
+            f = bm.faces.new((inner[i], outer[i], outer[i + 1], inner[i + 1]))
+            f.material_index = P
+            f = bm.faces.new((inner_b[i], inner_b[i + 1], outer_b[i + 1], outer_b[i]))
+            f.material_index = H
+    bm.normal_update()
+    for f in bm.faces:
+        want = 1 if f.material_index == P else -1
+        if f.normal.z * want < 0:
+            f.normal_flip()
+    me = bpy.data.meshes.new("RoofPatch")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("RoofPatch", me)
     bpy.context.collection.objects.link(ob)
     for k in order:
         me.materials.append(mats[k])
@@ -675,8 +736,8 @@ def build_wheel(mats):
     six lug nuts."""
     bm = bmesh.new()
     segs = 18
-    lathe(bm, [(0.205, -0.11), (0.30, -0.126), (0.36, -0.118), (0.381, -0.10), (0.387, -0.07),
-               (0.387, 0.07), (0.381, 0.10), (0.36, 0.118), (0.30, 0.126), (0.205, 0.11)], segs, 0)
+    lathe(bm, [(0.205, -0.11), (0.33, -0.126), (0.378, -0.106), (0.387, -0.07),
+               (0.387, 0.07), (0.378, 0.106), (0.33, 0.126), (0.205, 0.11)], 24, 0)
     lathe(bm, [(0.203, -0.05), (0.203, 0.082), (0.210, 0.099), (0.192, 0.096)], segs, 1)   # rim lip
     lathe(bm, [(0.192, 0.088), (0.150, 0.094), (0.085, 0.097), (0.072, 0.104)], segs, 1)   # flat face
     lathe(bm, [(0.072, 0.104), (0.055, 0.112), (0.0, 0.114)], 12, 1)                      # centre cap
@@ -771,7 +832,8 @@ def main():
     fascia = build_fascia(mats, fy + 0.004, hw)
     wells = build_wheel_wells(mats, wheels)
     fuel = build_fuel_door(mats)
-    body = join([body, fascia, wells, fuel], "Body")
+    roof = build_roof_patch(mats)
+    body = join([body, fascia, wells, fuel, roof], "Body")
     for p in body.data.polygons:
         p.use_smooth = True
     body.data.set_sharp_from_angle(angle=math.radians(35))
