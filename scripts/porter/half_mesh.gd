@@ -338,6 +338,149 @@ func loop_cut(a: int, b: int, t: float = 0.5) -> Array:
 		regions.append(regions[fi])
 	return mids.values()
 
+## Add a point on edge (a, b) at fraction t from a. Every face using the
+## edge gets the new point in its outline, so the body stays connected.
+func insert_point_on_edge(a: int, b: int, t: float) -> int:
+	_fix_regions()
+	var p := verts[a].lerp(verts[b], clampf(t, 0.05, 0.95))
+	if is_center(a) and is_center(b):
+		p.x = 0.0
+	var id := verts.size()
+	verts.append(p)
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var u := f[k]
+			var v := f[(k + 1) % f.size()]
+			if (u == a and v == b) or (u == b and v == a):
+				f.insert(k + 1, id)
+				faces[fi] = f
+				break
+	return id
+
+## Add a free point (snapped to the left half; near the middle it snaps onto
+## the centerline).
+func add_point(p: Vector3) -> int:
+	p.x = -absf(p.x)
+	if p.x > -0.01:
+		p.x = 0.0
+	verts.append(p)
+	return verts.size() - 1
+
+## Connect the selected points.
+##   2 points on one face -> split that face with a new edge
+##   3+ points            -> a new face through them, facing `toward`
+## Returns "" on success or a message for the user.
+func connect_points(ids: Array, toward: Vector3) -> String:
+	_fix_regions()
+	if ids.size() < 2:
+		return "Select 2 points on the same face to split it, or 3 or more points to make a new face."
+	if ids.size() == 2:
+		var a: int = ids[0]
+		var b: int = ids[1]
+		for fi in faces.size():
+			var f: PackedInt32Array = faces[fi]
+			var i := f.find(a)
+			var j := f.find(b)
+			if i < 0 or j < 0:
+				continue
+			if absi(i - j) == 1 or absi(i - j) == f.size() - 1:
+				return "Those points are already connected by an edge."
+			var lo := mini(i, j)
+			var hi := maxi(i, j)
+			var f1 := PackedInt32Array()
+			for k in range(lo, hi + 1):
+				f1.append(f[k])
+			var f2 := PackedInt32Array()
+			for k in range(hi, f.size()):
+				f2.append(f[k])
+			for k in range(0, lo + 1):
+				f2.append(f[k])
+			faces[fi] = f1
+			faces.append(f2)
+			regions.append(regions[fi])
+			return ""
+		return "Those 2 points aren't on the same face. Select 3 or more points to make a new face instead."
+	# new face: order the points around their center in their best-fit plane
+	var c := Vector3.ZERO
+	for i in ids:
+		c += verts[i]
+	c /= ids.size()
+	var n := Vector3.ZERO
+	for k in ids.size():
+		var p0 := verts[ids[k]] - c
+		var p1 := verts[ids[(k + 1) % ids.size()]] - c
+		n += p0.cross(p1)
+	if n.length() < 1e-9:
+		n = (toward - c)
+	n = n.normalized()
+	var u := (verts[ids[0]] - c)
+	u = (u - n * u.dot(n)).normalized()
+	if u.length() < 0.5:
+		u = n.cross(Vector3.UP).normalized()
+	var w := n.cross(u)
+	var ordered := ids.duplicate()
+	ordered.sort_custom(func(i1, i2):
+		var d1 := verts[i1] - c
+		var d2 := verts[i2] - c
+		return atan2(d1.dot(w), d1.dot(u)) < atan2(d2.dot(w), d2.dot(u)))
+	var face := PackedInt32Array(ordered)
+	if face_normal(face).dot(toward - c) < 0.0:
+		face.reverse()
+	for f in faces:
+		var same: bool = f.size() == face.size()
+		if same:
+			for i in face:
+				if not f.has(i):
+					same = false
+					break
+		if same:
+			return "There's already a face through those points."
+	faces.append(face)
+	regions.append("paint")
+	return ""
+
+## Weld the points into one at their average position (on the centerline if
+## any of them is). Faces that collapse are removed.
+func merge_points(ids: Array) -> int:
+	if ids.size() < 2:
+		return -1
+	_fix_regions()
+	var keep: int = ids[0]
+	var c := Vector3.ZERO
+	var center := false
+	for i in ids:
+		c += verts[i]
+		if is_center(i):
+			center = true
+	c /= ids.size()
+	if center:
+		c.x = 0.0
+	verts[keep] = c
+	var gone := {}
+	for i in ids:
+		if i != keep:
+			gone[i] = true
+	var nf := []
+	var nr := []
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		var out := PackedInt32Array()
+		for i in f:
+			var j: int = keep if gone.has(i) else i
+			if out.is_empty() or out[out.size() - 1] != j:
+				out.append(j)
+		if out.size() > 1 and out[0] == out[out.size() - 1]:
+			out.remove_at(out.size() - 1)
+		if out.size() >= 3:
+			nf.append(out)
+			nr.append(regions[fi])
+	faces = nf
+	regions = nr
+	# drop the welded-away points (and any now unused), keep ids stable otherwise
+	remove_unused_verts()
+	return -1
+
 func delete_faces(face_ids: Array) -> void:
 	var drop := {}
 	for fi in face_ids:

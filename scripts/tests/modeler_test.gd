@@ -239,5 +239,85 @@ func _initialize() -> void:
 		DirAccess.remove_absolute(pp.dir() + f)
 	DirAccess.remove_absolute(pp.dir())
 
+	# add / connect / merge
+	var g := HalfMesh.from_template("box", d)
+	var side_e := Vector2i(-1, -1)
+	var cen_e := Vector2i(-1, -1)
+	for edge in g.edges():
+		var both_c := g.is_center(edge.x) and g.is_center(edge.y)
+		if both_c and cen_e.x < 0 and absf(g.verts[edge.x].z - g.verts[edge.y].z) > 1.0:
+			cen_e = edge
+		elif not both_c and side_e.x < 0 and absf(g.verts[edge.x].z - g.verts[edge.y].z) > 1.0 and not g.is_center(edge.x) and not g.is_center(edge.y):
+			side_e = edge
+	var nv0 := g.verts.size()
+	var np := g.insert_point_on_edge(side_e.x, side_e.y, 0.5)
+	_check(g.verts.size() == nv0 + 1, "add point on an edge adds one point")
+	_check(_closed_and_consistent(g), "body stays closed after adding a point on an edge")
+	var users := 0
+	for f in g.faces:
+		if f.has(np):
+			users += 1
+	_check(users == 2, "both faces along the edge include the new point")
+	var cp := g.insert_point_on_edge(cen_e.x, cen_e.y, 0.3)
+	_check(g.is_center(cp), "a point added on a centerline edge stays on the centerline")
+	_check(_closed_and_consistent(g), "body stays closed after adding a centerline point")
+	# connect two points of one face: split it
+	var fi_split := -1
+	var pair := []
+	for fi2 in g.faces.size():
+		var f2: PackedInt32Array = g.faces[fi2]
+		if f2.size() >= 4:
+			fi_split = fi2
+			pair = [f2[0], f2[2]]
+			break
+	var nf0 := g.faces.size()
+	_check(g.connect_points(pair, Vector3(-10, 1, 0)) == "", "connect 2 points on a face splits it")
+	_check(g.faces.size() == nf0 + 1 and g.regions.size() == g.faces.size(), "split adds one face (region kept per face)")
+	_check(_closed_and_consistent(g), "body stays closed after a split")
+	_check(g.connect_points([pair[0], pair[1]], Vector3.ZERO) != "", "connecting already-connected points is refused")
+	# free points + new face, facing the camera
+	var a1 := g.add_point(Vector3(-1.5, 1.0, 0.0))
+	var a2 := g.add_point(Vector3(-1.5, 1.4, 0.0))
+	var a3 := g.add_point(Vector3(-1.5, 1.4, 0.5))
+	var a4 := g.add_point(Vector3(1.5, 1.0, 0.5))     # typed on the right: snapped to the left half
+	_check(g.verts[a4].x < 0.0, "free point on the right side is mirrored onto the left half")
+	_check(g.is_center(g.add_point(Vector3(0.004, 0.5, 0.0))), "free point near the middle snaps onto the centerline")
+	var nf1 := g.faces.size()
+	_check(g.connect_points([a1, a3, a2, a4], Vector3(-10, 1.2, 0.25)) == "", "connect 4 free points makes a face")
+	var nface: PackedInt32Array = g.faces[g.faces.size() - 1]
+	_check(g.faces.size() == nf1 + 1 and nface.size() == 4, "new face has the 4 points")
+	_check(g.face_normal(nface).x < -0.9, "new face turns toward the camera")
+	_check(g.connect_points([a1, a2, a3, a4], Vector3(-10, 1.2, 0.25)) != "", "the same face can't be made twice")
+	# merge: weld the two ends of an edge
+	var mg := HalfMesh.from_template("suv", d)
+	var me := Vector2i(-1, -1)
+	for edge in mg.edges():
+		if not mg.is_center(edge.x) and not mg.is_center(edge.y):
+			me = edge
+			break
+	var nvm := mg.verts.size()
+	mg.merge_points([me.x, me.y])
+	_check(mg.verts.size() == nvm - 1, "merge welds 2 points into 1")
+	var ok_faces := true
+	for f in mg.faces:
+		if f.size() < 3:
+			ok_faces = false
+	_check(ok_faces and mg.regions.size() == mg.faces.size(), "merge removes collapsed faces")
+	_check(_closed_and_consistent(mg), "body stays closed after a merge")
+	var mc := HalfMesh.from_template("suv", d)
+	var c_i := -1
+	var s_i := -1
+	for i in mc.verts.size():
+		if mc.is_center(i) and c_i < 0:
+			c_i = i
+		elif not mc.is_center(i) and s_i < 0:
+			s_i = i
+	mc.merge_points([s_i, c_i])
+	var any_center := false
+	for i in mc.verts.size():
+		if mc.is_center(i):
+			any_center = true
+	_check(any_center, "merging with a centerline point keeps it on the centerline")
+
 	print("\n%s (%d failed)" % ["ALL PASSED" if fails == 0 else "FAILURES", fails])
 	quit(1 if fails else 0)

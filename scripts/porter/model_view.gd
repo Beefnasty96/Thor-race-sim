@@ -11,6 +11,7 @@ signal selection_changed
 signal mesh_edited(final: bool)      # final = edit finished (save / undo point)
 signal edge_tapped(a: int, b: int)
 signal face_tapped(fi: int)
+signal add_point_tap(s: Vector2)
 
 enum Pick { POINTS, FACES }
 
@@ -21,7 +22,7 @@ var pick := Pick.POINTS
 var multi := false
 var xray := true
 var lock_axis := 0                    # 0 free, 1 horizontal only, 2 vertical only
-var tool := ""                        # "" | "loop_cut" | "paint"
+var tool := ""                        # "" | "loop_cut" | "paint" | "add_point"
 var paint_colors := {}                # region -> Color used for display (body paint etc.)
 var show_paint := false               # colour faces by region (Paint mode)
 var sel_verts := {}                   # id -> true
@@ -399,6 +400,43 @@ func _near_selection(s: Vector2) -> bool:
 				return true
 	return false
 
+## Nearest edge to a screen point within `radius` px: [a, b, t] (t along a->b),
+## or [] if none.
+func pick_edge_t(s: Vector2, radius: float = 34.0) -> Array:
+	var best := []
+	var best_d := radius
+	for e in mesh.edges():
+		var pa := mesh.verts[e.x]
+		var pb := mesh.verts[e.y]
+		if cam.is_position_behind(pa) or cam.is_position_behind(pb):
+			continue
+		var a := project_point(pa)
+		var b := project_point(pb)
+		var ab := b - a
+		var t := clampf((s - a).dot(ab) / maxf(ab.length_squared(), 1e-6), 0.0, 1.0)
+		var d := (a + ab * t).distance_to(s)
+		if d < best_d:
+			best_d = d
+			best = [e.x, e.y, t]
+	return best
+
+## World point under a screen position, at the depth of the nearest point of
+## the model (so a new point lands in the body's plane for this view).
+func screen_to_world_near(s: Vector2) -> Vector3:
+	var best := -1
+	var best_d := INF
+	for i in mesh.verts.size():
+		if cam.is_position_behind(mesh.verts[i]):
+			continue
+		var d := project_point(mesh.verts[i]).distance_to(s)
+		if d < best_d:
+			best_d = d
+			best = i
+	var depth := 10.0
+	if best >= 0:
+		depth = _depth(mesh.verts[best])
+	return cam.project_position(s, depth)
+
 func _pick_edge(s: Vector2) -> Vector2i:
 	var best := Vector2i(-1, -1)
 	var best_d := 48.0
@@ -455,6 +493,9 @@ func _begin() -> void:
 		"size": ortho_size, "dist": dist}
 
 func _on_tap(s: Vector2) -> void:
+	if tool == "add_point":
+		add_point_tap.emit(s)
+		return
 	if tool == "paint":
 		var c := _candidates_faces(s)
 		if not c.is_empty():
@@ -573,5 +614,7 @@ func _draw_overlay() -> void:
 				o.draw_circle(s, 6.5, C_VERT if not mesh.is_center(i) else Color(0.6, 1.0, 0.7))
 	if tool == "paint":
 		pass
+	elif tool == "add_point":
+		o.draw_string(get_theme_default_font(), Vector2(20, size.y - 24), "ADD POINT: tap an edge, or empty space for a free point", HORIZONTAL_ALIGNMENT_LEFT, -1, 26, C_SEL)
 	elif tool == "loop_cut":
 		o.draw_string(get_theme_default_font(), Vector2(20, size.y - 24), "LOOP CUT: tap an edge to cut across", HORIZONTAL_ALIGNMENT_LEFT, -1, 26, C_SEL)

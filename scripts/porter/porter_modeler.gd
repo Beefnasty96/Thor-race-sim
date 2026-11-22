@@ -28,6 +28,8 @@ var src_btns := {}
 var src_row: Control
 var fill := false
 var xray_btn: Button
+var add_btn: Button
+var _multi_before := false
 
 func setup(p: PorterProject) -> void:
 	project = p
@@ -100,6 +102,7 @@ func _build() -> void:
 		_refresh_info())
 	view.edge_tapped.connect(_on_edge_tapped)
 	view.face_tapped.connect(_on_face_painted)
+	view.add_point_tap.connect(_on_add_point_tap)
 	hint = UIKit.label("", 24, UIKit.WARN)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.set_anchors_preset(Control.PRESET_TOP_WIDE)
@@ -150,6 +153,12 @@ func _build_panel() -> Control:
 	r3.add_child(_grow(PorterUI.button("Loop cut", _start_loop_cut)))
 	r3.add_child(_grow(PorterUI.button("Delete", _delete)))
 	v.add_child(r3)
+	var r3b := HBoxContainer.new()
+	add_btn = _grow(PorterUI.toggle("Add point", false, func(on): _toggle_add_point(on)))
+	r3b.add_child(add_btn)
+	r3b.add_child(_grow(PorterUI.button("Connect", _connect)))
+	r3b.add_child(_grow(PorterUI.button("Merge", _merge)))
+	v.add_child(r3b)
 	var r4 := HBoxContainer.new()
 	r4.add_child(_grow(PorterUI.button("↶ Undo", func():
 		if mesh.undo(): _after_structural()
@@ -269,7 +278,86 @@ func _extrude() -> void:
 	_refresh_info()
 	_say("Extruded 5 cm. Drag the selected faces to push them further.")
 
+func _toggle_add_point(on: bool) -> void:
+	if on:
+		_set_pick(ModelView.Pick.POINTS, true)
+		view.tool = "add_point"
+		_multi_before = view.multi
+		view.multi = true
+		multi_btn.set_pressed_no_signal(true)
+		view.clear_selection()
+		_say("Tap an edge to add a point on it, or empty space for a free point. Tap an existing point to include it. New points stay selected, so tap Connect next.")
+	else:
+		if view.tool == "add_point":
+			view.tool = ""
+			_restore_multi()
+		_say("")
+	view.overlay.queue_redraw()
+
+func _restore_multi() -> void:
+	view.multi = _multi_before
+	multi_btn.set_pressed_no_signal(_multi_before)
+
+func _on_add_point_tap(s: Vector2) -> void:
+	# tapping right on an existing point selects it (to connect it with new ones)
+	var near := view._candidates_verts(s)
+	if not near.is_empty() and near[0][1] < 26.0:
+		var vid: int = near[0][0]
+		if view.sel_verts.has(vid):
+			view.sel_verts.erase(vid)
+		else:
+			view.sel_verts[vid] = true
+		view.selection_changed.emit()
+		view.overlay.queue_redraw()
+		return
+	mesh.push_undo()
+	var id := -1
+	var hit := view.pick_edge_t(s)
+	if not hit.is_empty():
+		id = mesh.insert_point_on_edge(hit[0], hit[1], hit[2])
+		_say("Point added on the edge. Add more, or tap Connect.")
+	else:
+		id = mesh.add_point(view.screen_to_world_near(s))
+		_say("Free point added at the depth of the nearest part of the model. Select 3 or more points and tap Connect to make a face.")
+	view.sel_verts[id] = true
+	view.rebuild_body()
+	view.selection_changed.emit()
+	_queue_save()
+	_refresh_info()
+
+func _connect() -> void:
+	var ids: Array = view.selected_vert_ids() if view.pick == ModelView.Pick.POINTS else []
+	if view.pick != ModelView.Pick.POINTS:
+		_say("Switch to Points and select the points to connect.")
+		return
+	mesh.push_undo()
+	var msg := mesh.connect_points(ids, view.cam.global_position)
+	if msg != "":
+		mesh.undo()
+		_say(msg)
+		return
+	_end_add_point()
+	_after_structural()
+	_say("Connected. A new face starts as body paint; repaint it in Paint." if ids.size() > 2 else "Connected: the face is split by a new edge.")
+
+func _merge() -> void:
+	if view.pick != ModelView.Pick.POINTS or view.sel_verts.size() < 2:
+		_say("Switch to Points and select 2 or more points to weld together.")
+		return
+	mesh.push_undo()
+	mesh.merge_points(view.sel_verts.keys())
+	_end_add_point()
+	_after_structural()
+	_say("Points welded into one.")
+
+func _end_add_point() -> void:
+	if view.tool == "add_point":
+		view.tool = ""
+		_restore_multi()
+	add_btn.set_pressed_no_signal(false)
+
 func _start_loop_cut() -> void:
+	_end_add_point()
 	view.tool = "loop_cut"
 	view.overlay.queue_redraw()
 	_say("Tap an edge: a new ring of points is added across it, all the way around.")
