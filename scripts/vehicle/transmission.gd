@@ -14,6 +14,7 @@ var stall_tr := 2.0
 var lockup_min_gear := 3
 var lockup_min_ms := 18.8
 var shift_time := 0.45
+var wot_upshift_mph := [42.0, 78.0, 300.0]   # full-throttle 1-2, 2-3, 3-4 on the base axle
 var manual := false
 
 # state: gear 1..4 forward, 0 neutral/park, -1 reverse
@@ -41,6 +42,8 @@ func setup(def: Dictionary, fd: float, manual_mode: bool) -> void:
 	lockup_min_gear = def["lockup_min_gear"]
 	lockup_min_ms = def["lockup_min_mph"] / 2.23694
 	shift_time = def["shift_time_s"]
+	if def.has("wot_upshift_mph"):
+		wot_upshift_mph = def["wot_upshift_mph"].duplicate()
 	manual = manual_mode
 
 func gear_ratio(g: int = -99) -> float:
@@ -107,7 +110,7 @@ func update_auto(speed_ms: float, throttle: float, engine_rpm: float, redline: f
 	# based on the factory 3.42 axle; scaled for other axles and range
 	var axle_scale := 3.42 / (final_drive * range_ratio)
 	var up_light := [13.0, 24.0, 38.0]
-	var up_full := [40.0, 70.0, 300.0]       # WOT holds 3rd to ~governed speed
+	var up_full: Array = wot_upshift_mph       # WOT holds 3rd to ~governed speed
 	var down_light := [8.0, 16.0, 28.0]
 	var down_full := [28.0, 52.0, 78.0]
 	if _shift_cooldown > 0.0:

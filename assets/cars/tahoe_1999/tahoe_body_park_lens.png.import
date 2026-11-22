@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfp6jub3eqxgw"
-path="res://.godot/imported/body_mask.png-92a1d8343c281e58cbada0fb402e51dd.ctex"
+uid="uid://bqftkm3dvdo0c"
+path="res://.godot/imported/tahoe_body_park_lens.png-7421c3a4345f77375051582969b416b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cars/tahoe_1996/body_mask.png"
-dest_files=["res://.godot/imported/body_mask.png-92a1d8343c281e58cbada0fb402e51dd.ctex"]
+source_file="res://assets/cars/tahoe_1999/tahoe_body_park_lens.png"
+dest_files=["res://.godot/imported/tahoe_body_park_lens.png-7421c3a4345f77375051582969b416b7.ctex"]
 
 [params]
 

@@ -6,7 +6,7 @@ const SAVE_PATH := "user://save.json"
 const CAR_DIR := "res://data/cars/"
 
 var cars: Dictionary = {}          # id -> definition dictionary
-var current_car_id := "chevrolet_tahoe_1996"
+var current_car_id := "chevrolet_tahoe_1999"
 
 ## Player-adjustable setup for the current car. Keys are read by VehicleConfig.
 var setup: Dictionary = {}
@@ -107,7 +107,11 @@ func load_game() -> void:
 		condition[k] = d["condition"][k]
 	for k in d.get("settings", {}):
 		settings[k] = d["settings"][k]
-	best_laps = d.get("best_laps", {})
+	best_laps = {}
+	var old_laps: Dictionary = d.get("best_laps", {})
+	for k in old_laps:
+		# the Tahoe became a 1999 model; carry over lap records saved as 1996
+		best_laps[String(k).replace("chevrolet_tahoe_1996", "chevrolet_tahoe_1999")] = old_laps[k]
 
 func service_engine() -> void:
 	condition["engine_health"] = 1.0

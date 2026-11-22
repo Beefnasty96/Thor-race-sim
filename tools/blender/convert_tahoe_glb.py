@@ -12,7 +12,7 @@ Steps
      band (cut at measured heights), chrome, glass, lamps, trim.
   5. Add a semi-accurate 1995-99 GMT400 interior (dash, cluster, centre stack,
      column, steering wheel as its own node, seats) and 16 in aluminium wheels.
-  6. Export assets/cars/tahoe_1996/tahoe_body.glb (+ steering wheel node) and
+  6. Export assets/cars/tahoe_1999/tahoe_body.glb (+ steering wheel node) and
      tahoe_wheel.glb.
 
 Run:  python tools/blender/convert_tahoe_glb.py -- SRC.glb OUT_DIR [--render PREFIX]

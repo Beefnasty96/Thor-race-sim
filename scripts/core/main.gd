@@ -170,7 +170,7 @@ func _spawn_car() -> void:
 	model = CarModel.new()
 	var paints: Array = def["paints"]
 	car.add_child(model)
-	model.build(def.get("model_dir", "res://assets/cars/tahoe_1996"),
+	model.build(def.get("model_dir", "res://assets/cars/tahoe_1999"),
 			paints[clampi(int(Game.setup.get("paint", 0)), 0, paints.size() - 1)])
 	model.car = car
 	for i in 4:
