@@ -24,7 +24,6 @@ const DIM_FIELDS := [
 	["length_m", "Length"], ["width_m", "Width"], ["height_m", "Height"],
 	["wheelbase_m", "Wheelbase"], ["front_overhang_m", "Front overhang"],
 	["track_front_m", "Front track"], ["track_rear_m", "Rear track"],
-	["tire_radius_m", "Tire radius"],
 ]
 
 func _ready() -> void:
@@ -130,9 +129,13 @@ func show_projects() -> void:
 	name_edit.placeholder_text = "Name, e.g. 1994 Mazda MX-5"
 	name_edit.custom_minimum_size = Vector2(0, PorterUI.BTN_H)
 	left.add_child(name_edit)
+	var find := PorterUI.button("Find a production car (year, make, model)", func():
+		show_finder(name_edit.text.strip_edges()))
+	find.add_theme_color_override("font_color", UIKit.GOOD)
+	left.add_child(find)
 	left.add_child(PorterUI.button("Start blank (enter dimensions yourself)", func():
 		var n := name_edit.text.strip_edges()
-		_open(PorterProject.create(n if n != "" else "New car"))))
+		show_tire_step(n if n != "" else "New car", {}, func(p: PorterProject): pass)))
 	left.add_child(UIKit.label("Or copy real dimensions from a car already in the game:", 22, UIKit.DIM))
 	for car_id in Game.cars:
 		var def: Dictionary = Game.cars[car_id]
@@ -141,10 +144,10 @@ func show_projects() -> void:
 			var label := "%d %s %s, %s" % [def["year"], def["make"], def["model"], b.get("label", body_key)]
 			left.add_child(PorterUI.button(label, func():
 				var n := name_edit.text.strip_edges()
-				var p := PorterProject.create(n if n != "" else label)
-				p.fill_from_car(def, body_key)
-				p.save()
-				_open(p)))
+				var draft := PorterProject.new()
+				draft.fill_from_car(def, body_key)
+				show_tire_step(n if n != "" else label, draft.tires,
+					func(p: PorterProject): p.fill_from_car(def, body_key))))
 
 	# right: existing projects
 	var right := VBoxContainer.new()
@@ -171,6 +174,70 @@ func show_projects() -> void:
 		b2.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		list.add_child(b2)
+	_set_screen(m)
+
+## Tire step for new projects that don't come from the finder. `fill` sets up
+## the new project's dimensions before the tires are applied.
+func show_tire_step(project_name: String, prefill: Dictionary, fill: Callable) -> void:
+	var m := MarginContainer.new()
+	for side in ["left", "right", "top", "bottom"]:
+		m.add_theme_constant_override("margin_" + side, 48)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 18)
+	m.add_child(v)
+	var top := HBoxContainer.new()
+	top.add_child(PorterUI.button("◀ Back", show_projects, 160))
+	var t := UIKit.label("NEW CAR: " + project_name, 34, Color.WHITE)
+	t.clip_text = true
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(t)
+	v.add_child(top)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 40)
+	v.add_child(row)
+	var form := TireForm.new()
+	form.custom_minimum_size = Vector2(900, 0)
+	row.add_child(form)
+	var side_v := VBoxContainer.new()
+	side_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(side_v)
+	var tip := UIKit.label("The tire size sets the wheel size in the photos and the model. Leave Rear empty if it matches the front. Pressures are the cold PSI from the door sticker.", 22, UIKit.DIM)
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	side_v.add_child(tip)
+	var go := PorterUI.button("Create project ▶", func(): pass)
+	go.add_theme_color_override("font_color", UIKit.GOOD)
+	go.pressed.connect(func():
+		var tv := form.values()
+		var p := PorterProject.create(project_name)
+		fill.call(p)
+		var err := p.set_tires(tv[0], tv[1], tv[2], tv[3])
+		if err != "":
+			return
+		p.save()
+		_open(p))
+	side_v.add_child(go)
+	var refresh := func():
+		go.disabled = not form.is_valid()
+		go.text = "Create project ▶" if form.is_valid() else "Enter tire sizes and PSI"
+	form.changed.connect(refresh)
+	_set_screen(m)
+	form.set_values(prefill)
+	refresh.call()
+
+func show_finder(custom_name: String = "") -> void:
+	var m := MarginContainer.new()
+	for side in ["left", "right", "top", "bottom"]:
+		m.add_theme_constant_override("margin_" + side, 32)
+	var f := CarFinder.new()
+	m.add_child(f)
+	f.cancelled.connect(show_projects)
+	f.chosen.connect(func(r: Dictionary, tv: Array):
+		var label := "%d %s %s" % [r["year"], r["make"], VehicleDB.pretty(r["model"])]
+		var p := PorterProject.create(custom_name if custom_name != "" else label)
+		p.fill_from_db(r)
+		p.set_tires(tv[0], tv[1], tv[2], tv[3])
+		p.save()
+		_open(p))
 	_set_screen(m)
 
 func _open(p: PorterProject) -> void:
@@ -343,7 +410,26 @@ func _build_side_panel() -> Control:
 		row.add_child(u)
 		dim_edits[key] = [e, u]
 		v.add_child(row)
-	if project.source_car != "":
+	v.add_child(HSeparator.new())
+	var tf := TireForm.new()
+	v.add_child(tf)
+	tf.set_values(project.tires)
+	var apply_t := _grow(PorterUI.button("Apply tires", func():
+		var tv := tf.values()
+		var err := project.set_tires(tv[0], tv[1], tv[2], tv[3])
+		if err != "":
+			_say(err)
+			return
+		project.save()
+		canvas.queue_redraw()
+		if preview.visible:
+			preview.rebuild()
+		_say("Tires updated: %s front, %s rear." % [project.tires["front"], project.tires["rear"]])))
+	v.add_child(apply_t)
+	if project.source_db != "":
+		v.add_child(UIKit.label("Dimensions from the production car database: %s." % project.source_db, 20, UIKit.DIM))
+		v.get_child(v.get_child_count() - 1).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	elif project.source_car != "":
 		v.add_child(UIKit.label("Copied from the game's %s data. Front overhang is an estimate: check it against the side photo." % project.source_car, 20, UIKit.DIM))
 		v.get_child(v.get_child_count() - 1).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_refresh_dims()

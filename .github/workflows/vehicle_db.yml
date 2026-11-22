@@ -1,0 +1,67 @@
+name: Build vehicle dimension database
+
+on:
+  push:
+    branches: [vehicle-dimension-db]
+    paths: ["tools/vehicle_db/**", ".github/workflows/vehicle_db.yml"]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe (sample responses) or full (all years and makes)"
+        default: probe
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read mode
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then MODE=$(cat tools/vehicle_db/MODE); fi
+          echo "MODE=$MODE" >> $GITHUB_ENV
+          echo "SRC_RUN=${MODE#commit:}" >> $GITHUB_ENV
+      # "commit:<run id>": take the database built by that run and commit it here
+      - if: startsWith(env.MODE, 'commit:')
+        uses: actions/download-artifact@v4
+        with:
+          name: vehicle-db-full
+          run-id: ${{ env.SRC_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: dl
+      - if: startsWith(env.MODE, 'commit:')
+        name: Commit the database
+        run: |
+          mkdir -p data/vehicle_db
+          cp dl/vehicle_dimensions.json data/vehicle_db/vehicle_dimensions.json
+          echo done > tools/vehicle_db/MODE
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/vehicle_db/vehicle_dimensions.json tools/vehicle_db/MODE
+          git commit -m "Vehicle dimension database from run ${SRC_RUN} (Transport Canada CVS via NHTSA vPIC)"
+          git push
+      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' }}
+        name: Fetch Canadian Vehicle Specifications
+        run: |
+          if [ "$MODE" = "full" ]; then
+            python3 tools/vehicle_db/fetch_cvs.py full vehicle_dimensions.json
+          else
+            python3 tools/vehicle_db/fetch_cvs.py probe
+          fi
+      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: vehicle-db-${{ env.MODE }}
+          path: |
+            probe.json
+            vehicle_dimensions.json
+          if-no-files-found: error

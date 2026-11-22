@@ -80,6 +80,21 @@ The export preset *Car Porter* sets the `porter` feature tag, which switches
 the start scene to `scenes/porter.tscn` and the package to
 `com.racingsim.carporter`, so both apps install side by side.
 
+**Production car database**: *Find a production car* on the projects screen:
+pick year → make → model (with search) and the project starts with that
+car's real length, width, height, wheelbase, front/rear track and overhangs.
+Data: Transport Canada's Canadian Vehicle Specifications (model years 1971 on),
+fetched from NHTSA's vPIC API by `tools/vehicle_db/fetch_cvs.py` (GitHub
+workflow *Build vehicle dimension database*) into
+`data/vehicle_db/vehicle_dimensions.json`. Contains information licensed under
+the Open Government Licence – Canada.
+
+**Tires**: every new car asks for front and rear tire size (as on the door
+sticker or sidewall: P245/75R16, LT265/75R16, 245/40ZR18 97W, 31x10.50R15,
+7.75-15) and cold PSI. The size sets the wheel radius per axle (staggered
+setups supported) in the photo outline, the 3D check and the modeler; edit
+later under the dimensions panel (*Apply tires*).
+
 **v0.1: reference photos**
 - Start a project blank or with real dimensions copied from a car in the game.
 - Load side, front, rear and top photos (Android's photo picker).

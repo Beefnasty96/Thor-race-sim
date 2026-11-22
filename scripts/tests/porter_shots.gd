@@ -200,5 +200,40 @@ func _process(delta: float) -> void:
 			for f in DirAccess.get_files_at(p2.dir()):
 				DirAccess.remove_absolute(p2.dir() + f)
 			DirAccess.remove_absolute(p2.dir())
+			app.show_finder()
+		20:
+			var fd: CarFinder = app.screen.get_child(0)
+			fd._pick_year(1999)
+			fd._pick_make("Chevrolet")
+			fd.search.text = "tahoe 4dr"
+			fd._fill_models()
+		21:
+			var fd2: CarFinder = app.screen.get_child(0)
+			var r: Dictionary = VehicleDB.models(1999, "Chevrolet", "tahoe k1500 4dr")[0]
+			fd2._pick_model(r)
+			fd2.tire_form.front_size.text = "P245/75R16"
+			fd2.tire_form.front_psi.text = "35"
+			fd2.tire_form._update()
+		22:
+			_shot("porter_18_car_finder")
+			var fd3: CarFinder = app.screen.get_child(0)
+			fd3.create_btn.pressed.emit()
+		23:
+			_shot("porter_19_from_database")
+			print("DB PROJECT: %s  L %.3f  WB %.3f  overhang %.3f  tires %s/%s @ %d psi, radius %.3f" % [app.project.name, app.project.dims["length_m"], app.project.dims["wheelbase_m"], app.project.dims["front_overhang_m"], app.project.tires["front"], app.project.tires["rear"], app.project.tires["front_psi"], app.project.dims["tire_radius_m"]])
+			var p3: PorterProject = app.project
+			for f in DirAccess.get_files_at(p3.dir()):
+				DirAccess.remove_absolute(p3.dir() + f)
+			DirAccess.remove_absolute(p3.dir())
+			app.show_tire_step("My new car", {}, func(_p): pass)
+		24:
+			_shot("porter_20_tire_step_empty")
+			var form: TireForm = app.screen.find_children("*", "TireForm", true, false)[0]
+			form.front_size.text = "245/40ZR18"
+			form.rear_size.text = "285/35zr18"
+			form.front_psi.text = "36"
+			form._update()
+		25:
+			_shot("porter_21_tire_step_staggered")
 			get_tree().quit()
 	step += 1
