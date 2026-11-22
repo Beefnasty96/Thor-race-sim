@@ -255,34 +255,60 @@ func triangulate(f: PackedInt32Array, vs: PackedVector3Array = verts) -> Array:
 ## Returns "" or a message.
 func cut_wheel_arch(axle_z: float, center_y: float, radius: float, segments: int = 8) -> String:
 	# the side's bottom edge: the lowest side edge running past the axle
+	var low := _bottom_edge_height(axle_z)
+	if low == INF:
+		return "No body side found at this axle."
+	if low >= center_y + radius - 0.02:
+		return "This wheel already has an arch (or the body sits above it)."
+	var half := sqrt(maxf(radius * radius - pow(low - center_y, 2.0), 0.0))
+	var profile := []
+	for k in segments + 1:
+		var z := axle_z - half + 2.0 * half * k / segments
+		var dz := z - axle_z
+		profile.append(Vector2(z, center_y + sqrt(maxf(radius * radius - dz * dz, 0.0))))
+	return cut_arch_profile(profile)
+
+## Cut an arch of any shape: `profile` is a list of side-view points
+## (Vector2(z, y)), in either direction. The two ends drop onto the body
+## side's bottom edge; the points between become the arch outline.
+func cut_arch_profile(profile: Array) -> String:
+	if profile.size() < 3:
+		return "Tap at least 3 points: both ends of the arch and at least one over the wheel."
+	var pts := profile.duplicate()
+	pts.sort_custom(func(a, b): return a.x < b.x)
+	var z0: float = pts[0].x
+	var z1: float = pts[pts.size() - 1].x
+	if z1 - z0 < 0.1:
+		return "The arch is too narrow. Start and finish on either side of the wheel."
+	var mid := (z0 + z1) * 0.5
+	var low := _bottom_edge_height(mid)
+	if low == INF:
+		return "No body side found under that arch."
+	for i in range(1, pts.size()):
+		if pts[i].x - pts[i - 1].x < 0.005:
+			return "Two points are almost on top of each other. Undo one and tap again."
+	var ids := []
+	for p in pts:
+		var id := _point_on_bottom_edge(p.x, low)
+		if id < 0:
+			return "The body's bottom edge doesn't run all the way under that arch (has it been reshaped, or does the arch go past the bumper?)."
+		ids.append(id)
+	for k in range(1, pts.size() - 1):
+		var v := verts[ids[k]]
+		verts[ids[k]] = Vector3(v.x, maxf(pts[k].y, low), v.z)
+	return ""
+
+## Height of the side's bottom edge at depth z (lowest side edge there).
+func _bottom_edge_height(z: float) -> float:
 	var low := INF
 	for e in edges():
 		if is_center(e.x) or is_center(e.y):
 			continue
 		var a := verts[e.x]
 		var b := verts[e.y]
-		if (a.z - axle_z) * (b.z - axle_z) <= 0.0 and absf(a.z - b.z) > 0.01:
-			low = minf(low, lerpf(a.y, b.y, (axle_z - a.z) / (b.z - a.z)))
-	if low == INF:
-		return "No body side found at this axle."
-	if low >= center_y + radius - 0.02:
-		return "The body sits above the wheel here, so there's nothing to cut."
-	var half := sqrt(maxf(radius * radius - pow(low - center_y, 2.0), 0.0))
-	var zs := []
-	for k in segments + 1:
-		zs.append(axle_z - half + 2.0 * half * k / segments)
-	var ids := []
-	for z in zs:
-		var id := _point_on_bottom_edge(z, low)
-		if id < 0:
-			return "The body's bottom edge doesn't run past this wheel (has it been reshaped?). Cut arches right after picking a template, or add points on the edge with Add point."
-		ids.append(id)
-	for k in range(1, segments):
-		var dz: float = zs[k] - axle_z
-		var y := center_y + sqrt(maxf(radius * radius - dz * dz, 0.0))
-		var p := verts[ids[k]]
-		verts[ids[k]] = Vector3(p.x, maxf(y, low), p.z)
-	return ""
+		if (a.z - z) * (b.z - z) <= 0.0 and absf(a.z - b.z) > 0.01:
+			low = minf(low, lerpf(a.y, b.y, (z - a.z) / (b.z - a.z)))
+	return low
 
 ## Point on the side's bottom edge at depth z (reuses a point within 1 cm,
 ## otherwise splits the edge there).

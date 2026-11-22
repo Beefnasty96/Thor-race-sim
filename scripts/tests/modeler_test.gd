@@ -348,6 +348,28 @@ func _initialize() -> void:
 	var hi_body := HalfMesh.from_template("suv", d)
 	_check(hi_body.cut_wheel_arch(-wb2, 0.1, 0.12, 8) != "", "a wheel below the body is refused with a message")
 
+	# drawn arches
+	var dr := HalfMesh.from_template("suv", d)
+	var fz := -wb2
+	var drawn := [Vector2(fz + 0.48, 0.3), Vector2(fz + 0.35, 0.86), Vector2(fz - 0.45, 0.3), Vector2(fz - 0.3, 0.86)]   # squared arch, tapped out of order
+	_check(dr.cut_arch_profile(drawn) == "", "a hand-drawn (squared) arch cuts")
+	_check(_closed_and_consistent(dr), "body stays closed after a drawn arch")
+	var at_top := 0
+	for v in dr.verts:
+		if absf(v.y - 0.86) < 1e-4 and v.x < -0.5:
+			at_top += 1
+	_check(at_top == 2, "the drawn points over the wheel keep their tapped height")
+	var edge_y := dr._bottom_edge_height(fz + 1.0)
+	var ends_ok := 0
+	for v in dr.verts:
+		if (absf(v.z - (fz - 0.45)) < 1e-4 or absf(v.z - (fz + 0.48)) < 1e-4) and absf(v.y - edge_y) < 0.03:
+			ends_ok += 1
+	_check(ends_ok == 2, "the arch ends drop onto the bottom edge")
+	_check(dr.cut_arch_profile([Vector2(0, 0.3), Vector2(0.05, 0.6)]) != "", "fewer than 3 points is refused")
+	_check(dr.cut_arch_profile([Vector2(0.5, 0.3), Vector2(0.52, 0.6), Vector2(0.54, 0.3)]) != "", "a too-narrow arch is refused")
+	_check(dr.cut_wheel_arch(fz, r_t, r_t * 1.12 + 0.02) != "", "auto arch won't cut over an arch that's already there")
+	_check(dr.cut_wheel_arch(wb2, r_t, r_t * 1.12 + 0.02) == "", "auto arch still cuts the other wheel")
+
 	# wheel model + picture
 	var wm2 := WheelBuilder.build(0.387, 0.245, 16)
 	_check(wm2.get_surface_count() == 2, "wheel model has a picture surface and a rubber surface")

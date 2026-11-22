@@ -12,6 +12,7 @@ signal mesh_edited(final: bool)      # final = edit finished (save / undo point)
 signal edge_tapped(a: int, b: int)
 signal face_tapped(fi: int)
 signal add_point_tap(s: Vector2)
+signal arch_point_added
 
 enum Pick { POINTS, FACES }
 
@@ -22,7 +23,8 @@ var pick := Pick.POINTS
 var multi := false
 var xray := true
 var lock_axis := 0                    # 0 free, 1 horizontal only, 2 vertical only
-var tool := ""                        # "" | "loop_cut" | "paint" | "add_point"
+var tool := ""                        # "" | "loop_cut" | "paint" | "add_point" | "draw_arch" | "wheels"
+var arch_pts: Array = []              # side-view points (z, y) of an arch being drawn
 var paint_colors := {}                # region -> Color used for display (body paint etc.)
 var show_paint := false               # colour faces by region (Paint mode)
 var sel_verts := {}                   # id -> true
@@ -524,6 +526,14 @@ func _begin() -> void:
 func _on_tap(s: Vector2) -> void:
 	if tool == "wheels":
 		return
+	if tool == "draw_arch":
+		if view != "side":
+			return
+		var w := cam.project_position(s, 10.0)      # side view: screen gives depth (z) and height (y)
+		arch_pts.append(Vector2(w.z, maxf(w.y, 0.0)))
+		arch_point_added.emit()
+		overlay.queue_redraw()
+		return
 	if tool == "add_point":
 		add_point_tap.emit(s)
 		return
@@ -633,7 +643,7 @@ func _draw_overlay() -> void:
 		if tool in ["paint", "wheels"]:
 			col = Color(0.85, 0.92, 1.0, 0.45)
 		o.draw_line(project_point(a2), project_point(b2), col, 2.5 if sel else (1.2 if tool in ["paint", "wheels"] else 2.0), true)
-	if pick == Pick.POINTS and tool not in ["paint", "wheels"]:
+	if pick == Pick.POINTS and tool not in ["paint", "wheels", "draw_arch"]:
 		for i in mesh.verts.size():
 			var p := mesh.verts[i]
 			if cam.is_position_behind(p):
@@ -643,6 +653,16 @@ func _draw_overlay() -> void:
 				o.draw_circle(s, 11.0, C_SEL)
 			else:
 				o.draw_circle(s, 6.5, C_VERT if not mesh.is_center(i) else Color(0.6, 1.0, 0.7))
+	if tool == "draw_arch" and view == "side":
+		var line := PackedVector2Array()
+		var x_side: float = -project.dims["width_m"] * 0.5
+		for p in arch_pts:
+			line.append(project_point(Vector3(x_side, p.y, p.x)))
+		if line.size() >= 2:
+			o.draw_polyline(line, C_SEL, 3.0, true)
+		for i in line.size():
+			o.draw_circle(line[i], 10.0 if (i == 0 or i == line.size() - 1) else 7.0, C_SEL)
+		o.draw_string(get_theme_default_font(), Vector2(20, size.y - 24), "DRAW ARCH: tap along the wheel well, end to end (%d points)" % arch_pts.size(), HORIZONTAL_ALIGNMENT_LEFT, -1, 26, C_SEL)
 	if tool == "paint":
 		pass
 	elif tool == "add_point":

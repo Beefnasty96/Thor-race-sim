@@ -35,6 +35,8 @@ var wheel_view: WheelCropView
 var wheel_rear := false
 var wheel_axle_btns := {}
 var rear_same_btn: Button
+var arch_btn: Button
+var arch_row: Control
 
 func setup(p: PorterProject) -> void:
 	project = p
@@ -169,7 +171,21 @@ func _build_panel() -> Control:
 	r3b.add_child(_grow(PorterUI.button("Connect", _connect)))
 	r3b.add_child(_grow(PorterUI.button("Merge", _merge)))
 	v.add_child(r3b)
-	v.add_child(_grow(PorterUI.button("Cut wheel arches", _cut_arches)))
+	v.add_child(UIKit.label("WHEEL ARCHES", 24, UIKit.ACCENT))
+	var ra := HBoxContainer.new()
+	arch_btn = _grow(PorterUI.toggle("Draw an arch", false, func(on): _toggle_draw_arch(on)))
+	ra.add_child(arch_btn)
+	ra.add_child(_grow(PorterUI.button("Auto arches (both wheels)", _cut_arches)))
+	v.add_child(ra)
+	arch_row = HBoxContainer.new()
+	arch_row.add_child(_grow(PorterUI.button("Finish arch", _finish_arch)))
+	arch_row.add_child(_grow(PorterUI.button("Undo point", func():
+		if not view.arch_pts.is_empty():
+			view.arch_pts.pop_back()
+			view.overlay.queue_redraw())))
+	arch_row.add_child(_grow(PorterUI.button("Cancel", func(): _toggle_draw_arch(false))))
+	arch_row.visible = false
+	v.add_child(arch_row)
 	var r4 := HBoxContainer.new()
 	r4.add_child(_grow(PorterUI.button("↶ Undo", func():
 		if mesh.undo(): _after_structural()
@@ -219,6 +235,8 @@ func _grow(c: Control) -> Control:
 # ---------------------------------------------------------------- state
 
 func _select_view(v: String) -> void:
+	if v != "side":
+		_end_draw_arch()
 	view.set_view(v)
 	for k in tabs:
 		tabs[k].add_theme_color_override("font_color", Color.WHITE if k == v else UIKit.DIM)
@@ -291,6 +309,7 @@ func _extrude() -> void:
 
 func _toggle_add_point(on: bool) -> void:
 	if on:
+		_end_draw_arch()
 		_set_pick(ModelView.Pick.POINTS, true)
 		view.tool = "add_point"
 		_multi_before = view.multi
@@ -361,6 +380,10 @@ func _merge() -> void:
 	_after_structural()
 	_say("Points welded into one.")
 
+func _end_draw_arch() -> void:
+	if arch_btn and arch_btn.button_pressed:
+		_toggle_draw_arch(false)
+
 func _end_add_point() -> void:
 	if view.tool == "add_point":
 		view.tool = ""
@@ -369,6 +392,7 @@ func _end_add_point() -> void:
 
 func _start_loop_cut() -> void:
 	_end_add_point()
+	_end_draw_arch()
 	view.tool = "loop_cut"
 	view.overlay.queue_redraw()
 	_say("Tap an edge: a new ring of points is added across it, all the way around.")
@@ -459,6 +483,7 @@ func _set_mode(m: String, on: bool) -> void:
 		mode_btns[m].set_pressed_no_signal(true)    # keep one lit
 		return
 	_end_add_point()
+	_end_draw_arch()
 	for k in mode_btns:
 		mode_btns[k].set_pressed_no_signal(k == m)
 	shape_panel.visible = m == "shape"
@@ -644,6 +669,33 @@ func _on_face_painted(fi: int) -> void:
 	_queue_save()
 
 # ---------------------------------------------------------------- wheel arches
+
+func _toggle_draw_arch(on: bool) -> void:
+	view.arch_pts.clear()
+	arch_btn.set_pressed_no_signal(on)
+	arch_row.visible = on
+	if on:
+		_end_add_point()
+		_select_view("side")
+		view.tool = "draw_arch"
+		view.clear_selection()
+		_say("Tap along the wheel well in the photo, from one end of the arch to the other. The two ends drop onto the bottom of the body. Pinch to zoom in for accuracy.")
+	else:
+		if view.tool == "draw_arch":
+			view.tool = ""
+		_say("")
+	view.overlay.queue_redraw()
+
+func _finish_arch() -> void:
+	mesh.push_undo()
+	var msg := mesh.cut_arch_profile(view.arch_pts)
+	if msg != "":
+		mesh.undo()
+		_say(msg)
+		return
+	_toggle_draw_arch(false)
+	_after_structural()
+	_say("Arch cut. Draw the other one, or Undo to try again.")
 
 func _cut_arches() -> void:
 	var d := project.dims

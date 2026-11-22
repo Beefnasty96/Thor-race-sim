@@ -198,18 +198,31 @@ func _process(delta: float) -> void:
 			_shot("porter_17_connected")
 			var mdw: PorterModeler = app.modeler
 			mdw.mesh.undo()
-			mdw._cut_arches()
-			mdw._select_view("side")
+			# draw a squared front arch by tapping the side view, auto-cut the rear
+			mdw.arch_btn.button_pressed = true
+			var mvw: ModelView = mdw.view
+			var fz: float = -app.project.dims["wheelbase_m"] * 0.5
+			var xs: float = -app.project.dims["width_m"] * 0.5
+			for zy in [Vector2(fz - 0.5, 0.35), Vector2(fz - 0.38, 0.9), Vector2(fz + 0.38, 0.9), Vector2(fz + 0.52, 0.35)]:
+				_tap(mvw, mvw.project_point(Vector3(xs, zy.y, zy.x)))
+			print("ARCH TEST: %d points drawn" % mvw.arch_pts.size())
 		20:
+			_shot("porter_17a_drawing_arch")
+			var mdw: PorterModeler = app.modeler
+			mdw._finish_arch()
+			mdw._cut_arches()
+			print("ARCH TEST: ", mdw.hint.text)
+			mdw._select_view("side")
+		21:
 			_shot("porter_17b_arches_side")
 			app.modeler._set_mode("wheels", true)
-		21:
+		22:
 			_shot("porter_17c_wheels")
 			app.modeler.view.yaw = deg_to_rad(-75.0)
 			app.modeler.view.pitch = deg_to_rad(8.0)
 			app.modeler.view._update_cam()
 			app.modeler.view.overlay.queue_redraw()
-		22:
+		23:
 			_shot("porter_17d_wheels_low")
 			app.modeler._set_mode("shape", true)
 			var p2: PorterProject = app.project
@@ -217,24 +230,24 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p2.dir() + f)
 			DirAccess.remove_absolute(p2.dir())
 			app.show_finder()
-		23:
+		24:
 			var fd: CarFinder = app.screen.get_child(0)
 			fd._pick_year(1999)
 			fd._pick_make("Chevrolet")
 			fd.search.text = "tahoe 4dr"
 			fd._fill_models()
-		24:
+		25:
 			var fd2: CarFinder = app.screen.get_child(0)
 			var r: Dictionary = VehicleDB.models(1999, "Chevrolet", "tahoe k1500 4dr")[0]
 			fd2._pick_model(r)
 			fd2.tire_form.front_size.text = "P245/75R16"
 			fd2.tire_form.front_psi.text = "35"
 			fd2.tire_form._update()
-		25:
+		26:
 			_shot("porter_18_car_finder")
 			var fd3: CarFinder = app.screen.get_child(0)
 			fd3.create_btn.pressed.emit()
-		26:
+		27:
 			_shot("porter_19_from_database")
 			print("DB PROJECT: %s  L %.3f  WB %.3f  overhang %.3f  tires %s/%s @ %d psi, radius %.3f" % [app.project.name, app.project.dims["length_m"], app.project.dims["wheelbase_m"], app.project.dims["front_overhang_m"], app.project.tires["front"], app.project.tires["rear"], app.project.tires["front_psi"], app.project.dims["tire_radius_m"]])
 			var p3: PorterProject = app.project
@@ -242,14 +255,14 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p3.dir() + f)
 			DirAccess.remove_absolute(p3.dir())
 			app.show_tire_step("My new car", {}, func(_p): pass)
-		27:
+		28:
 			_shot("porter_20_tire_step_empty")
 			var form: TireForm = app.screen.find_children("*", "TireForm", true, false)[0]
 			form.front_size.text = "245/40ZR18"
 			form.rear_size.text = "285/35zr18"
 			form.front_psi.text = "36"
 			form._update()
-		28:
+		29:
 			_shot("porter_21_tire_step_staggered")
 			get_tree().quit()
 	step += 1

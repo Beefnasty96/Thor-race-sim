@@ -113,10 +113,13 @@ later under the dimensions panel (*Apply tires*).
 - Tap points or faces to select (tap again to reach a hidden one), drag to
   move, with ↔ / ↕ locks and 1 cm / 1 mm nudge buttons. Extrude, loop cut,
   delete, undo/redo.
-- **Cut wheel arches**: carves an arch into the body sides at both axles,
-  sized from the tire (radius × 1.12 + 2 cm), by lifting new points on the
-  side's bottom edge onto a circle around the wheel. Concave panels are
-  ear-clipped so they render cleanly.
+- **Wheel arches**: *Draw an arch* — in the side view, tap along the wheel
+  well on the photo from one end to the other (live outline; Finish / Undo
+  point / Cancel); the ends drop onto the body's bottom edge and the points
+  between become the arch, any shape (round, squared, flared), one arch at a
+  time. *Auto arches (both wheels)* cuts round arches sized from the tires
+  (radius × 1.12 + 2 cm). Concave panels are ear-clipped so they render
+  cleanly.
 - **Add point**: tap an edge to add a connected point on it, or empty space
   for a free point (placed at the depth of the nearest geometry; tap an
   existing point to include it). **Connect**: 2 points on one face split it
