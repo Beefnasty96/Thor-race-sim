@@ -80,6 +80,51 @@ func _process(delta: float) -> void:
 			app._select_view("3d")
 		7:
 			_shot("porter_05_3d_check")
+			app.show_modeler()
+		8:
+			_shot("porter_06_template_picker")
+			# pick the SUV template (first button in the picker grid)
+			var picker: Control = app.modeler._picker
+			var grid := picker.find_children("*", "GridContainer", true, false)[0] as GridContainer
+			(grid.get_child(0) as Button).pressed.emit()
+		9:
+			_shot("porter_07_model_side")
+			var mv: ModelView = app.modeler.view
+			# select the four points of a side window region and show them selected
+			for i in mv.mesh.verts.size():
+				var v: Vector3 = mv.mesh.verts[i]
+				if v.y > app.project.dims["height_m"] * 0.9 and not mv.mesh.is_center(i):
+					mv.sel_verts[i] = true
+			mv.overlay.queue_redraw()
+		10:
+			_shot("porter_08_model_selected")
+			# simulate a finger dragging one selected roof point 60 px up
+			var mv2: ModelView = app.modeler.view
+			var id: int = mv2.sel_verts.keys()[0]
+			var before: Vector3 = mv2.mesh.verts[id]
+			var s0 := mv2.project_point(before)
+			var t := InputEventScreenTouch.new(); t.index = 0; t.position = s0; t.pressed = true
+			mv2._gui_input(t)
+			for k in 6:
+				var dr := InputEventScreenDrag.new(); dr.index = 0; dr.position = s0 + Vector2(0, -10 * (k + 1))
+				mv2._gui_input(dr)
+			var up := InputEventScreenTouch.new(); up.index = 0; up.position = s0 + Vector2(0, -60); up.pressed = false
+			mv2._gui_input(up)
+			var after: Vector3 = mv2.mesh.verts[id]
+			print("DRAG TEST: moved %.3f m up, %.4f m sideways, %.4f m along (expected up only)" % [after.y - before.y, absf(after.x - before.x), absf(after.z - before.z)])
+			# a tap on empty space clears the selection
+			var t2 := InputEventScreenTouch.new(); t2.index = 0; t2.position = Vector2(30, mv2.size.y - 30); t2.pressed = true
+			mv2._gui_input(t2)
+			t2 = t2.duplicate(); t2.pressed = false
+			mv2._gui_input(t2)
+			print("TAP TEST: selection after tapping empty space = %d" % mv2.sel_verts.size())
+			print("UNDO TEST: ", mv2.mesh.undo(), " back to %.3f" % (mv2.mesh.verts[id].y - before.y))
+			app.modeler._select_view("front")
+		11:
+			_shot("porter_09_model_front")
+			app.modeler._select_view("3d")
+		12:
+			_shot("porter_10_model_3d")
 			var p2: PorterProject = app.project
 			for f in DirAccess.get_files_at(p2.dir()):
 				DirAccess.remove_absolute(p2.dir() + f)

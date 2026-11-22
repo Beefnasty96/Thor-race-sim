@@ -18,6 +18,7 @@ var _save_timer := 0.0
 var _file_dialog: FileDialog
 var safe: MarginContainer          # everything sits inside the phone's safe area
 var _safe_check := 0.0
+var modeler: PorterModeler
 
 const DIM_FIELDS := [
 	["length_m", "Length"], ["width_m", "Width"], ["height_m", "Height"],
@@ -48,7 +49,10 @@ func _ready() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
-		if project:
+		if modeler and is_instance_valid(modeler):
+			modeler.save_now()
+			show_editor()
+		elif project:
 			_close_project()
 		else:
 			get_tree().quit()
@@ -100,6 +104,7 @@ func _set_screen(c: Control) -> void:
 
 func show_projects() -> void:
 	project = null
+	modeler = null
 	var m := MarginContainer.new()
 	m.set_anchors_preset(Control.PRESET_FULL_RECT)
 	for s in ["left", "right", "top", "bottom"]:
@@ -179,9 +184,19 @@ func _close_project() -> void:
 		project.save()
 	show_projects()
 
+# =============================================================== modeler
+
+func show_modeler() -> void:
+	project.save()
+	modeler = PorterModeler.new()
+	modeler.setup(project)
+	modeler.back_to_photos.connect(show_editor)
+	_set_screen(modeler)
+
 # =============================================================== reference photo editor
 
 func show_editor() -> void:
+	modeler = null
 	var root := VBoxContainer.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_theme_constant_override("separation", 0)
@@ -206,6 +221,9 @@ func show_editor() -> void:
 	var t3d := PorterUI.button("3D check", func(): _select_view("3d"), 170)
 	tabs["3d"] = t3d
 	hb.add_child(t3d)
+	var next := PorterUI.button("Next: Model ▶", show_modeler, 230)
+	next.add_theme_color_override("font_color", UIKit.GOOD)
+	hb.add_child(next)
 
 	# --- body: canvas + side panel
 	var body := HBoxContainer.new()

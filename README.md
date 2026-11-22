@@ -89,11 +89,23 @@ the start scene to `scenes/porter.tscn` and the package to
 - Edit dimensions in inches or millimeters; the outline updates live.
 - **3D check** shows every photo on its own side of a true-size box.
 
-Next: touch box-modeling with mirror symmetry, wheels, paint regions, specs
-and test targets, export to `data/cars/` + `assets/cars/`.
+**v0.2: body modeling** (*Next: Model ▶* in the photo editor)
+- Start from a template (SUV, pickup, sedan, coupe, hatchback, plain box)
+  scaled to the car's real length, width, height, wheelbase and overhang.
+- Model over the aligned photos in Side / Front / Top (orthographic, body
+  see-through) or orbit in 3D. You edit the left half; the right half mirrors
+  it. Centerline points (green) stay on the centerline.
+- Tap points or faces to select (tap again to reach a hidden one), drag to
+  move, with ↔ / ↕ locks and 1 cm / 1 mm nudge buttons. Extrude, loop cut,
+  delete, undo/redo. Flat-shaded like GT1, with a live triangle count against
+  a 1,500-triangle budget. Saved as `body.json` in the project.
+
+Next: wheels and wheel arches, paint regions, specs and test targets, export
+to `data/cars/` + `assets/cars/`.
 
 Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
-zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`.
+zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd` and
+`res://scripts/tests/modeler_test.gd`.
 Screenshots: `godot res://scenes/porter.tscn -- --shots`.
 
 ## Getting the APK onto the Thor
@@ -212,7 +224,7 @@ data/maps/*.json            Map definitions (proving ground, future towns)
 tools/blender/              Scripted Blender car models (exported to assets/)
 scripts/ui/                 HUD, theme, option rows
 scripts/tests/              Headless physics + lap tests, screenshot tool
-scripts/porter/             Car Porter app (projects, reference photos, 3D check)
+scripts/porter/             Car Porter app (projects, reference photos, body modeler)
 tools/sign_apk.py           Local APK v2 signer (when apksigner isn't available)
 .github/workflows/          Cloud APK build
 ```
