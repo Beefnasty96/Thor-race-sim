@@ -299,3 +299,22 @@ func photo_count() -> int:
 		if views[v]["file"] != "":
 			n += 1
 	return n
+
+# ---------------------------------------------------------------- body model
+
+func has_mesh() -> bool:
+	return FileAccess.file_exists(dir() + "body.json")
+
+func save_mesh(m: HalfMesh) -> bool:
+	DirAccess.make_dir_recursive_absolute(dir())
+	var f := FileAccess.open(dir() + "body.json", FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(JSON.stringify(m.to_dict()))
+	return true
+
+func load_mesh() -> HalfMesh:
+	if not has_mesh():
+		return null
+	var d = JSON.parse_string(FileAccess.get_file_as_string(dir() + "body.json"))
+	return HalfMesh.from_dict(d) if d is Dictionary else null
