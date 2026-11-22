@@ -380,6 +380,17 @@ func _say(t: String) -> void:
 # --------------------------------------------------------------- photo picking
 
 func _pick_photo() -> void:
+	var b := PhotoBrowser.new()
+	b.picked.connect(func(path: String):
+		if path == "__system_picker__":
+			b.queue_free()
+			_system_picker()
+		else:
+			_import_photo_file.call_deferred(path))
+	add_child(b)
+
+## Android's own document picker (also reaches cloud drives and USB storage).
+func _system_picker() -> void:
 	var filters := PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
 	if DisplayServer.has_feature(DisplayServer.FEATURE_NATIVE_DIALOG_FILE):
 		DisplayServer.file_dialog_show("Choose the %s photo" % PorterProject.VIEW_LABELS[current_view].to_lower(),
@@ -392,19 +403,23 @@ func _pick_photo() -> void:
 			_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
 			_file_dialog.filters = filters
 			_file_dialog.size = Vector2i(1400, 900)
-			_file_dialog.file_selected.connect(_import_path)
+			_file_dialog.file_selected.connect(_import_photo_file)
 			add_child(_file_dialog)
 		_file_dialog.current_dir = OS.get_system_dir(OS.SYSTEM_DIR_PICTURES)
 		_file_dialog.popup_centered()
 
 func _on_native_pick(status: bool, paths: PackedStringArray, _filter: int) -> void:
 	if status and paths.size() > 0:
-		_import_path.call_deferred(paths[0])
+		_import_photo_file.call_deferred(paths[0])
+	elif status or paths.is_empty():
+		# Godot's picker can't turn some sources (e.g. the Gallery app) into a file path
+		_say("No photo loaded. If you picked one, Android's picker couldn't open it from that app: use the thumbnails in “Load photo…”, or pick it under “Images” or “Downloads” in the picker's side menu.")
 
-func _import_path(path: String) -> void:
+func _import_photo_file(path: String) -> void:
+	_say("Loading photo…")
 	var err := project.import_photo(current_view, path)
 	if err != "":
-		_say(err)
+		_say(err + " (" + path.get_file() + ")")
 		return
 	_select_view(current_view)
 	_say("Photo loaded. Now tap “Align: tap 2 points”, or drag and pinch it into the outline.")

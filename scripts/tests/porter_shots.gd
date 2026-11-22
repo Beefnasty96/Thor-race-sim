@@ -6,6 +6,7 @@ var app: Node
 var out_dir := "user://shots/"
 var t := 0.0
 var step := 0
+var browser: Node
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
@@ -58,8 +59,26 @@ func _process(delta: float) -> void:
 			app._select_view("front")
 		4:
 			_shot("porter_04_front_empty")
-			app._select_view("3d")
+			# photo browser over a folder of generated photos
+			var dir := OS.get_user_data_dir().path_join("shots_photos")
+			DirAccess.make_dir_recursive_absolute(dir)
+			for i in 9:
+				var im := fake_side_photo()
+				im.adjust_bcs(1.0 - i * 0.05, 1.0, 1.0)
+				im.save_jpg(dir.path_join("IMG_%04d.jpg" % i), 0.8)
+			var b := PhotoBrowser.new()
+			b.folders = [dir]
+			b.picked.connect(func(path): app._import_photo_file(path))
+			app.add_child(b)
+			browser = b
 		5:
+			_shot("porter_04b_photo_browser")
+			var first: TextureButton = browser.grid.get_child(0)
+			first.pressed.emit()
+		6:
+			_shot("porter_04c_front_loaded")
+			app._select_view("3d")
+		7:
 			_shot("porter_05_3d_check")
 			var p2: PorterProject = app.project
 			for f in DirAccess.get_files_at(p2.dir()):
