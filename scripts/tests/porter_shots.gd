@@ -50,6 +50,12 @@ static func fake_front_photo() -> Image:
 	img.fill_rect(Rect2i(830, 690, 120, 80), Color(0.08, 0.08, 0.08))
 	return img
 
+func _tap(v: Control, p: Vector2) -> void:
+	var t := InputEventScreenTouch.new(); t.index = 0; t.position = p; t.pressed = true
+	v._gui_input(t)
+	var u := InputEventScreenTouch.new(); u.index = 0; u.position = p; u.pressed = false
+	v._gui_input(u)
+
 func _process(delta: float) -> void:
 	t += delta
 	if t < 1.0:
@@ -161,6 +167,35 @@ func _process(delta: float) -> void:
 			app.modeler.view.overlay.queue_redraw()
 		16:
 			_shot("porter_14_photo_textures_rear")
+			# Add point + Connect, driven by simulated taps in the side view
+			var md: PorterModeler = app.modeler
+			md._set_mode("shape", true)
+			md._select_view("side")
+		17:
+			var md2: PorterModeler = app.modeler
+			var mv3: ModelView = md2.view
+			md2.add_btn.button_pressed = true
+			var nv := mv3.mesh.verts.size()
+			# a long roof edge: tap its middle
+			var e := Vector2i(-1, -1)
+			for edge in mv3.mesh.edges():
+				var pa: Vector3 = mv3.mesh.verts[edge.x]
+				var pb: Vector3 = mv3.mesh.verts[edge.y]
+				if not mv3.mesh.is_center(edge.x) and not mv3.mesh.is_center(edge.y) and absf(pa.z - pb.z) > 2.0 and pa.y > 1.5:
+					e = edge
+			var mid := (mv3.project_point(mv3.mesh.verts[e.x]) + mv3.project_point(mv3.mesh.verts[e.y])) * 0.5
+			_tap(mv3, mid)
+			_tap(mv3, mid + Vector2(0, -90))          # free point above the roof
+			_tap(mv3, mid + Vector2(160, -90))        # another
+			print("ADD TEST: points %d -> %d, selected %d" % [nv, mv3.mesh.verts.size(), mv3.sel_verts.size()])
+			_shot("porter_16_add_points")
+		18:
+			var md3: PorterModeler = app.modeler
+			var nf := md3.mesh.faces.size()
+			md3._connect()
+			print("CONNECT TEST: faces %d -> %d, message: %s" % [nf, md3.mesh.faces.size(), md3.hint.text])
+		19:
+			_shot("porter_17_connected")
 			var p2: PorterProject = app.project
 			for f in DirAccess.get_files_at(p2.dir()):
 				DirAccess.remove_absolute(p2.dir() + f)

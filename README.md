@@ -97,7 +97,12 @@ the start scene to `scenes/porter.tscn` and the package to
   it. Centerline points (green) stay on the centerline.
 - Tap points or faces to select (tap again to reach a hidden one), drag to
   move, with ↔ / ↕ locks and 1 cm / 1 mm nudge buttons. Extrude, loop cut,
-  delete, undo/redo. Flat-shaded like GT1, with a live triangle count against
+  delete, undo/redo.
+- **Add point**: tap an edge to add a connected point on it, or empty space
+  for a free point (placed at the depth of the nearest geometry; tap an
+  existing point to include it). **Connect**: 2 points on one face split it
+  with a new edge; 3+ points make a new face turned toward you. **Merge**
+  welds the selected points into one. Flat-shaded like GT1, with a live triangle count against
   a 1,500-triangle budget. Saved as `body.json` in the project.
 
 **v0.3: paint** (*Paint* switch in the modeler)
