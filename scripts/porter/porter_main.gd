@@ -1,0 +1,410 @@
+extends Control
+## Car Porter: companion app for building cars for the game on a phone.
+## v0.1: projects + reference photo setup (side/front/rear/top photos aligned
+## to the car's true dimensions). Modeling, paint regions, specs and export
+## come next.
+
+var project: PorterProject
+var canvas: BlueprintCanvas
+var preview: BlueprintPreview
+var current_view := "side"
+var screen: Control
+var prompt: Label
+var tabs := {}
+var dim_edits := {}
+var mode_buttons := {}
+var opacity_slider: HSlider
+var _save_timer := 0.0
+var _file_dialog: FileDialog
+
+const DIM_FIELDS := [
+	["length_m", "Length"], ["width_m", "Width"], ["height_m", "Height"],
+	["wheelbase_m", "Wheelbase"], ["front_overhang_m", "Front overhang"],
+	["track_front_m", "Front track"], ["track_rear_m", "Rear track"],
+	["tire_radius_m", "Tire radius"],
+]
+
+func _ready() -> void:
+	set_anchors_preset(Control.PRESET_FULL_RECT)
+	theme = UIKit.theme()
+	theme.default_font_size = 28
+	get_tree().set_quit_on_go_back(false)
+	var bg := ColorRect.new()
+	bg.color = Color(0.02, 0.035, 0.065)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+	show_projects()
+	if "--shots" in OS.get_cmdline_user_args():
+		var d = load("res://scripts/tests/porter_shots.gd").new()
+		d.app = self
+		add_child(d)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		if project:
+			_close_project()
+		else:
+			get_tree().quit()
+
+func _process(delta: float) -> void:
+	if _save_timer > 0.0:
+		_save_timer -= delta
+		if _save_timer <= 0.0 and project:
+			project.save()
+
+func _queue_save() -> void:
+	_save_timer = 0.6
+
+func _set_screen(c: Control) -> void:
+	if screen:
+		screen.queue_free()
+	screen = c
+	add_child(c)
+
+# =============================================================== projects screen
+
+func show_projects() -> void:
+	project = null
+	var m := MarginContainer.new()
+	m.set_anchors_preset(Control.PRESET_FULL_RECT)
+	for s in ["left", "right", "top", "bottom"]:
+		m.add_theme_constant_override("margin_" + s, 48)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 16)
+	m.add_child(v)
+	v.add_child(UIKit.label("CAR PORTER", 56, Color.WHITE))
+	v.add_child(UIKit.label("Build cars for Racing Sim: reference photos → model → paint → specs → export", 24, UIKit.DIM))
+
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 40)
+	h.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(h)
+
+	# left: start a new car
+	var left := VBoxContainer.new()
+	left.add_theme_constant_override("separation", 12)
+	left.custom_minimum_size = Vector2(760, 0)
+	h.add_child(left)
+	left.add_child(UIKit.label("NEW CAR", 30, UIKit.ACCENT))
+	var name_edit := LineEdit.new()
+	name_edit.placeholder_text = "Name, e.g. 1994 Mazda MX-5"
+	name_edit.custom_minimum_size = Vector2(0, PorterUI.BTN_H)
+	left.add_child(name_edit)
+	left.add_child(PorterUI.button("Start blank (enter dimensions yourself)", func():
+		var n := name_edit.text.strip_edges()
+		_open(PorterProject.create(n if n != "" else "New car"))))
+	left.add_child(UIKit.label("Or copy real dimensions from a car already in the game:", 22, UIKit.DIM))
+	for car_id in Game.cars:
+		var def: Dictionary = Game.cars[car_id]
+		for body_key in def["bodies"]:
+			var b: Dictionary = def["bodies"][body_key]
+			var label := "%d %s %s, %s" % [def["year"], def["make"], def["model"], b.get("label", body_key)]
+			left.add_child(PorterUI.button(label, func():
+				var n := name_edit.text.strip_edges()
+				var p := PorterProject.create(n if n != "" else label)
+				p.fill_from_car(def, body_key)
+				p.save()
+				_open(p)))
+
+	# right: existing projects
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.add_theme_constant_override("separation", 12)
+	h.add_child(right)
+	right.add_child(UIKit.label("YOUR PROJECTS", 30, UIKit.ACCENT))
+	var sc := ScrollContainer.new()
+	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	right.add_child(sc)
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 10)
+	sc.add_child(list)
+	var projects := PorterProject.list_projects()
+	if projects.is_empty():
+		list.add_child(UIKit.label("No projects yet.", 24, UIKit.DIM))
+	for info in projects:
+		var p := PorterProject.load_project(info["id"])
+		if p == null:
+			continue
+		var b2 := PorterUI.button("%s    ·  %d/4 photos" % [p.name, p.photo_count()], func(): _open(PorterProject.load_project(info["id"])))
+		b2.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		list.add_child(b2)
+	_set_screen(m)
+
+func _open(p: PorterProject) -> void:
+	project = p
+	project.save()
+	current_view = "side"
+	show_editor()
+
+func _close_project() -> void:
+	if project:
+		project.save()
+	show_projects()
+
+# =============================================================== reference photo editor
+
+func show_editor() -> void:
+	var root := VBoxContainer.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.add_theme_constant_override("separation", 0)
+
+	# --- top bar
+	var bar := PanelContainer.new()
+	root.add_child(bar)
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 10)
+	bar.add_child(hb)
+	hb.add_child(PorterUI.button("◀ Projects", _close_project))
+	var title := UIKit.label(project.name, 28, Color.WHITE)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.clip_text = true
+	hb.add_child(title)
+	hb.add_child(UIKit.label("REFERENCE PHOTOS", 22, UIKit.DIM))
+	tabs.clear()
+	for v in PorterProject.VIEWS:
+		var t := PorterUI.button("", func(): _select_view(v), 150)
+		tabs[v] = t
+		hb.add_child(t)
+	var t3d := PorterUI.button("3D check", func(): _select_view("3d"), 170)
+	tabs["3d"] = t3d
+	hb.add_child(t3d)
+
+	# --- body: canvas + side panel
+	var body := HBoxContainer.new()
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 0)
+	root.add_child(body)
+	var stage := Control.new()
+	stage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stage.clip_contents = true
+	body.add_child(stage)
+	canvas = BlueprintCanvas.new()
+	canvas.set_anchors_preset(Control.PRESET_FULL_RECT)
+	stage.add_child(canvas)
+	canvas.transform_changed.connect(func():
+		_queue_save()
+		_refresh_tabs())
+	canvas.align_progress.connect(_on_align_progress)
+	preview = BlueprintPreview.new()
+	preview.set_anchors_preset(Control.PRESET_FULL_RECT)
+	preview.visible = false
+	stage.add_child(preview)
+	prompt = UIKit.label("", 26, UIKit.WARN)
+	prompt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	prompt.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	prompt.offset_left = 24; prompt.offset_right = -24; prompt.offset_top = 16
+	prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stage.add_child(prompt)
+
+	body.add_child(_build_side_panel())
+	_set_screen(root)
+	_select_view(current_view)
+
+func _build_side_panel() -> Control:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(560, 0)
+	var sc := ScrollContainer.new()
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(sc)
+	var pad := MarginContainer.new()
+	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pad.add_theme_constant_override("margin_right", 22)   # room for the scroll bar
+	sc.add_child(pad)
+	var v := VBoxContainer.new()
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.add_theme_constant_override("separation", 10)
+	pad.add_child(v)
+
+	v.add_child(UIKit.label("PHOTO", 24, UIKit.ACCENT))
+	var r1 := HBoxContainer.new()
+	r1.add_child(_grow(PorterUI.button("Load photo…", _pick_photo)))
+	r1.add_child(_grow(PorterUI.button("Mirror", func():
+		var vw: Dictionary = project.views[current_view]
+		vw["flip"] = not vw["flip"]
+		canvas.queue_redraw(); _queue_save())))
+	v.add_child(r1)
+	v.add_child(_grow(PorterUI.button("Align: tap 2 points", func():
+		if canvas.texture == null:
+			_say("Load a photo for this view first.")
+			return
+		canvas.start_align())))
+
+	v.add_child(UIKit.label("Finger moves:", 22, UIKit.DIM))
+	var r2 := HBoxContainer.new()
+	mode_buttons.clear()
+	mode_buttons["photo"] = _grow(PorterUI.toggle("Photo", true, func(on): _mode_toggled(on, BlueprintCanvas.Mode.PHOTO)))
+	mode_buttons["view"] = _grow(PorterUI.toggle("View", false, func(on): _mode_toggled(on, BlueprintCanvas.Mode.VIEW)))
+	r2.add_child(mode_buttons["photo"]); r2.add_child(mode_buttons["view"])
+	v.add_child(r2)
+
+	v.add_child(UIKit.label("Fine adjust:", 22, UIKit.DIM))
+	var g := GridContainer.new()
+	g.columns = 4
+	for spec in [["◀", func(): canvas.nudge_move(-2, 0)], ["▶", func(): canvas.nudge_move(2, 0)],
+			["▲", func(): canvas.nudge_move(0, -2)], ["▼", func(): canvas.nudge_move(0, 2)],
+			["−", func(): canvas.nudge_scale(1.0 / 1.005)], ["+", func(): canvas.nudge_scale(1.005)],
+			["⟲", func(): canvas.nudge_rotate(0.2)], ["⟳", func(): canvas.nudge_rotate(-0.2)]]:
+		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 110)))
+	v.add_child(g)
+	var oh := HBoxContainer.new()
+	oh.add_child(UIKit.label("Opacity", 22, UIKit.DIM))
+	opacity_slider = HSlider.new()
+	opacity_slider.min_value = 0.15; opacity_slider.max_value = 1.0; opacity_slider.step = 0.05
+	opacity_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	opacity_slider.custom_minimum_size = Vector2(0, 56)
+	opacity_slider.value_changed.connect(func(x):
+		project.views[current_view]["opacity"] = x
+		canvas.queue_redraw(); _queue_save())
+	oh.add_child(opacity_slider)
+	v.add_child(oh)
+
+	v.add_child(HSeparator.new())
+	var dh := HBoxContainer.new()
+	var dl := UIKit.label("REAL DIMENSIONS", 24, UIKit.ACCENT)
+	dl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dh.add_child(dl)
+	dh.add_child(PorterUI.button("in / mm", func():
+		project.units = "metric" if project.units == "imperial" else "imperial"
+		_refresh_dims(); canvas.queue_redraw(); _queue_save()))
+	v.add_child(dh)
+	dim_edits.clear()
+	for f in DIM_FIELDS:
+		var row := HBoxContainer.new()
+		var l := UIKit.label(f[1], 24)
+		l.custom_minimum_size = Vector2(250, 0)
+		row.add_child(l)
+		var e := LineEdit.new()
+		e.custom_minimum_size = Vector2(0, 64)
+		e.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		e.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_NUMBER_DECIMAL
+		e.select_all_on_focus = true
+		var key: String = f[0]
+		e.text_submitted.connect(func(_t): _commit_dim(key))
+		e.focus_exited.connect(func(): _commit_dim(key))
+		row.add_child(e)
+		var u := UIKit.label("", 22, UIKit.DIM)
+		u.custom_minimum_size = Vector2(44, 0)
+		row.add_child(u)
+		dim_edits[key] = [e, u]
+		v.add_child(row)
+	if project.source_car != "":
+		v.add_child(UIKit.label("Copied from the game's %s data. Front overhang is an estimate: check it against the side photo." % project.source_car, 20, UIKit.DIM))
+		v.get_child(v.get_child_count() - 1).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_refresh_dims()
+	return panel
+
+func _grow(c: Control) -> Control:
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return c
+
+func _refresh_dims() -> void:
+	for key in dim_edits:
+		dim_edits[key][0].text = PorterUI.value_in_units(project.dims[key], project.units)
+		dim_edits[key][1].text = PorterUI.unit_suffix(project.units)
+
+func _commit_dim(key: String) -> void:
+	var e: LineEdit = dim_edits[key][0]
+	var m := PorterUI.parse_len(e.text, project.units)
+	if m > 0.0 and m < 30.0:
+		if absf(m - float(project.dims[key])) > 0.0004:
+			project.dims[key] = m
+			_queue_save()
+			canvas.queue_redraw()
+			if preview.visible:
+				preview.rebuild()
+	else:
+		_say("Couldn't read that number.")
+	e.text = PorterUI.value_in_units(project.dims[key], project.units)
+
+func _mode_toggled(on: bool, m: int) -> void:
+	if on:
+		_set_mode(m)
+	else:
+		_set_mode(canvas.mode)   # keep one button lit
+
+func _set_mode(m: int) -> void:
+	canvas.mode = m
+	mode_buttons["photo"].set_pressed_no_signal(m == BlueprintCanvas.Mode.PHOTO)
+	mode_buttons["view"].set_pressed_no_signal(m == BlueprintCanvas.Mode.VIEW)
+	_say("")
+
+func _select_view(v: String) -> void:
+	if v == "3d":
+		project.save()
+		canvas.visible = false
+		preview.visible = true
+		preview.show_project(project)
+		current_view = current_view if current_view != "3d" else "side"
+		_say("3D check: each photo sits on its own side of a true-size box. Drag to orbit, pinch to zoom.")
+		_refresh_tabs(true)
+		return
+	current_view = v
+	preview.visible = false
+	canvas.visible = true
+	canvas.set_view(project, v)
+	opacity_slider.set_value_no_signal(project.views[v]["opacity"])
+	_set_mode(BlueprintCanvas.Mode.PHOTO)
+	if canvas.texture == null:
+		_say("No %s photo yet. Tap “Load photo…”. A straight-on shot with little perspective works best." % PorterProject.VIEW_LABELS[v].to_lower())
+	_refresh_tabs()
+
+func _refresh_tabs(three_d: bool = false) -> void:
+	for v in PorterProject.VIEWS:
+		var has: bool = project.views[v]["file"] != ""
+		tabs[v].text = ("✓ " if has else "") + PorterProject.VIEW_LABELS[v]
+		tabs[v].add_theme_color_override("font_color", Color.WHITE if (v == current_view and not three_d) else UIKit.DIM)
+	tabs["3d"].add_theme_color_override("font_color", Color.WHITE if three_d else UIKit.DIM)
+
+func _on_align_progress(step: int) -> void:
+	var tg := project.align_targets(current_view)
+	match step:
+		0:
+			_say("Tap 1 of 2: %s. (Pinch to zoom in for accuracy.)" % tg[0]["label"])
+		1:
+			_say("Tap 2 of 2: %s." % tg[1]["label"])
+		2:
+			_say("Aligned. Fine-tune with the arrows if needed.")
+			_set_mode(BlueprintCanvas.Mode.PHOTO)
+			_queue_save()
+		_:
+			_say("Those taps were too close together. Try again.")
+			_set_mode(BlueprintCanvas.Mode.PHOTO)
+
+func _say(t: String) -> void:
+	if prompt:
+		prompt.text = t
+
+# --------------------------------------------------------------- photo picking
+
+func _pick_photo() -> void:
+	var filters := PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
+	if DisplayServer.has_feature(DisplayServer.FEATURE_NATIVE_DIALOG_FILE):
+		DisplayServer.file_dialog_show("Choose the %s photo" % PorterProject.VIEW_LABELS[current_view].to_lower(),
+			OS.get_system_dir(OS.SYSTEM_DIR_PICTURES), "", false, DisplayServer.FILE_DIALOG_MODE_OPEN_FILE,
+			filters, _on_native_pick)
+	else:
+		if _file_dialog == null:
+			_file_dialog = FileDialog.new()
+			_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+			_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+			_file_dialog.filters = filters
+			_file_dialog.size = Vector2i(1400, 900)
+			_file_dialog.file_selected.connect(_import_path)
+			add_child(_file_dialog)
+		_file_dialog.current_dir = OS.get_system_dir(OS.SYSTEM_DIR_PICTURES)
+		_file_dialog.popup_centered()
+
+func _on_native_pick(status: bool, paths: PackedStringArray, _filter: int) -> void:
+	if status and paths.size() > 0:
+		_import_path.call_deferred(paths[0])
+
+func _import_path(path: String) -> void:
+	var err := project.import_photo(current_view, path)
+	if err != "":
+		_say(err)
+		return
+	_select_view(current_view)
+	_say("Photo loaded. Now tap “Align: tap 2 points”, or drag and pinch it into the outline.")

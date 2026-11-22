@@ -7,6 +7,8 @@ config/name="Racing Sim"
 config/description="Realistic racing simulator for the AYN Thor"
 config/version="0.1.0"
 run/main_scene="res://scenes/main.tscn"
+run/main_scene.porter="res://scenes/porter.tscn"
+config/name.porter="Car Porter"
 config/features=PackedStringArray("4.5", "Mobile")
 
 [autoload]

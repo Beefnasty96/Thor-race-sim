@@ -88,10 +88,17 @@ jobs:
           export GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=$KS_PASS
           mkdir -p build
           ~/godot/godot --headless --export-debug "Android" build/racing-sim.apk
+          ~/godot/godot --headless --export-debug "Car Porter" build/car-porter.apk
           ls -la build
 
       - uses: actions/upload-artifact@v4
         with:
           name: racing-sim-apk
           path: build/racing-sim.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: car-porter-apk
+          path: build/car-porter.apk
           if-no-files-found: error
