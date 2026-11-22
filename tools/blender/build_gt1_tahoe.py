@@ -89,50 +89,58 @@ def cast(origin, d):
     return None
 
 
-SIDE_Z = [0.44, 0.62, 0.84, 1.05, 1.22, 1.42, 1.62]     # level rays from the side
-TOP_X = [0.68, 0.35, 0.0]                               # straight-down rays
-R = ARCH_R
-_arch = [WHEEL_Y + R * k for k in (1.0, 0.7, 0.35, 0.0, -0.35, -0.7, -1.0)]
-STATIONS = ([2.34, 2.27, 2.22, 2.10] + [a + 0.0 for a in _arch] +
-            [0.95, 0.80, 0.62, 0.42, 0.10, -0.30, -0.70, -0.98] + [-a for a in reversed(_arch)] +
-            [-2.10, -2.30, -2.45, -2.56, -2.60, -2.66, -2.74])
+# ---- hand-set GMT400 profiles from measurements of the detailed model --------
+def lerp_tab(tab, y):
+    """Piecewise-linear lookup in a [(y, value), ...] table sorted by y descending."""
+    if y >= tab[0][0]:
+        return tab[0][1]
+    for (y0, a), (y1, b) in zip(tab, tab[1:]):
+        if y1 <= y <= y0:
+            return a + (b - a) * (y0 - y) / (y0 - y1)
+    return tab[-1][1]
+
+
+HOOD_C = [(2.235, 1.108), (2.15, 1.150), (2.0, 1.184), (1.8, 1.218), (1.5, 1.247), (1.2, 1.266), (0.97, 1.27)]
+HOOD_E = [(2.235, 1.100), (2.15, 1.135), (2.0, 1.153), (1.8, 1.192), (1.5, 1.225), (1.2, 1.246), (0.97, 1.257)]
+SIDE_X = [(2.235, 0.55), (2.18, 0.80), (2.10, 0.905), (2.0, 0.93), (1.0, 0.935), (0.0, 0.932),
+          (-2.0, 0.929), (-2.3, 0.923), (-2.45, 0.915), (-2.53, 0.90), (-2.583, 0.875)]
+ROOF_TOP = [(-2.25, 1.80), (-2.30, 1.72), (-2.38, 1.58), (-2.45, 1.44), (-2.52, 1.30), (-2.56, 1.21), (-2.583, 1.12)]
+COWL_Y, ROOF_Y = 0.97, 0.36
 
 
 def section(y):
-    side = []
-    for z in SIDE_Z:
-        p = cast(Vector((3.0, y, z)), Vector((-1, 0, 0)))
-        side.append(None if p is None else Vector((p.x, y, z)))
-    top = []
-    for x in TOP_X:
-        p = cast(Vector((x, y, 3.0)), Vector((0, 0, -1)))
-        top.append(None if p is None else Vector((x, y, p.z)))
-    valid = [p for p in side if p is not None]
-    if not valid:
-        valid = [Vector((0.9, y, 0.6))]
-    # fill misses: below the body -> first valid, above -> last valid
-    first = next(k for k, p in enumerate(side) if p is not None) if any(side) else 0
-    for k in range(len(side)):
-        if side[k] is None:
-            side[k] = (side[first] if k < first else side[k - 1]).copy()
-    ztop_side = max(p.z for p in side)
-    xs = side[-1].x
-    for k, x in enumerate(TOP_X):
-        if top[k] is None:
-            top[k] = Vector((min(x, xs), y, ztop_side))
-        top[k].x = min(top[k].x, xs)
-        top[k].z = max(top[k].z, side[-1].z if top[k].x >= xs - 1e-4 else top[k].z)
-    pts = side + top
-    pts[-1].x = 0.0
-    # wheel arch openings: lift the lower side up to the arch line
+    xs = lerp_tab(SIDE_X, y)
+    zb = 0.70 if (y > 2.05 or y < -2.50) else 0.42           # nose / tail sit on the bumpers
+    pts = [Vector((xs - 0.01, y, zb)), Vector((xs, y, max(zb + 0.04, 0.80))), Vector((xs - 0.008, y, 1.0))]
+    if y >= COWL_Y:                                           # front clip: fenders + hood
+        ze, zc = lerp_tab(HOOD_E, y), lerp_tab(HOOD_C, y)
+        top = [Vector((xs - 0.03, y, min(1.15, ze - 0.03))), Vector((min(xs - 0.07, 0.86), y, ze - 0.008)),
+               Vector((min(xs - 0.12, 0.80), y, ze)), Vector((min(0.45, xs * 0.5), y, (ze + zc) / 2 + 0.006)),
+               Vector((0.0, y, zc))]
+    elif y <= ROOF_Y:                                         # cabin: belt, leaning glass, roof
+        zr = lerp_tab(ROOF_TOP, y) if y < -2.25 else 1.808
+        top = [Vector((xs - 0.03, y, 1.15)), Vector((xs - 0.06, y, min(1.24, zr - 0.06))),
+               Vector((0.745 if zr > 1.75 else xs - 0.10, y, min(1.70, zr - 0.03))),
+               Vector((0.45, y, min(1.797, zr - 0.006))), Vector((0.0, y, zr))]
+    else:
+        raise ValueError("windscreen span is lofted between the cowl and roof stations")
+    pts += top
+    # wheel arches: lift the lower side to the arch line, pull the bottom in as the wheelhouse
     for wy in (WHEEL_Y, -WHEEL_Y):
         dy = y - wy
         if abs(dy) < ARCH_R - 1e-4:
             az = wz + math.sqrt(ARCH_R * ARCH_R - dy * dy)
-            for p in pts:
-                if p.z < az and p.x > 0.45:
-                    p.z = az
+            if pts[1].z < az + 0.02:
+                pts[1].z = az + 0.02
+            if pts[0].z < az:
+                pts[0] = Vector((xs - 0.01, y, az))       # opening edge stays on the body side
     return pts
+
+
+R = ARCH_R
+_arch = [WHEEL_Y + R * k for k in (1.0, 0.8, 0.5, 0.2, -0.2, -0.5, -0.8, -1.0)]
+STATIONS = ([2.235, 2.18, 2.10, 2.02] + _arch + [COWL_Y, ROOF_Y, -0.40] + [-a for a in reversed(_arch)] +
+            [-2.20, -2.30, -2.38, -2.45, -2.52, -2.56, -2.583])
 
 
 hide_for_probe(True)
@@ -164,6 +172,36 @@ for ring in (rings[0], rings[-1]):
 bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.004)
 # degenerate quads (collapsed arch points) -> drop
 bmesh.ops.dissolve_degenerate(bm, edges=bm.edges, dist=0.002)
+# bumpers (same sweeps as the detailed model), running boards
+def sweep(path, profile):
+    rows = []
+    for i, (x, y) in enumerate(path):
+        a = Vector(path[max(0, i - 1)])
+        b = Vector(path[min(len(path) - 1, i + 1)])
+        t = (b - a).normalized()
+        n = Vector((t.y, -t.x))
+        if n.dot(Vector((x, y))) < 0:
+            n = -n
+        rows.append([bm.verts.new((x + n.x * d, y + n.y * d, z)) for (d, z) in profile])
+    for i in range(len(rows) - 1):
+        for j in range(len(profile) - 1):
+            bm.faces.new((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]))
+    for r in (rows[0], rows[-1]):
+        bm.faces.new(r)
+
+
+def mirror_path(right):
+    return [(-x, y) for (x, y) in right] + [(x, y) for (x, y) in reversed(right[:-1])]
+
+
+sweep(mirror_path([(0.975, 2.05), (0.955, 2.165), (0.90, 2.228), (0.60, 2.300), (0.0, 2.337)]),
+      [(-0.10, 0.748), (0.0, 0.748), (0.016, 0.712), (0.012, 0.60), (0.0, 0.535), (-0.04, 0.45), (-0.20, 0.42)])
+sweep(mirror_path([(0.975, -2.555), (0.965, -2.665), (0.90, -2.735), (0.60, -2.748), (0.0, -2.748)]),
+      [(-0.17, 0.705), (0.0, 0.705), (0.006, 0.62), (0.0, 0.475), (-0.12, 0.465)])
+for sx in (-1, 1):
+    r = bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.scale(bm, vec=(0.20, 1.98, 0.07), verts=r["verts"])
+    bmesh.ops.translate(bm, vec=(sx * 0.87, 0.0, 0.435), verts=r["verts"])
 # mirrors
 for sx in (-1, 1):
     r = bmesh.ops.create_cube(bm, size=1.0)
