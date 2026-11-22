@@ -50,14 +50,20 @@ def num(v):
         return None
 
 
+MAKE_FIX = {"Gmc": "GMC", "Bmw": "BMW", "Amc": "AMC", "Mg": "MG", "Mclaren": "McLaren",
+            "Vinfast": "VinFast", "Mini": "MINI", "Mercedes-Amg": "Mercedes-AMG",
+            "Amc Jeeps": "AMC Jeep", "Amc Renault": "AMC Renault"}
+
+
 def row(year, s):
     cm = lambda k: (num(s.get(k)) or 0) / 100.0
     L, W, H, WB = cm("OL"), cm("OW"), cm("OH"), cm("WB")
-    if min(L, W, H, WB) <= 0.3 or L > 25 or WB >= L:
-        return None
+    if not (2.0 < L < 12 and 1.2 < W < 3 and 0.9 < H < 4 and WB < L):
+        return None                    # typos in the source (e.g. 6.66 m wide)
     wd = str(s.get("WD") or "")
     front_pct = num(wd.split("/")[0]) if "/" in wd else num(wd)
-    return [year, str(s.get("MAKE", "")).strip().title(), str(s.get("MODEL", "")).strip(),
+    make = str(s.get("MAKE", "")).strip().title()
+    return [year, MAKE_FIX.get(make, make), str(s.get("MODEL", "")).strip(),
             round(L, 3), round(W, 3), round(H, 3), round(WB, 3),
             round(cm("TWF"), 3), round(cm("TWR"), 3), round(cm("F"), 3), round(cm("G"), 3),
             num(s.get("CW")), front_pct]
