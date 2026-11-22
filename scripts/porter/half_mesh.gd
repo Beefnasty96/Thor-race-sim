@@ -210,10 +210,111 @@ func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
 
 func _emit_face(st: SurfaceTool, f: PackedInt32Array, vs: PackedVector3Array) -> void:
 	var n := face_normal(f, vs)
-	for k in range(1, f.size() - 1):
-		for idx in [f[0], f[k + 1], f[k]]:      # reversed: CCW-outward -> Godot front face
+	for tri in triangulate(f, vs):
+		for idx in [tri[0], tri[2], tri[1]]:    # reversed: CCW-outward -> Godot front face
 			st.set_normal(n)
 			st.add_vertex(vs[idx])
+
+## Split a face into triangles (vertex ids, CCW seen from outside). Faces
+## with more than 4 sides, or concave ones (like a side panel with a wheel
+## arch cut into it), are ear-clipped in the face's own plane.
+func triangulate(f: PackedInt32Array, vs: PackedVector3Array = verts) -> Array:
+	var out := []
+	if f.size() == 3:
+		return [[f[0], f[1], f[2]]]
+	var n := face_normal(f, vs)
+	var u := (vs[f[1]] - vs[f[0]])
+	u = (u - n * u.dot(n)).normalized()
+	if u.length() < 0.5:
+		u = n.cross(Vector3.UP if absf(n.y) < 0.9 else Vector3.RIGHT).normalized()
+	var w := n.cross(u)
+	var poly := PackedVector2Array()
+	for i in f:
+		poly.append(Vector2(vs[i].dot(u), vs[i].dot(w)))
+	var idx := Geometry2D.triangulate_polygon(poly)
+	if idx.is_empty():
+		for k in range(1, f.size() - 1):       # degenerate: fall back to a fan
+			out.append([f[0], f[k], f[k + 1]])
+		return out
+	for t in range(0, idx.size(), 3):
+		var a := f[idx[t]]
+		var b := f[idx[t + 1]]
+		var c := f[idx[t + 2]]
+		if (vs[b] - vs[a]).cross(vs[c] - vs[a]).dot(n) < 0.0:
+			out.append([a, c, b])
+		else:
+			out.append([a, b, c])
+	return out
+
+# ---------------------------------------------------------------- wheel arches
+
+## Cut a wheel arch into the body side at an axle: points are added along
+## the side's bottom edge and lifted onto a circle around the wheel, so the
+## side panel's lower edge follows the arch. `axle_z` / `center_y` place the
+## wheel; `radius` is the arch radius (tire radius plus clearance).
+## Returns "" or a message.
+func cut_wheel_arch(axle_z: float, center_y: float, radius: float, segments: int = 8) -> String:
+	# the side's bottom edge: the lowest side edge running past the axle
+	var low := INF
+	for e in edges():
+		if is_center(e.x) or is_center(e.y):
+			continue
+		var a := verts[e.x]
+		var b := verts[e.y]
+		if (a.z - axle_z) * (b.z - axle_z) <= 0.0 and absf(a.z - b.z) > 0.01:
+			low = minf(low, lerpf(a.y, b.y, (axle_z - a.z) / (b.z - a.z)))
+	if low == INF:
+		return "No body side found at this axle."
+	if low >= center_y + radius - 0.02:
+		return "The body sits above the wheel here, so there's nothing to cut."
+	var half := sqrt(maxf(radius * radius - pow(low - center_y, 2.0), 0.0))
+	var zs := []
+	for k in segments + 1:
+		zs.append(axle_z - half + 2.0 * half * k / segments)
+	var ids := []
+	for z in zs:
+		var id := _point_on_bottom_edge(z, low)
+		if id < 0:
+			return "The body's bottom edge doesn't run past this wheel (has it been reshaped?). Cut arches right after picking a template, or add points on the edge with Add point."
+		ids.append(id)
+	for k in range(1, segments):
+		var dz: float = zs[k] - axle_z
+		var y := center_y + sqrt(maxf(radius * radius - dz * dz, 0.0))
+		var p := verts[ids[k]]
+		verts[ids[k]] = Vector3(p.x, maxf(y, low), p.z)
+	return ""
+
+## Point on the side's bottom edge at depth z (reuses a point within 1 cm,
+## otherwise splits the edge there).
+func _point_on_bottom_edge(z: float, low: float) -> int:
+	for i in verts.size():
+		if not is_center(i) and absf(verts[i].y - low) < 0.03 and absf(verts[i].z - z) < 0.01:
+			return i
+	for e in edges():
+		if is_center(e.x) or is_center(e.y):
+			continue
+		var a := verts[e.x]
+		var b := verts[e.y]
+		var z0 := minf(a.z, b.z)
+		var z1 := maxf(a.z, b.z)
+		if z > z0 + 0.005 and z < z1 - 0.005:
+			var t := (z - a.z) / (b.z - a.z)
+			var p := a.lerp(b, t)
+			if absf(p.y - low) > 0.03 or absf(a.y - low) > 0.1 or absf(b.y - low) > 0.1:
+				continue                    # not the bottom edge (or too sloped)
+			var id := verts.size()
+			verts.append(p)
+			for fi in faces.size():
+				var f: PackedInt32Array = faces[fi]
+				for k in f.size():
+					var u := f[k]
+					var v := f[(k + 1) % f.size()]
+					if (u == e.x and v == e.y) or (u == e.y and v == e.x):
+						f.insert(k + 1, id)
+						faces[fi] = f
+						break
+			return id
+	return -1
 
 # ---------------------------------------------------------------- operations
 

@@ -319,5 +319,62 @@ func _initialize() -> void:
 			any_center = true
 	_check(any_center, "merging with a centerline point keeps it on the centerline")
 
+	# wheel arches
+	var ar := HalfMesh.from_template("suv", d)
+	var r_t: float = d["tire_radius_m"]
+	var wb2: float = d["wheelbase_m"] * 0.5
+	var before_v := ar.verts.size()
+	_check(ar.cut_wheel_arch(-wb2, r_t, r_t * 1.12 + 0.02, 8) == "", "front wheel arch cuts")
+	_check(ar.cut_wheel_arch(wb2, r_t, r_t * 1.12 + 0.02, 8) == "", "rear wheel arch cuts")
+	_check(ar.verts.size() == before_v + 18, "each arch adds 9 points on the bottom edge (%d)" % (ar.verts.size() - before_v))
+	_check(_closed_and_consistent(ar), "body stays closed after cutting arches")
+	var top_y := 0.0
+	for v in ar.verts:
+		if absf(v.z + wb2) < 0.05 and v.x < -0.5:
+			top_y = maxf(top_y, v.y) if v.y < 1.0 else top_y
+	_check(top_y > r_t * 2.0, "the arch rises above the tire (%.2f m > %.2f m)" % [top_y, r_t * 2.0])
+	var tri_total := 0
+	for f in ar.faces:
+		tri_total += ar.triangulate(f).size()
+	_check(tri_total * 2 == ar.triangle_count(), "concave arch panels triangulate fully (%d triangles)" % (tri_total * 2))
+	var flipped := 0
+	for f in ar.faces:
+		var n := ar.face_normal(f)
+		for t in ar.triangulate(f):
+			if (ar.verts[t[1]] - ar.verts[t[0]]).cross(ar.verts[t[2]] - ar.verts[t[0]]).dot(n) < 0.0:
+				flipped += 1
+	_check(flipped == 0, "every triangle faces the same way as its face")
+	_check(ar.build_mesh().get_surface_count() == 1, "body with arches renders")
+	var hi_body := HalfMesh.from_template("suv", d)
+	_check(hi_body.cut_wheel_arch(-wb2, 0.1, 0.12, 8) != "", "a wheel below the body is refused with a message")
+
+	# wheel model + picture
+	var wm2 := WheelBuilder.build(0.387, 0.245, 16)
+	_check(wm2.get_surface_count() == 2, "wheel model has a picture surface and a rubber surface")
+	_check(wm2.surface_get_array_len(0) == 16 * 2 * 3 and wm2.surface_get_array_len(1) == 16 * 6, "16-sided wheel: 32 face triangles, 32 tread triangles")
+	var aabb := wm2.get_aabb()
+	_check(absf(aabb.size.x - 0.245) < 1e-4 and absf(aabb.size.y - 0.774) < 0.002, "wheel is as wide and tall as the tire")
+	var wp := PorterProject.create("wheel test")
+	wp.fill_from_car(def, "4door")
+	var simg := Image.create(1600, 700, false, Image.FORMAT_RGBA8)
+	simg.fill(Color(0.2, 0.6, 0.2))
+	wp.import_image("side", simg)
+	wp.align_two_points("side", Vector2(400, 560), Vector2(1250, 560), Vector2(1600, 700))
+	var wc := wp.wheel_auto_crop(false)
+	_check(Vector2(wc["cx"], wc["cy"]).distance_to(Vector2(400, 560)) < 0.5, "auto crop centers on the front wheel in the photo")
+	var px_per_m: float = 850.0 / wp.dims["wheelbase_m"]
+	_check(absf(wc["r"] - wp.tire_radius(false) * px_per_m) < 0.5, "auto crop radius matches the tire size at photo scale")
+	var tex := wp.make_wheel_texture(false)
+	_check(tex != null and tex.get_width() == PorterProject.WHEEL_TEX_PX, "wheel picture is cut at 256x256")
+	_check(tex.get_pixel(128, 128).g > 0.5 and tex.get_pixel(2, 2).g < 0.2, "inside the circle is photo, outside is rubber")
+	_check(FileAccess.file_exists(wp.dir() + "wheel_front.png"), "wheel picture saved in the project")
+	wp.wheels["front"] = {"cx": 420.0, "cy": 560.0, "r": 90.0}
+	wp.save()
+	var wp2 := PorterProject.load_project(wp.id)
+	_check(wp2.wheels["front"]["cx"] == 420.0 and wp2.wheel_crop(false)["r"] == 90.0, "adjusted crop survives save/load")
+	for f in DirAccess.get_files_at(wp.dir()):
+		DirAccess.remove_absolute(wp.dir() + f)
+	DirAccess.remove_absolute(wp.dir())
+
 	print("\n%s (%d failed)" % ["ALL PASSED" if fails == 0 else "FAILURES", fails])
 	quit(1 if fails else 0)

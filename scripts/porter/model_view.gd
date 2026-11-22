@@ -167,6 +167,9 @@ func _photo(view_name: String) -> Dictionary:
 	return _photos[view_name]
 
 func rebuild_body() -> void:
+	if _deco_paint != show_paint:
+		_deco_paint = show_paint
+		_rebuild_deco()                 # wheels switch between plain and textured
 	if not show_paint:
 		body.material_override = body_mat
 		body.mesh = mesh.build_mesh(paint_colors, true)
@@ -200,16 +203,26 @@ func _rebuild_deco() -> void:
 	for ax in [[-d["wheelbase_m"] * 0.5, d["track_front_m"], false], [d["wheelbase_m"] * 0.5, d["track_rear_m"], true]]:
 		var r: float = project.tire_radius(ax[2])
 		var tw: float = project.tires.get("rear_width_m" if ax[2] else "front_width_m", 0.22)
+		var tex := _wheel_tex(ax[2])
 		for sx in [-0.5, 0.5]:
 			var w := MeshInstance3D.new()
-			var cyl := CylinderMesh.new()
-			cyl.top_radius = r
-			cyl.bottom_radius = r
-			cyl.height = tw
-			cyl.radial_segments = 16
-			w.mesh = cyl
-			w.material_override = wm
-			w.rotation = Vector3(0, 0, PI * 0.5)
+			if tex and show_paint:
+				# textured wheel model (axle along X, picture facing outward)
+				w.mesh = WheelBuilder.build(r, tw)
+				var mats := WheelBuilder.materials(tex)
+				w.mesh.surface_set_material(0, mats[0])
+				w.mesh.surface_set_material(1, mats[1])
+				if sx < 0.0:
+					w.rotation = Vector3(0, PI, 0)
+			else:
+				var cyl := CylinderMesh.new()
+				cyl.top_radius = r
+				cyl.bottom_radius = r
+				cyl.height = tw
+				cyl.radial_segments = 16
+				w.mesh = cyl
+				w.material_override = wm
+				w.rotation = Vector3(0, 0, PI * 0.5)
 			w.position = Vector3(ax[1] * sx, r, ax[0])
 			deco.add_child(w)
 	# ground line in 3D
@@ -228,6 +241,21 @@ func _rebuild_deco() -> void:
 	var img := project.load_photo(pv)
 	if img:
 		deco.add_child(_photo_quad(pv, img))
+
+var _wheel_cache := {}
+var _deco_paint := false
+
+func _wheel_tex(rear: bool) -> Texture2D:
+	var key := "rear" if rear else "front"
+	if not _wheel_cache.has(key):
+		var img := project.load_wheel_texture(rear)
+		_wheel_cache[key] = ImageTexture.create_from_image(img) if img else null
+	return _wheel_cache[key]
+
+## Reload the wheel pictures and rebuild the wheels.
+func refresh_wheels() -> void:
+	_wheel_cache.clear()
+	_rebuild_deco()
 
 func _photo_world(pv: String, p: Vector2) -> Vector3:
 	var d := project.dims
@@ -494,6 +522,8 @@ func _begin() -> void:
 		"size": ortho_size, "dist": dist}
 
 func _on_tap(s: Vector2) -> void:
+	if tool == "wheels":
+		return
 	if tool == "add_point":
 		add_point_tap.emit(s)
 		return
@@ -600,10 +630,10 @@ func _draw_overlay() -> void:
 			continue
 		var sel := sel_verts.has(e.x) and sel_verts.has(e.y)
 		var col := C_SEL if sel else C_EDGE
-		if tool == "paint":
+		if tool in ["paint", "wheels"]:
 			col = Color(0.85, 0.92, 1.0, 0.45)
-		o.draw_line(project_point(a2), project_point(b2), col, 2.5 if sel else (1.2 if tool == "paint" else 2.0), true)
-	if pick == Pick.POINTS and tool != "paint":
+		o.draw_line(project_point(a2), project_point(b2), col, 2.5 if sel else (1.2 if tool in ["paint", "wheels"] else 2.0), true)
+	if pick == Pick.POINTS and tool not in ["paint", "wheels"]:
 		for i in mesh.verts.size():
 			var p := mesh.verts[i]
 			if cam.is_position_behind(p):

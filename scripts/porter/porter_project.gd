@@ -29,6 +29,9 @@ var dims := {
 ## Tires entered when the car is created: sizes as printed on the placard and
 ## cold pressures in PSI.
 var tires := {"front": "", "rear": "", "front_psi": 0.0, "rear_psi": 0.0}
+## Wheel picture crops from the side photo, per axle: center and radius in
+## photo pixels (cx, cy, r). "rear_same" reuses the front picture at the rear.
+var wheels := {"front": {}, "rear": {}, "rear_same": true}
 var units := "imperial"           # imperial | metric (display only; storage is meters)
 var paint := {}                   # preview paint: {"color": [r,g,b], "lower": [r,g,b]}
 ## Per view: file, cx, cy (photo center in frame meters), mpp (meters per pixel),
@@ -262,7 +265,7 @@ static func create(project_name: String) -> PorterProject:
 func to_dict() -> Dictionary:
 	return {"format": 1, "id": id, "name": name, "source_car": source_car,
 		"units": units, "dims": dims, "views": views, "paint": paint,
-		"source_db": source_db, "db_row": db_row, "tires": tires}
+		"source_db": source_db, "db_row": db_row, "tires": tires, "wheels": wheels}
 
 func save() -> bool:
 	DirAccess.make_dir_recursive_absolute(dir())
@@ -289,6 +292,7 @@ static func load_project(project_id: String) -> PorterProject:
 	p.source_db = d.get("source_db", "")
 	p.db_row = d.get("db_row", {})
 	p.tires = d.get("tires", p.tires)
+	p.wheels = d.get("wheels", p.wheels)
 	if not d.get("dims", {}).has("tire_radius_rear_m"):
 		p.dims["tire_radius_rear_m"] = p.dims["tire_radius_m"]      # projects saved before staggered tires
 	for k in d.get("dims", {}):
@@ -388,3 +392,63 @@ func load_mesh() -> HalfMesh:
 		return null
 	var d = JSON.parse_string(FileAccess.get_file_as_string(dir() + "body.json"))
 	return HalfMesh.from_dict(d) if d is Dictionary else null
+
+# ---------------------------------------------------------------- wheels
+
+const WHEEL_TEX_PX := 256
+
+## Where a wheel sits in the side photo, from the photo alignment and the
+## tire size: {cx, cy, r} in photo pixels, or {} without a side photo.
+func wheel_auto_crop(rear_axle: bool) -> Dictionary:
+	var img := load_photo("side")
+	if img == null:
+		return {}
+	var sz := Vector2(img.get_width(), img.get_height())
+	var r := tire_radius(rear_axle)
+	var x := rear_axle_x() if rear_axle else front_axle_x()
+	var c := frame_to_image("side", Vector2(x, r), sz)
+	return {"cx": c.x, "cy": c.y, "r": r / float(views["side"]["mpp"])}
+
+func wheel_crop(rear_axle: bool) -> Dictionary:
+	var key := "rear" if rear_axle and not wheels.get("rear_same", true) else "front"
+	var c: Dictionary = wheels.get(key, {})
+	if c.is_empty():
+		c = wheel_auto_crop(key == "rear")
+	return c
+
+## Cut the wheel picture out of the side photo (square, WHEEL_TEX_PX) and
+## save it as wheel_front.png / wheel_rear.png. Outside the circle is filled
+## with dark rubber so the tire edge stays clean.
+func make_wheel_texture(rear_axle: bool) -> Image:
+	var src := load_photo("side")
+	var c := wheel_crop(rear_axle)
+	if src == null or c.is_empty():
+		return null
+	var n := WHEEL_TEX_PX
+	var out := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var rubber := WheelBuilder.RUBBER
+	var cx: float = c["cx"]
+	var cy: float = c["cy"]
+	var r: float = c["r"]
+	var flip: bool = views["side"]["flip"]
+	for y in n:
+		for x in n:
+			var u := (x + 0.5) / n * 2.0 - 1.0
+			var v := (y + 0.5) / n * 2.0 - 1.0
+			if u * u + v * v > 1.0:
+				out.set_pixel(x, y, rubber)
+				continue
+			var sx := cx + (-u if flip else u) * r
+			var sy := cy + v * r
+			if sx < 0 or sy < 0 or sx >= src.get_width() or sy >= src.get_height():
+				out.set_pixel(x, y, rubber)
+			else:
+				out.set_pixel(x, y, src.get_pixel(int(sx), int(sy)))
+	out.save_png(dir() + ("wheel_rear.png" if rear_axle else "wheel_front.png"))
+	return out
+
+func load_wheel_texture(rear_axle: bool) -> Image:
+	var f := dir() + ("wheel_rear.png" if rear_axle else "wheel_front.png")
+	if not FileAccess.file_exists(f):
+		return null
+	return Image.load_from_file(ProjectSettings.globalize_path(f))
