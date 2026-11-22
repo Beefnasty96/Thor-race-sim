@@ -18,6 +18,13 @@ var multi_btn: Button
 var step_m := 0.01
 var _save_t := 0.0
 var _picker: Control
+var mode_btns := {}
+var shape_panel: Control
+var paint_panel: Control
+var region_btns := {}
+var region := "paint"
+var fill := false
+var xray_btn: Button
 
 func setup(p: PorterProject) -> void:
 	project = p
@@ -26,6 +33,7 @@ func setup(p: PorterProject) -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_build()
+	view.paint_colors = _paint_colors()
 	if mesh == null:
 		mesh = HalfMesh.from_template("suv", project.dims)
 		view.setup(project, mesh)
@@ -60,7 +68,11 @@ func _build() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.clip_text = true
 	hb.add_child(title)
-	hb.add_child(UIKit.label("MODEL", 22, UIKit.DIM))
+	mode_btns["shape"] = PorterUI.toggle("Shape", true, func(on): _set_mode("shape", on))
+	mode_btns["paint"] = PorterUI.toggle("Paint", false, func(on): _set_mode("paint", on))
+	hb.add_child(mode_btns["shape"])
+	hb.add_child(mode_btns["paint"])
+	hb.add_child(VSeparator.new())
 	for v in [["side", "Side"], ["front", "Front"], ["top", "Top"], ["3d", "3D"]]:
 		var key: String = v[0]
 		var b := PorterUI.button(v[1], func(): _select_view(key), 130)
@@ -84,13 +96,18 @@ func _build() -> void:
 			_queue_save()
 		_refresh_info())
 	view.edge_tapped.connect(_on_edge_tapped)
+	view.face_tapped.connect(_on_face_painted)
 	hint = UIKit.label("", 24, UIKit.WARN)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	hint.offset_left = 20; hint.offset_right = -20; hint.offset_top = 12
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stage.add_child(hint)
-	body.add_child(_build_panel())
+	shape_panel = _build_panel()
+	paint_panel = _build_paint_panel()
+	paint_panel.visible = false
+	body.add_child(shape_panel)
+	body.add_child(paint_panel)
 
 func _build_panel() -> Control:
 	var panel := PanelContainer.new()
@@ -161,7 +178,8 @@ func _build_panel() -> Control:
 
 	v.add_child(UIKit.label("DISPLAY", 24, UIKit.ACCENT))
 	var r6 := HBoxContainer.new()
-	r6.add_child(_grow(PorterUI.toggle("See-through", true, func(on): view.set_xray(on))))
+	xray_btn = _grow(PorterUI.toggle("See-through", true, func(on): view.set_xray(on)))
+	r6.add_child(xray_btn)
 	r6.add_child(_grow(PorterUI.button("Reset view", func(): _select_view(view.view))))
 	v.add_child(r6)
 	v.add_child(HSeparator.new())
@@ -331,3 +349,134 @@ func _show_template_picker(first: bool) -> void:
 		if is_instance_valid(pc):
 			pc.position = global_position
 			pc.size = size)
+
+# ---------------------------------------------------------------- paint mode
+
+func _set_mode(m: String, on: bool) -> void:
+	if not on:
+		mode_btns[m].set_pressed_no_signal(true)    # keep one lit
+		return
+	var painting := m == "paint"
+	mode_btns["shape"].set_pressed_no_signal(not painting)
+	mode_btns["paint"].set_pressed_no_signal(painting)
+	shape_panel.visible = not painting
+	paint_panel.visible = painting
+	view.tool = "paint" if painting else ""
+	view.show_paint = painting
+	view.clear_selection()
+	view.set_xray(not painting and xray_btn.button_pressed)
+	view.rebuild_body()
+	_say("Pick a part on the right, then tap faces to paint them." if painting else "")
+
+func _paint_colors() -> Dictionary:
+	var c := {}
+	var pc: Array = project.paint.get("color", [0.2, 0.25, 0.45])
+	c["paint"] = Color(pc[0], pc[1], pc[2])
+	var lc: Array = project.paint.get("lower", pc)
+	c["second"] = Color(lc[0], lc[1], lc[2])
+	return c
+
+func _build_paint_panel() -> Control:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(540, 0)
+	var sc := ScrollContainer.new()
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(sc)
+	var pad := MarginContainer.new()
+	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pad.add_theme_constant_override("margin_right", 22)
+	sc.add_child(pad)
+	var v := VBoxContainer.new()
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.add_theme_constant_override("separation", 10)
+	pad.add_child(v)
+	v.add_child(UIKit.label("PART TO PAINT", 24, UIKit.ACCENT))
+	var g := GridContainer.new()
+	g.columns = 2
+	g.add_theme_constant_override("h_separation", 8)
+	g.add_theme_constant_override("v_separation", 8)
+	for key in HalfMesh.REGIONS:
+		var k: String = key
+		var b := PorterUI.toggle("      " + HalfMesh.REGIONS[k]["label"], k == region, func(on): _pick_region(k, on))
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var sw := ColorRect.new()
+		sw.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sw.custom_minimum_size = Vector2(30, 30)
+		sw.position = Vector2(14, 21)
+		sw.size = Vector2(30, 30)
+		sw.color = _paint_colors().get(k, HalfMesh.REGIONS[k]["color"])
+		b.add_child(sw)
+		region_btns[k] = [b, sw]
+		g.add_child(b)
+	v.add_child(g)
+	v.add_child(_grow(PorterUI.toggle("Fill: paint the whole connected area", false, func(on): fill = on)))
+	var r4 := HBoxContainer.new()
+	r4.add_child(_grow(PorterUI.button("↶ Undo", func():
+		if mesh.undo(): _after_structural()
+		else: _say("Nothing to undo."))))
+	r4.add_child(_grow(PorterUI.button("↷ Redo", func():
+		if mesh.redo(): _after_structural()
+		else: _say("Nothing to redo."))))
+	v.add_child(r4)
+
+	v.add_child(HSeparator.new())
+	v.add_child(UIKit.label("PREVIEW COLOR", 24, UIKit.ACCENT))
+	var paints := _factory_paints()
+	var pg := GridContainer.new()
+	pg.columns = 1
+	for pdef in paints:
+		var pd: Dictionary = pdef
+		var c: Array = pd["color"]
+		var b2 := PorterUI.button("      " + pd["name"], func(): _set_preview_paint(pd))
+		b2.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b2.clip_text = true
+		b2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b2.custom_minimum_size = Vector2(0, 64)
+		var sw2 := ColorRect.new()
+		sw2.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sw2.position = Vector2(14, 17)
+		sw2.size = Vector2(30, 30)
+		sw2.color = Color(c[0], c[1], c[2])
+		b2.add_child(sw2)
+		pg.add_child(b2)
+	v.add_child(pg)
+	var tip := UIKit.label("Tips: tap a face to paint it with the chosen part. Need a window frame, headlight or stripe where there's no face? Go back to Shape and use Loop cut to add one. Glass, lights and chrome get their own look in the game; body paint and the second color follow the paint shop.", 20, UIKit.DIM)
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(tip)
+	return panel
+
+## Factory colors of the car the dimensions came from, or a neutral set.
+func _factory_paints() -> Array:
+	if project.source_car != "" and Game.cars.has(project.source_car):
+		return Game.cars[project.source_car].get("paints", [])
+	return [
+		{"name": "White", "color": [0.9, 0.9, 0.88]}, {"name": "Black", "color": [0.03, 0.03, 0.035]},
+		{"name": "Red", "color": [0.6, 0.05, 0.05]}, {"name": "Silver", "color": [0.6, 0.61, 0.62]},
+		{"name": "Blue", "color": [0.12, 0.2, 0.45]}, {"name": "Green", "color": [0.08, 0.25, 0.14]},
+	]
+
+func _set_preview_paint(pd: Dictionary) -> void:
+	project.paint = {"color": pd["color"], "lower": pd.get("lower", pd["color"])}
+	project.save()
+	view.paint_colors = _paint_colors()
+	for k in ["paint", "second"]:
+		region_btns[k][1].color = view.paint_colors[k]
+	view.rebuild_body()
+
+func _pick_region(k: String, on: bool) -> void:
+	if not on and k == region:
+		region_btns[k][0].set_pressed_no_signal(true)
+		return
+	region = k
+	for key in region_btns:
+		region_btns[key][0].set_pressed_no_signal(key == k)
+
+func _on_face_painted(fi: int) -> void:
+	var targets: Array = mesh.connected_same_region(fi) if fill else [fi]
+	if mesh.region_of(fi) == region and targets.size() == 1:
+		return
+	mesh.push_undo()
+	mesh.set_region(targets, region)
+	view.rebuild_body()
+	_queue_save()

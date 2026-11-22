@@ -10,6 +10,7 @@ extends Control
 signal selection_changed
 signal mesh_edited(final: bool)      # final = edit finished (save / undo point)
 signal edge_tapped(a: int, b: int)
+signal face_tapped(fi: int)
 
 enum Pick { POINTS, FACES }
 
@@ -20,7 +21,9 @@ var pick := Pick.POINTS
 var multi := false
 var xray := true
 var lock_axis := 0                    # 0 free, 1 horizontal only, 2 vertical only
-var tool := ""                        # "" or "loop_cut"
+var tool := ""                        # "" | "loop_cut" | "paint"
+var paint_colors := {}                # region -> Color used for display (body paint etc.)
+var show_paint := false               # colour faces by region (Paint mode)
 var sel_verts := {}                   # id -> true
 var sel_faces := {}
 
@@ -141,7 +144,7 @@ func _apply_material() -> void:
 	body_mat.albedo_color = Color(1, 1, 1, 0.45 if see_through else 1.0)
 
 func rebuild_body() -> void:
-	body.mesh = mesh.build_mesh()
+	body.mesh = mesh.build_mesh(paint_colors, not show_paint)
 	overlay.queue_redraw()
 
 # ---------------------------------------------------------------- scene dressing
@@ -413,6 +416,11 @@ func _begin() -> void:
 		"size": ortho_size, "dist": dist}
 
 func _on_tap(s: Vector2) -> void:
+	if tool == "paint":
+		var c := _candidates_faces(s)
+		if not c.is_empty():
+			face_tapped.emit(c[0][0])
+		return
 	if tool == "loop_cut":
 		var edge := _pick_edge(s)
 		if edge.x >= 0:
@@ -510,8 +518,11 @@ func _draw_overlay() -> void:
 		if cam.is_position_behind(a2) or cam.is_position_behind(b2):
 			continue
 		var sel := sel_verts.has(e.x) and sel_verts.has(e.y)
-		o.draw_line(project_point(a2), project_point(b2), C_SEL if sel else C_EDGE, 2.5 if sel else 2.0, true)
-	if pick == Pick.POINTS:
+		var col := C_SEL if sel else C_EDGE
+		if tool == "paint":
+			col = Color(0.85, 0.92, 1.0, 0.45)
+		o.draw_line(project_point(a2), project_point(b2), col, 2.5 if sel else (1.2 if tool == "paint" else 2.0), true)
+	if pick == Pick.POINTS and tool != "paint":
 		for i in mesh.verts.size():
 			var p := mesh.verts[i]
 			if cam.is_position_behind(p):
@@ -521,5 +532,7 @@ func _draw_overlay() -> void:
 				o.draw_circle(s, 11.0, C_SEL)
 			else:
 				o.draw_circle(s, 6.5, C_VERT if not mesh.is_center(i) else Color(0.6, 1.0, 0.7))
-	if tool == "loop_cut":
+	if tool == "paint":
+		pass
+	elif tool == "loop_cut":
 		o.draw_string(get_theme_default_font(), Vector2(20, size.y - 24), "LOOP CUT: tap an edge to cut across", HORIZONTAL_ALIGNMENT_LEFT, -1, 26, C_SEL)

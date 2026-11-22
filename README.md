@@ -100,8 +100,16 @@ the start scene to `scenes/porter.tscn` and the package to
   delete, undo/redo. Flat-shaded like GT1, with a live triangle count against
   a 1,500-triangle budget. Saved as `body.json` in the project.
 
-Next: wheels and wheel arches, paint regions, specs and test targets, export
-to `data/cars/` + `assets/cars/`.
+**v0.3: paint** (*Paint* switch in the modeler)
+- Tap faces to mark them as body paint, second color, glass, headlight,
+  taillight, chrome, black trim or grille; *Fill* paints a connected area.
+- New templates start pre-painted (windows glass, grille, black underbody).
+- Parts use the material names the game already understands (Paint, Lower,
+  Glass, Taillight, plus Headlight / Chrome / Trim / Grille), so export maps
+  straight onto CarModel. Preview in the source car's factory colors.
+
+Next: wheels and wheel arches, specs and test targets, export to
+`data/cars/` + `assets/cars/`.
 
 Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
 zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd` and

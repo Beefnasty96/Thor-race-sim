@@ -150,5 +150,58 @@ func _initialize() -> void:
 	_check(m5.verts.size() == m3.verts.size() and m5.faces.size() == m3.faces.size(), "save/load keeps the model")
 	_check(m5.template == "suv", "template name survives")
 
+	# paint regions
+	var r := HalfMesh.from_template("suv", d)
+	var counts := {}
+	for reg in r.regions:
+		counts[reg] = counts.get(reg, 0) + 1
+	_check(r.regions.size() == r.faces.size(), "one paint region per face")
+	_check(counts.get("glass", 0) >= 4, "SUV template has glass: side windows, windshield, rear window (%d faces)" % counts.get("glass", 0))
+	_check(counts.get("grille", 0) == 1, "SUV template has a grille on the front")
+	_check(counts.get("trim", 0) >= 1, "SUV underbody is black trim")
+	var glass_ok := true
+	for pf in r.faces.size():
+		if r.regions[pf] == "glass" and r.face_center(r.faces[pf]).y < d["height_m"] * 0.5:
+			glass_ok = false
+	_check(glass_ok, "glass is only on the upper body")
+	var box := HalfMesh.from_template("box", d)
+	_check(not box.regions.has("glass"), "plain box starts all paint (plus underbody)")
+	# regions follow edits
+	var side_fi := -1
+	for pf in r.faces.size():
+		if r.regions[pf] == "glass" and r.face_normal(r.faces[pf]).x < -0.8:
+			side_fi = pf
+			break
+	r.extrude_faces([side_fi], 0.02)
+	_check(r.regions.size() == r.faces.size(), "extrude keeps one region per face")
+	_check(r.regions[r.faces.size() - 1] == "glass", "extrude walls take the extruded face's region")
+	var e2: Vector2i = Vector2i(-1, -1)
+	for edge in r.edges():
+		if absf(r.verts[edge.x].z - r.verts[edge.y].z) > 1.0:
+			e2 = edge
+			break
+	r.loop_cut(e2.x, e2.y)
+	_check(r.regions.size() == r.faces.size(), "loop cut keeps one region per face")
+	# fill + paint + undo + save/load
+	var paint_fi := r.regions.find("paint")
+	var area := r.connected_same_region(paint_fi)
+	_check(area.size() >= 2, "fill finds the connected body-paint area (%d faces)" % area.size())
+	var all_same := true
+	for pf in area:
+		if r.regions[pf] != "paint":
+			all_same = false
+	_check(all_same, "fill only takes faces of the same part")
+	r.push_undo()
+	r.set_region(area, "second")
+	_check(r.regions[paint_fi] == "second", "painting a face changes its part")
+	r.undo()
+	_check(r.regions[paint_fi] == "paint", "undo restores paint")
+	r.set_region([paint_fi], "headlight")
+	var r2 := HalfMesh.from_dict(JSON.parse_string(JSON.stringify(r.to_dict())))
+	_check(r2.regions == r.regions, "paint survives save/load")
+	var old := HalfMesh.from_dict({"verts": [[0,0,0],[-1,0,0],[-1,1,0]], "faces": [[0,1,2]]})
+	_check(old.regions == ["paint"], "models saved before paint existed load as body paint")
+	_check(r.build_mesh({"paint": Color.RED}).get_surface_count() == 1, "colored preview mesh builds")
+
 	print("\n%s (%d failed)" % ["ALL PASSED" if fails == 0 else "FAILURES", fails])
 	quit(1 if fails else 0)

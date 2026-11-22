@@ -125,6 +125,13 @@ func _process(delta: float) -> void:
 			app.modeler._select_view("3d")
 		12:
 			_shot("porter_10_model_3d")
+			app.modeler._set_mode("paint", true)
+		13:
+			_shot("porter_11_paint_3d")
+			app.modeler._select_view("side")
+		14:
+			_shot("porter_12_paint_side")
+			app.modeler._select_view("3d")
 			var p2: PorterProject = app.project
 			for f in DirAccess.get_files_at(p2.dir()):
 				DirAccess.remove_absolute(p2.dir() + f)

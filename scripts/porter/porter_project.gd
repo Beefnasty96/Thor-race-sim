@@ -24,6 +24,7 @@ var dims := {
 	"tire_radius_m": 0.32,
 }
 var units := "imperial"           # imperial | metric (display only; storage is meters)
+var paint := {}                   # preview paint: {"color": [r,g,b], "lower": [r,g,b]}
 ## Per view: file, cx, cy (photo center in frame meters), mpp (meters per pixel),
 ## rot (radians), flip (mirror horizontally), opacity.
 var views := {}
@@ -52,6 +53,9 @@ func fill_from_car(def: Dictionary, body_key: String = "4door") -> void:
 	# overhangs aren't in the car file; split the remainder 45/55 front/rear as a start
 	dims["front_overhang_m"] = snappedf((b["length_m"] - b["wheelbase_m"]) * 0.45, 0.005)
 	source_car = def["id"]
+	var paints: Array = def.get("paints", [])
+	if not paints.is_empty() and paint.is_empty():
+		paint = {"color": paints[0]["color"], "lower": paints[0].get("lower", paints[0]["color"])}
 	if name == "New car":
 		name = "%d %s %s %s" % [def["year"], def["make"], def["model"], b.get("label", body_key)]
 
@@ -198,7 +202,7 @@ static func create(project_name: String) -> PorterProject:
 
 func to_dict() -> Dictionary:
 	return {"format": 1, "id": id, "name": name, "source_car": source_car,
-		"units": units, "dims": dims, "views": views}
+		"units": units, "dims": dims, "views": views, "paint": paint}
 
 func save() -> bool:
 	DirAccess.make_dir_recursive_absolute(dir())
@@ -221,6 +225,7 @@ static func load_project(project_id: String) -> PorterProject:
 	p.name = d.get("name", project_id)
 	p.source_car = d.get("source_car", "")
 	p.units = d.get("units", "imperial")
+	p.paint = d.get("paint", {})
 	for k in d.get("dims", {}):
 		p.dims[k] = float(d["dims"][k])
 	for v in VIEWS:
