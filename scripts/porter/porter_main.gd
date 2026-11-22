@@ -130,6 +130,10 @@ func show_projects() -> void:
 	name_edit.placeholder_text = "Name, e.g. 1994 Mazda MX-5"
 	name_edit.custom_minimum_size = Vector2(0, PorterUI.BTN_H)
 	left.add_child(name_edit)
+	var find := PorterUI.button("Find a production car (year, make, model)", func():
+		show_finder(name_edit.text.strip_edges()))
+	find.add_theme_color_override("font_color", UIKit.GOOD)
+	left.add_child(find)
 	left.add_child(PorterUI.button("Start blank (enter dimensions yourself)", func():
 		var n := name_edit.text.strip_edges()
 		_open(PorterProject.create(n if n != "" else "New car"))))
@@ -171,6 +175,21 @@ func show_projects() -> void:
 		b2.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		list.add_child(b2)
+	_set_screen(m)
+
+func show_finder(custom_name: String = "") -> void:
+	var m := MarginContainer.new()
+	for side in ["left", "right", "top", "bottom"]:
+		m.add_theme_constant_override("margin_" + side, 32)
+	var f := CarFinder.new()
+	m.add_child(f)
+	f.cancelled.connect(show_projects)
+	f.chosen.connect(func(r: Dictionary):
+		var label := "%d %s %s" % [r["year"], r["make"], VehicleDB.pretty(r["model"])]
+		var p := PorterProject.create(custom_name if custom_name != "" else label)
+		p.fill_from_db(r)
+		p.save()
+		_open(p))
 	_set_screen(m)
 
 func _open(p: PorterProject) -> void:
@@ -343,7 +362,10 @@ func _build_side_panel() -> Control:
 		row.add_child(u)
 		dim_edits[key] = [e, u]
 		v.add_child(row)
-	if project.source_car != "":
+	if project.source_db != "":
+		v.add_child(UIKit.label("From the production car database: %s. Tire radius is an estimate: check it against the side photo." % project.source_db, 20, UIKit.DIM))
+		v.get_child(v.get_child_count() - 1).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	elif project.source_car != "":
 		v.add_child(UIKit.label("Copied from the game's %s data. Front overhang is an estimate: check it against the side photo." % project.source_car, 20, UIKit.DIM))
 		v.get_child(v.get_child_count() - 1).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_refresh_dims()

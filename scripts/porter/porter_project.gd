@@ -18,6 +18,8 @@ const IMAGE_MAX_PX := 2048        # photos are downscaled to this on import (pho
 var id := ""
 var name := "New car"
 var source_car := ""              # car id the dimensions were copied from, if any
+var source_db := ""               # production car the dimensions came from (database), if any
+var db_row := {}                  # that database row (keeps curb weight etc. for later specs)
 var dims := {
 	"length_m": 4.5, "width_m": 1.8, "height_m": 1.4, "wheelbase_m": 2.7,
 	"front_overhang_m": 0.85, "track_front_m": 1.55, "track_rear_m": 1.55,
@@ -58,6 +60,28 @@ func fill_from_car(def: Dictionary, body_key: String = "4door") -> void:
 		paint = {"color": paints[0]["color"], "lower": paints[0].get("lower", paints[0]["color"])}
 	if name == "New car":
 		name = "%d %s %s %s" % [def["year"], def["make"], def["model"], b.get("label", body_key)]
+
+## Copy dimensions from a production-car database row (VehicleDB.row_dict).
+## Missing track or overhang values are estimated from width and length.
+func fill_from_db(r: Dictionary) -> void:
+	dims["length_m"] = r["length_m"]
+	dims["width_m"] = r["width_m"]
+	dims["height_m"] = r["height_m"]
+	dims["wheelbase_m"] = r["wheelbase_m"]
+	var tf: float = r.get("track_front_m", 0.0)
+	var tr: float = r.get("track_rear_m", 0.0)
+	dims["track_front_m"] = tf if tf > 0.5 else snappedf(r["width_m"] * 0.86, 0.005)
+	dims["track_rear_m"] = tr if tr > 0.5 else dims["track_front_m"]
+	var fo: float = r.get("front_overhang_m", 0.0)
+	var spare: float = r["length_m"] - r["wheelbase_m"]
+	dims["front_overhang_m"] = fo if (fo > 0.2 and fo < spare) else snappedf(spare * 0.45, 0.005)
+	# CVS has no tire size: scale a typical tire radius with the car's height
+	dims["tire_radius_m"] = snappedf(clampf(r["height_m"] * 0.22, 0.28, 0.42), 0.005)
+	source_car = ""
+	source_db = "%d %s %s" % [r["year"], r["make"], VehicleDB.pretty(r["model"])]
+	db_row = r.duplicate()
+	if name == "New car":
+		name = source_db
 
 func front_axle_x() -> float:
 	return dims["front_overhang_m"]
@@ -202,7 +226,8 @@ static func create(project_name: String) -> PorterProject:
 
 func to_dict() -> Dictionary:
 	return {"format": 1, "id": id, "name": name, "source_car": source_car,
-		"units": units, "dims": dims, "views": views, "paint": paint}
+		"units": units, "dims": dims, "views": views, "paint": paint,
+		"source_db": source_db, "db_row": db_row}
 
 func save() -> bool:
 	DirAccess.make_dir_recursive_absolute(dir())
@@ -226,6 +251,8 @@ static func load_project(project_id: String) -> PorterProject:
 	p.source_car = d.get("source_car", "")
 	p.units = d.get("units", "imperial")
 	p.paint = d.get("paint", {})
+	p.source_db = d.get("source_db", "")
+	p.db_row = d.get("db_row", {})
 	for k in d.get("dims", {}):
 		p.dims[k] = float(d["dims"][k])
 	for v in VIEWS:

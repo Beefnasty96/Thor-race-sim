@@ -11,6 +11,10 @@ on:
         default: probe
         required: true
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,17 +24,41 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch Canadian Vehicle Specifications
+      - name: Read mode
         run: |
           MODE="${{ github.event.inputs.mode }}"
           if [ -z "$MODE" ]; then MODE=$(cat tools/vehicle_db/MODE); fi
           echo "MODE=$MODE" >> $GITHUB_ENV
+          echo "SRC_RUN=${MODE#commit:}" >> $GITHUB_ENV
+      # "commit:<run id>": take the database built by that run and commit it here
+      - if: startsWith(env.MODE, 'commit:')
+        uses: actions/download-artifact@v4
+        with:
+          name: vehicle-db-full
+          run-id: ${{ env.SRC_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: dl
+      - if: startsWith(env.MODE, 'commit:')
+        name: Commit the database
+        run: |
+          mkdir -p data/vehicle_db
+          cp dl/vehicle_dimensions.json data/vehicle_db/vehicle_dimensions.json
+          echo done > tools/vehicle_db/MODE
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/vehicle_db/vehicle_dimensions.json tools/vehicle_db/MODE
+          git commit -m "Vehicle dimension database from run ${SRC_RUN} (Transport Canada CVS via NHTSA vPIC)"
+          git push
+      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' }}
+        name: Fetch Canadian Vehicle Specifications
+        run: |
           if [ "$MODE" = "full" ]; then
             python3 tools/vehicle_db/fetch_cvs.py full vehicle_dimensions.json
           else
             python3 tools/vehicle_db/fetch_cvs.py probe
           fi
-      - uses: actions/upload-artifact@v4
+      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' }}
+        uses: actions/upload-artifact@v4
         with:
           name: vehicle-db-${{ env.MODE }}
           path: |
