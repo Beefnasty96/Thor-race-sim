@@ -87,8 +87,13 @@ Data: Transport Canada's Canadian Vehicle Specifications (model years 1971 on),
 fetched from NHTSA's vPIC API by `tools/vehicle_db/fetch_cvs.py` (GitHub
 workflow *Build vehicle dimension database*) into
 `data/vehicle_db/vehicle_dimensions.json`. Contains information licensed under
-the Open Government Licence – Canada. Tire size isn't in the data, so the
-tire radius starts as an estimate.
+the Open Government Licence – Canada.
+
+**Tires**: every new car asks for front and rear tire size (as on the door
+sticker or sidewall: P245/75R16, LT265/75R16, 245/40ZR18 97W, 31x10.50R15,
+7.75-15) and cold PSI. The size sets the wheel radius per axle (staggered
+setups supported) in the photo outline, the 3D check and the modeler; edit
+later under the dimensions panel (*Apply tires*).
 
 **v0.1: reference photos**
 - Start a project blank or with real dimensions copied from a car in the game.

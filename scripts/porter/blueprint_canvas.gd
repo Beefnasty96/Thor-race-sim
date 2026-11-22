@@ -140,8 +140,9 @@ func _draw_outline() -> void:
 			# ground line, axle lines and wheel circles
 			draw_line(frame_to_screen(Vector2(r.position.x - 0.6, 0)), frame_to_screen(Vector2(r.end.x + 0.6, 0)), OUTLINE, 2.0)
 			for ax in [project.front_axle_x(), project.rear_axle_x()]:
-				var c := frame_to_screen(Vector2(ax, d["tire_radius_m"]))
-				draw_arc(c, d["tire_radius_m"] * ppm(), 0, TAU, 48, OUTLINE, 2.0)
+				var tr := project.tire_radius(ax != project.front_axle_x())
+				var c := frame_to_screen(Vector2(ax, tr))
+				draw_arc(c, tr * ppm(), 0, TAU, 48, OUTLINE, 2.0)
 				_draw_cross(c, OUTLINE, 12.0)
 				draw_dashed_line(frame_to_screen(Vector2(ax, 0)), frame_to_screen(Vector2(ax, d["height_m"])), Color(OUTLINE, 0.5), 1.5, 10.0)
 			_label_dim(Vector2(r.get_center().x, -0.25), _len(d["length_m"]))
@@ -151,7 +152,7 @@ func _draw_outline() -> void:
 			var t: float = d["track_front_m" if view == "front" else "track_rear_m"] * 0.5
 			for sx in [-t, t]:
 				_draw_cross(frame_to_screen(Vector2(sx, 0)), OUTLINE, 12.0)
-				draw_dashed_line(frame_to_screen(Vector2(sx, 0)), frame_to_screen(Vector2(sx, d["tire_radius_m"] * 2.0)), Color(OUTLINE, 0.5), 1.5, 10.0)
+				draw_dashed_line(frame_to_screen(Vector2(sx, 0)), frame_to_screen(Vector2(sx, project.tire_radius(view == "rear") * 2.0)), Color(OUTLINE, 0.5), 1.5, 10.0)
 			_label_dim(Vector2(0, -0.25), _len(d["width_m"]))
 			draw_dashed_line(frame_to_screen(Vector2(0, 0)), frame_to_screen(Vector2(0, d["height_m"])), Color(OUTLINE, 0.35), 1.0, 8.0)
 		"top":

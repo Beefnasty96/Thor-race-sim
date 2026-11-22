@@ -120,9 +120,9 @@ func _add_box_outline() -> void:
 		pts.append(c[e[0]]); pts.append(c[e[1]])
 	root3d.add_child(_line_mesh(pts, Color(0.32, 0.72, 1.0)))
 	# wheels as circles at the true track width, axle positions and radius
-	var r: float = d["tire_radius_m"]
 	var wp := PackedVector3Array()
-	for ax in [[-d["wheelbase_m"] * 0.5, d["track_front_m"]], [d["wheelbase_m"] * 0.5, d["track_rear_m"]]]:
+	for ax in [[-d["wheelbase_m"] * 0.5, d["track_front_m"], false], [d["wheelbase_m"] * 0.5, d["track_rear_m"], true]]:
+		var r: float = project.tire_radius(ax[2])
 		for sx in [-0.5, 0.5]:
 			var cx: float = ax[1] * sx
 			for i in 24:

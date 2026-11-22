@@ -3,7 +3,7 @@ extends VBoxContainer
 ## "Find a production car": pick year → make → model from the dimension
 ## database, check the numbers, then start a project with them filled in.
 
-signal chosen(row: Dictionary)
+signal chosen(row: Dictionary, tire_values: Array)
 signal cancelled
 
 var year := 0
@@ -16,6 +16,7 @@ var search: LineEdit
 var details: Label
 var create_btn: Button
 var units := "imperial"
+var tire_form: TireForm
 
 func _ready() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -60,7 +61,10 @@ func _ready() -> void:
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	details.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right.add_child(details)
-	create_btn = PorterUI.button("Start project with these ▶", func(): chosen.emit(row))
+	tire_form = TireForm.new()
+	tire_form.changed.connect(_refresh_create)
+	right.add_child(tire_form)
+	create_btn = PorterUI.button("Start project with these ▶", func(): chosen.emit(row, tire_form.values()))
 	create_btn.disabled = true
 	create_btn.add_theme_color_override("font_color", UIKit.GOOD)
 	right.add_child(create_btn)
@@ -169,4 +173,13 @@ func _show_details() -> void:
 		lines.append("Curb weight    %s" % ("%d kg" % kg if units == "metric" else "%d lb" % roundi(kg / 0.4536)))
 	details.text = "\n".join(lines)
 	details.add_theme_color_override("font_color", Color.WHITE)
-	create_btn.disabled = false
+	_refresh_create()
+
+func _refresh_create() -> void:
+	if create_btn == null:
+		return
+	create_btn.disabled = row.is_empty() or tire_form == null or not tire_form.is_valid()
+	if not row.is_empty() and tire_form and not tire_form.is_valid():
+		create_btn.text = "Enter tire sizes and PSI to start"
+	else:
+		create_btn.text = "Start project with these ▶"

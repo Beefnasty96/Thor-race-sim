@@ -194,17 +194,18 @@ func _rebuild_deco() -> void:
 		c.queue_free()
 	var d := project.dims
 	# wheels (reference only; the game builds real wheels from the tire size)
-	var r: float = d["tire_radius_m"]
 	var wm := StandardMaterial3D.new()
 	wm.albedo_color = Color(0.1, 0.1, 0.11, 0.55 if view != "3d" else 1.0)
 	wm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if view != "3d" else BaseMaterial3D.TRANSPARENCY_DISABLED
-	for ax in [[-d["wheelbase_m"] * 0.5, d["track_front_m"]], [d["wheelbase_m"] * 0.5, d["track_rear_m"]]]:
+	for ax in [[-d["wheelbase_m"] * 0.5, d["track_front_m"], false], [d["wheelbase_m"] * 0.5, d["track_rear_m"], true]]:
+		var r: float = project.tire_radius(ax[2])
+		var tw: float = project.tires.get("rear_width_m" if ax[2] else "front_width_m", 0.22)
 		for sx in [-0.5, 0.5]:
 			var w := MeshInstance3D.new()
 			var cyl := CylinderMesh.new()
 			cyl.top_radius = r
 			cyl.bottom_radius = r
-			cyl.height = 0.22
+			cyl.height = tw
 			cyl.radial_segments = 16
 			w.mesh = cyl
 			w.material_override = wm
