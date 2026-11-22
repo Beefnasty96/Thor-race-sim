@@ -1,7 +1,9 @@
 extends SceneTree
 ## Headless physics validation. Run:
 ##   godot --headless --fixed-fps 120 -s res://scripts/tests/physics_test.gd
-## Compares the simulated Tahoe against real-world figures.
+## Compares the simulated Tahoe against real-world figures. Acceleration is
+## checked against the instrumented-test targets in the car file ("targets"),
+## timed like the magazines: the clock starts after 1 ft of rollout.
 
 var car: Vehicle
 var t := 0.0
@@ -16,9 +18,11 @@ var dist_m := 0.0
 var start_pos := Vector3.ZERO
 var max_lat := 0.0
 var lat_samples := []
+var rollout_t := -1.0
+var summary := []
 
 func _initialize() -> void:
-	def = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1996.json"))
+	def = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1999.json"))
 	var ground := StaticBody3D.new()
 	ground.set_meta("surface", Track.SURF_ASPHALT)
 	var cs := CollisionShape3D.new()
@@ -45,7 +49,8 @@ func _spawn() -> void:
 	car.global_position = Vector3(0, 0.15, 0)
 	phase = 0
 	phase_t = 0.0
-	print("\n=== 1996 Tahoe 4-door ", drive.to_upper(), "  mass ", car.mass, " kg ===")
+	rollout_t = -1.0
+	print("\n=== 1999 Tahoe 4-door ", drive.to_upper(), "  mass ", car.mass, " kg ===")
 
 func _set_phase(p: int) -> void:
 	phase = p
@@ -75,14 +80,18 @@ func _process(delta: float) -> bool:
 			car.in_brake = 0.0
 			car.in_throttle = 1.0
 			var d: float = car.global_position.distance_to(start_pos)
+			if rollout_t < 0.0 and (d >= 0.3048 or not def.get("targets", {}).get("rollout_1ft", false)):
+				rollout_t = phase_t
+			var tt: float = phase_t - maxf(rollout_t, 0.0)
 			if mph >= 30.0 and not results.has("030" + drive):
-				results["030" + drive] = phase_t
+				results["030" + drive] = tt
 			if mph >= 60.0 and not results.has("060" + drive):
-				results["060" + drive] = phase_t
-				print("0-60 mph: %.2f s   (real-world tests: ~8.5-10 s)" % phase_t)
+				results["060" + drive] = tt
+				_check("0-60 mph", tt, "zero_to_60_s", "s")
 			if d >= 402.3 and not results.has("qm" + drive):
-				results["qm" + drive] = phase_t
-				print("1/4 mile: %.2f s @ %.1f mph  (real: ~16.5-17 s)" % [phase_t, mph])
+				results["qm" + drive] = tt
+				_check("1/4 mile", tt, "quarter_mile_s", "s")
+				_check("trap speed", mph, "trap_mph", "mph")
 			if int(phase_t * 2) != int((phase_t - delta) * 2) and phase_t < 12:
 				print("  t=%.1f mph=%.1f rpm=%.0f gear=%s lock=%.2f slipRL=%.3f" % [phase_t, mph, car.engine.rpm(), car.trans.gear_label(), car.trans.lock_amount, car.wheels[2].tire.slip_ratio])
 			if phase_t > 45.0:
@@ -144,7 +153,24 @@ func _process(delta: float) -> bool:
 		6:
 			cfg_i += 1
 			if cfg_i >= configs.size():
+				print("\n=== Production targets ===")
+				for line in summary:
+					print(line)
 				print("\nDONE")
 				return true
 			_spawn()
 	return false
+
+## Compare a measured figure with the car file's production target.
+func _check(label: String, value: float, key: String, unit: String) -> void:
+	var tg: Dictionary = def.get("targets", {})
+	var row: Dictionary = tg.get("4door_" + drive, {})
+	if not row.has(key):
+		print("%s: %.2f %s" % [label, value, unit])
+		return
+	var tol: float = tg.get("tolerance", {}).get(key, 0.3)
+	var diff: float = value - float(row[key])
+	var ok := absf(diff) <= tol
+	var line := "%s %-10s %6.2f %s  target %.2f (%s)  diff %+.2f  %s" % [drive.to_upper(), label, value, unit, row[key], row.get("test", ""), diff, "PASS" if ok else "FAIL"]
+	print(line)
+	summary.append(line)

@@ -1,10 +1,10 @@
 {
- "id": "chevrolet_tahoe_1996",
+ "id": "chevrolet_tahoe_1999",
  "make": "Chevrolet",
  "model": "Tahoe",
- "year": 1996,
+ "year": 1999,
  "platform": "GMT400 / GMT410",
- "notes": "Figures from period spec sheets and the GM service manual: Edmunds/Cars.com (weights, axle split, wheels, brakes, turning circle), tirepressure.com / Michelin fitment (35 psi placard), GM service manual (Z height 3.74 in), GM alignment table for 1992-99 Tahoe/Yukon 1500 (caster 3.0, camber +0.65, toe 0.12 in). Values marked 'est' are engineering estimates for things manufacturers don't publish (spring rates, inertia, damping, tire coefficients).",
+ "notes": "1999 model year, the last year of the GMT400 Tahoe. Figures from period spec sheets and the GM service manual: Edmunds/Cars.com (weights, axle split, wheels, brakes, turning circle), tirepressure.com / Michelin fitment (35 psi placard), GM service manual (Z height 3.74 in), GM alignment table for 1992-99 Tahoe/Yukon 1500 (caster 3.0, camber +0.65, toe 0.12 in). Values marked 'est' are engineering estimates for things manufacturers don't publish (spring rates, inertia, damping, tire coefficients). 1999 engine rating (255 hp @ 4600, 330 lb-ft @ 2800) and colour list from cars.com / Edmunds / carspecs.us 1999 Tahoe pages.",
  "bodies": {
   "4door": {
    "label": "4-Door",
@@ -55,9 +55,9 @@
  "engine": {
   "name": "Vortec 5700 (L31) 5.7L V8",
   "displacement_l": 5.733,
-  "rated_hp": 250,
+  "rated_hp": 255,
   "rated_hp_rpm": 4600,
-  "rated_torque_lbft": 335,
+  "rated_torque_lbft": 330,
   "rated_torque_rpm": 2800,
   "idle_rpm": 650,
   "redline_rpm": 5000,
@@ -81,28 +81,29 @@
    5600
   ],
   "torque_curve_nm": [
-   330,
-   380,
-   410,
-   432,
-   446,
-   454,
-   450,
-   437,
-   420,
-   398,
-   386,
-   368,
-   345,
-   318,
-   250
+   325,
+   374,
+   404,
+   426,
+   440,
+   447.4,
+   445,
+   435,
+   423,
+   405,
+   394.8,
+   377,
+   353,
+   326,
+   256
   ],
   "friction_nm_base": 18.0,
   "friction_nm_per_krpm": 9.0,
   "thermostat_open_c": 90.5,
   "thermostat_full_c": 101.0,
   "coolant_capacity_l": 16.0,
-  "overheat_c": 118.0
+  "overheat_c": 118.0,
+  "torque_curve_note": "SAE net (flywheel) torque at wide-open throttle, warm engine. Friction is already included; engine.gd adds the warm friction back to get combustion torque."
  },
  "transmission": {
   "name": "4L60-E 4-speed automatic",
@@ -122,7 +123,12 @@
   "converter_stall_torque_ratio": 2.0,
   "lockup_min_gear": 3,
   "lockup_min_mph": 42,
-  "shift_time_s": 0.45
+  "shift_time_s": 0.45,
+  "wot_upshift_mph": [
+   42.0,
+   78.0,
+   300.0
+  ]
  },
  "drivetrain": {
   "options": [
@@ -136,7 +142,10 @@
    "open",
    "g80_locker"
   ],
-  "rear_diff": "open"
+  "rear_diff": "open",
+  "efficiency_2wd": 0.91,
+  "efficiency_4wd": 0.89,
+  "efficiency_note": "Gearbox + axle (+ NP241 transfer case on 4WD) mechanical efficiency. Torque-converter slip is simulated separately, so it is not included here."
  },
  "suspension": {
   "front_type_4wd": "Independent SLA, longitudinal torsion bars (adjustable; factory Z height 3.74 in)",
@@ -204,121 +213,161 @@
   "speed_limiter_mph": 98,
   "speed_limiter_default": true
  },
- "model_dir": "res://assets/cars/tahoe_1996",
+ "model_dir": "res://assets/cars/tahoe_1999",
  "paints": [
   {
-   "name": "Indigo Blue / Light Autumnwood",
+   "name": "Summit White",
    "color": [
-    0.2,
-    0.25,
-    0.42
+    0.933,
+    0.933,
+    0.918
    ],
    "lower": [
-    0.66,
-    0.56,
-    0.44
+    0.933,
+    0.933,
+    0.918
    ],
-   "metallic": 0.55
+   "metallic": 0.0
   },
   {
-   "name": "Light Autumnwood Metallic",
+   "name": "Onyx Black",
    "color": [
-    0.62,
-    0.53,
-    0.43
+    0.039,
+    0.039,
+    0.047
    ],
    "lower": [
-    0.58,
-    0.49,
-    0.39
+    0.039,
+    0.039,
+    0.047
    ],
-   "metallic": 0.55
+   "metallic": 0.3
   },
   {
    "name": "Victory Red",
    "color": [
-    0.58,
-    0.05,
-    0.05
+    0.62,
+    0.078,
+    0.094
    ],
    "lower": [
-    0.58,
-    0.05,
-    0.05
+    0.62,
+    0.078,
+    0.094
    ],
    "metallic": 0.1
   },
   {
-   "name": "Onyx Black / Light Pewter",
-   "color": [
-    0.04,
-    0.04,
-    0.045
-   ],
-   "lower": [
-    0.55,
-    0.55,
-    0.53
-   ],
-   "metallic": 0.3,
-   "lower_metallic": 0.6
-  },
-  {
-   "name": "Dark Green / Light Autumnwood",
-   "color": [
-    0.06,
-    0.2,
-    0.13
-   ],
-   "lower": [
-    0.66,
-    0.56,
-    0.44
-   ],
-   "metallic": 0.6
-  },
-  {
-   "name": "Olympic White / Light Pewter",
-   "color": [
-    0.88,
-    0.88,
-    0.86
-   ],
-   "lower": [
-    0.55,
-    0.55,
-    0.53
-   ],
-   "metallic": 0.0,
-   "lower_metallic": 0.6
-  },
-  {
    "name": "Light Pewter Metallic",
    "color": [
-    0.55,
-    0.55,
-    0.53
+    0.557,
+    0.557,
+    0.541
    ],
    "lower": [
-    0.55,
-    0.55,
-    0.53
+    0.557,
+    0.557,
+    0.541
    ],
    "metallic": 0.65
   },
   {
-   "name": "Black",
+   "name": "Medium Charcoal Gray Metallic",
    "color": [
-    0.03,
-    0.03,
-    0.035
+    0.306,
+    0.318,
+    0.337
    ],
    "lower": [
-    0.03,
-    0.03,
-    0.035
+    0.306,
+    0.318,
+    0.337
    ],
-   "metallic": 0.3
+   "metallic": 0.6
+  },
+  {
+   "name": "Indigo Blue Metallic",
+   "color": [
+    0.137,
+    0.173,
+    0.31
+   ],
+   "lower": [
+    0.137,
+    0.173,
+    0.31
+   ],
+   "metallic": 0.55
+  },
+  {
+   "name": "Dark Carmine Red Metallic",
+   "color": [
+    0.353,
+    0.078,
+    0.094
+   ],
+   "lower": [
+    0.353,
+    0.078,
+    0.094
+   ],
+   "metallic": 0.55
+  },
+  {
+   "name": "Emerald Green Metallic",
+   "color": [
+    0.11,
+    0.259,
+    0.204
+   ],
+   "lower": [
+    0.11,
+    0.259,
+    0.204
+   ],
+   "metallic": 0.6
+  },
+  {
+   "name": "Meadow Green Metallic",
+   "color": [
+    0.243,
+    0.353,
+    0.267
+   ],
+   "lower": [
+    0.243,
+    0.353,
+    0.267
+   ],
+   "metallic": 0.6
+  },
+  {
+   "name": "Dark Copper Metallic",
+   "color": [
+    0.416,
+    0.227,
+    0.149
+   ],
+   "lower": [
+    0.416,
+    0.227,
+    0.149
+   ],
+   "metallic": 0.6
+  },
+  {
+   "name": "Sunset Gold Metallic",
+   "color": [
+    0.659,
+    0.541,
+    0.361
+   ],
+   "lower": [
+    0.659,
+    0.541,
+    0.361
+   ],
+   "metallic": 0.6
   }
  ],
  "alignment": {
@@ -329,5 +378,33 @@
   "camber_tol_deg": 0.5,
   "toe_total_in": 0.12,
   "toe_tol_in": 0.1
+ },
+ "paints_source": "1999 Tahoe exterior colours per carspecs.us; RGB values approximated.",
+ "targets": {
+  "source": "Motor Trend instrumented tests of GMT400 Tahoes with the L31 5.7L / 4L60-E (no published 1999 test; 1996-99 drivetrain is the same), via 0-60specs.com",
+  "rollout_1ft": true,
+  "tolerance": {
+   "zero_to_60_s": 0.3,
+   "quarter_mile_s": 0.3,
+   "trap_mph": 2.0
+  },
+  "4door_2wd": {
+   "zero_to_60_s": 8.0,
+   "quarter_mile_s": 15.7,
+   "trap_mph": 84.0,
+   "test": "1996 LT RWD, MT",
+   "note": "Only published 2WD test. Its 15.7 s ET is quick for an 84 mph trap (the 4x4 tests run ~16.5 s at 83 mph), so treat the ET as possibly optimistic."
+  },
+  "4door_4wd": {
+   "zero_to_60_s": 8.93,
+   "quarter_mile_s": 16.77,
+   "trap_mph": 81.2,
+   "test": "avg of 3 MT 4x4 tests",
+   "tests": [
+    "1996 LT 4x4: 8.8 s, 16.7 s @ 80.4 mph",
+    "1996 LT 4x4: 9.5 s, 17.1 s @ 79.7 mph",
+    "1997 LT 4x4: 8.5 s, 16.5 s @ 83.4 mph"
+   ]
+  }
  }
 }

@@ -85,6 +85,7 @@ var arb_rear := 0.0
 var max_steer := deg_to_rad(33.0)
 var ackermann := 0.6
 var cda := 1.56
+var driveline_eff := 0.88          # gearbox + transfer case + axle; from the car file, calibrated against tests
 
 # ---------- driver inputs (set by PlayerController / AI / tests) ----------
 var in_throttle := 0.0
@@ -122,6 +123,7 @@ func configure(car_def: Dictionary, setup: Dictionary, condition: Dictionary) ->
 	max_steer = deg_to_rad(def["steering"]["max_wheel_angle_deg"])
 	ackermann = def["steering"]["ackermann"]
 	cda = body_def["drag_coefficient"] * body_def["frontal_area_m2"]
+	driveline_eff = def["drivetrain"].get("efficiency_%s" % drivetrain, def["drivetrain"].get("efficiency", 0.88))
 
 	# --- mass properties ---
 	var m: float = body_def["mass_4wd_kg"] if drivetrain == "4wd" else body_def["mass_2wd_kg"]
@@ -486,8 +488,8 @@ func _driveline_substep(throttle: float, dt: float) -> float:
 		out_torque *= 0.4      # torque handed between clutches mid-shift
 	engine.integrate(throttle, engine_load, dt)
 
-	# torque at the wheels (drivetrain efficiency ~88%)
-	var axle_torque := out_torque * ratio * 0.88
+	# torque at the wheels after gearbox, transfer case and axle losses
+	var axle_torque := out_torque * ratio * driveline_eff
 	for w in wheels:
 		w.drive_torque = 0.0
 	if driven.is_empty():

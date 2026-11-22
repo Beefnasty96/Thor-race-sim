@@ -19,7 +19,7 @@ var max_raw := 0.0
 var max_defl := 0.0
 
 func _initialize() -> void:
-	def = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1996.json"))
+	def = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1999.json"))
 	map = MapBuilder.new()
 	root.add_child(map)
 	var t0 := Time.get_ticks_msec()

@@ -1,12 +1,12 @@
 # Racing Sim (working title)
 
-A realistic racing simulator for the **AYN Thor**, built in **Godot 4.5**.
+A realistic racing simulator for the **AYN Thor** (top screen only), built in **Godot 4.5**.
 Real cars modelled from real specifications, with a physics model covering tire
 grip, heat and wear, engine heat and wear, suspension, and a real driveline.
 The visual target is the *Gran Turismo 4* era: clean shapes, glossy paint, soft
 bloom and haze, running at a steady frame rate on a handheld.
 
-**Current car:** 1996 Chevrolet Tahoe (GMT400). 4-door or 2-door, 2WD or 4WD,
+**Current car:** 1999 Chevrolet Tahoe (GMT400, the last year of that body). 4-door or 2-door, 2WD or 4WD,
 switchable in the Vehicle Editor.
 
 **Locations** (Free Practice → Choose Location):
@@ -62,7 +62,7 @@ handbrake, C camera, T telemetry, 4 transfer case, M trans mode, R reset, Esc pa
 
 ## The Tahoe model
 
-The 1996 Tahoe body is converted from a CC-BY-4.0 model (see Credits) by
+The Tahoe body (GMT400, shared by 1995-99 trucks) is converted from a CC-BY-4.0 model (see Credits) by
 `tools/blender/convert_tahoe_glb.py`. The script strips the police equipment,
 livery and badges, applies the factory two-tone paint layout (body colour over a
 lower colour with a dark stripe band), reduces it to about 6,800 triangles, and
@@ -116,7 +116,9 @@ body's motion.
   Worn-out tires lose grip sharply and can go flat.
 
 **Engine** (`scripts/vehicle/engine.gd`)
-- Torque curve matched to the L31 Vortec 5700 (250 hp @ 4600, 335 lb-ft @ 2800).
+- Torque curve matched to the 1999 L31 Vortec 5700 rating (255 hp @ 4600, 330 lb-ft @ 2800).
+  The curve is SAE net (flywheel) torque, so a warm engine at full throttle
+  delivers exactly the rated figures; friction is added back internally.
 - Friction and pumping losses (engine braking). Cold oil adds drag. Idle air control.
 - Cooling system: thermostat (opens 90.5 °C), radiator scaled by airflow,
   clutch fan, oil cooler exchange. Overheating pulls power.
@@ -126,8 +128,11 @@ body's motion.
 
 **Driveline** (`scripts/vehicle/transmission.gd`, `vehicle.gd`)
 - 4L60-E: 3.06 / 1.63 / 1.00 / 0.70, torque converter with 2.0:1 stall
-  multiplication, lock-up clutch, timed shifts, throttle-based shift schedule,
-  and kickdown that won't over-rev.
+  multiplication, lock-up clutch, timed shifts, throttle-based shift schedule
+  (full-throttle upshifts at 42 / 78 mph on the 3.42 axle), and kickdown that
+  won't over-rev.
+- Driveline mechanical efficiency from the car file: 91% (2WD) / 89% (4WD,
+  adds the transfer case). Converter slip is simulated separately.
 - NP241 part-time transfer case: 2H / 4H / 4L (2.72:1). In 4H the front and
   rear shafts are locked together, so it binds in tight corners on pavement,
   just like the real truck.
@@ -146,13 +151,22 @@ body's motion.
 ### Validation against the real truck
 Run `godot --headless --fixed-fps 120 -s res://scripts/tests/physics_test.gd`
 
-| Test | Sim 4WD / 2WD | Real 1996 Tahoe |
-|---|---|---|
-| 0–60 mph | 10.5 / 9.9 s | ~9–10 s |
-| ¼ mile | 18.0 / 17.6 s | ~16.5–17.5 s |
-| 60–0 mph | 152 / 151 ft | ~140–150 ft |
-| Skidpad | 0.69 / 0.70 g | ~0.70 g |
-| Top speed | 98 mph (governed) | 98 mph |
+Acceleration is checked automatically against the instrumented-test targets
+in the car file (`targets`), timed like the magazines (clock starts after 1 ft
+of rollout). The test prints PASS/FAIL for each figure.
+
+| Test | Sim 4WD | Real 4WD (avg of 3 Motor Trend tests) | Sim 2WD | Real 2WD (Motor Trend) |
+|---|---|---|---|---|
+| 0–60 mph | 9.06 s | 8.93 s ✅ | 8.28 s | 8.0 s ✅ |
+| ¼ mile | 16.84 s | 16.77 s ✅ | 16.35 s | 15.7 s ❌ |
+| Trap speed | 81.5 mph | 81.2 mph ✅ | 83.5 mph | 84.0 mph ✅ |
+| 60–0 mph | 154 ft | ~140–150 ft | 152 ft | ~140–150 ft |
+| Skidpad | 0.69 g | ~0.70 g | 0.70 g | ~0.70 g |
+| Top speed | 98 mph (governed) | 98 mph | | |
+
+The single 2WD test's 15.7 s ET is quick for its 84 mph trap, so that miss
+may be the test rather than the sim. No 1999 was instrumented-tested; the
+1996-99 trucks share the same engine and transmission.
 
 `scripts/tests/lap_test.gd` drives an autopilot around the circuit and reports
 lap times, tire and brake temperatures, tread, and fluid temperatures per lap.
@@ -185,11 +199,10 @@ Adding a car is mostly a JSON file in `data/cars/` plus a body model.
 2. Proper hand-modelled Tahoe mesh (glTF), interior and cockpit camera, better
    wheels and tires, decals
 3. Sound: engine (rpm/load), tire scrub, transmission whine, wind
-4. Thor second screen as a live telemetry/map display (needs an Android plugin)
-5. More real cars (each from real specs) and a car-select garage
-6. More tracks, time of day, weather (wet grip)
-7. AI opponents and races, with the lap-test autopilot as a starting point
-8. Force-feedback rumble from tire slip on the Thor's motors
+4. More real cars (each from real specs) and a car-select garage
+5. More tracks, time of day, weather (wet grip)
+6. AI opponents and races, with the lap-test autopilot as a starting point
+7. Force-feedback rumble from tire slip on the Thor's motors
 
 ## Credits
 

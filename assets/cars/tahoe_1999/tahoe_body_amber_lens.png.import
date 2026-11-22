@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4y821fak1erq"
-path="res://.godot/imported/body_detail.png-2bbcb423f7a073d73a43d5077299d1f1.ctex"
+uid="uid://bqofve0xqdbyf"
+path="res://.godot/imported/tahoe_body_amber_lens.png-e3cdda99bf41ccedc0b104614a3104b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cars/tahoe_1996/body_detail.png"
-dest_files=["res://.godot/imported/body_detail.png-2bbcb423f7a073d73a43d5077299d1f1.ctex"]
+source_file="res://assets/cars/tahoe_1999/tahoe_body_amber_lens.png"
+dest_files=["res://.godot/imported/tahoe_body_amber_lens.png-e3cdda99bf41ccedc0b104614a3104b9.ctex"]
 
 [params]
 

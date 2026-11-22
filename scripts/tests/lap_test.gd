@@ -16,7 +16,7 @@ var target_laps := 3
 var stuck_t := 0.0
 
 func _initialize() -> void:
-	var def: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1996.json"))
+	var def: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/cars/chevrolet_tahoe_1999.json"))
 	track = Track.new()
 	root.add_child(track)
 	var t0 := Time.get_ticks_msec()

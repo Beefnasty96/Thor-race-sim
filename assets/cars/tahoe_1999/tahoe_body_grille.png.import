@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqftkm3dvdo0c"
-path="res://.godot/imported/tahoe_body_park_lens.png-2bb4067c50828be583b1eb975ab62147.ctex"
+uid="uid://bjaxwevby8tpq"
+path="res://.godot/imported/tahoe_body_grille.png-24b80b6c587eb58b29e0f74259043d37.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cars/tahoe_1996/tahoe_body_park_lens.png"
-dest_files=["res://.godot/imported/tahoe_body_park_lens.png-2bb4067c50828be583b1eb975ab62147.ctex"]
+source_file="res://assets/cars/tahoe_1999/tahoe_body_grille.png"
+dest_files=["res://.godot/imported/tahoe_body_grille.png-24b80b6c587eb58b29e0f74259043d37.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjaxwevby8tpq"
-path="res://.godot/imported/tahoe_body_grille.png-c0739f9af444ad5dc0797337840206f8.ctex"
+uid="uid://4y821fak1erq"
+path="res://.godot/imported/body_detail.png-a70d6f5cc5f380de4bfdfca0618ab643.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cars/tahoe_1996/tahoe_body_grille.png"
-dest_files=["res://.godot/imported/tahoe_body_grille.png-c0739f9af444ad5dc0797337840206f8.ctex"]
+source_file="res://assets/cars/tahoe_1999/body_detail.png"
+dest_files=["res://.godot/imported/body_detail.png-a70d6f5cc5f380de4bfdfca0618ab643.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c773erowhbdpj"
-path="res://.godot/imported/tahoe_body_headlamp_lens.png-681377e7531ff506bf4e46a74aaa1752.ctex"
+uid="uid://bfp6jub3eqxgw"
+path="res://.godot/imported/body_mask.png-d4ca6e042b3ba7931ba340ced6cce591.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cars/tahoe_1996/tahoe_body_headlamp_lens.png"
-dest_files=["res://.godot/imported/tahoe_body_headlamp_lens.png-681377e7531ff506bf4e46a74aaa1752.ctex"]
+source_file="res://assets/cars/tahoe_1999/body_mask.png"
+dest_files=["res://.godot/imported/body_mask.png-d4ca6e042b3ba7931ba340ced6cce591.ctex"]
 
 [params]
 

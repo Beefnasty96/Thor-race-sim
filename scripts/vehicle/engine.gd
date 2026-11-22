@@ -90,11 +90,18 @@ func effective_throttle(driver: float, dt: float) -> float:
 		limiter_cut = false
 	return thr
 
-## Combustion torque available at the crank before losses.
+## Friction of a warm, healthy engine. The torque curve in the car file is the
+## published SAE net (flywheel) rating, which already has this subtracted.
+func warm_friction(r: float) -> float:
+	return fric_base + fric_per_krpm * r / 1000.0
+
+## Combustion torque available at the crank before losses. Adding the warm
+## friction back means a warm engine at full throttle delivers exactly the
+## rated curve at the flywheel; cold oil, wear and pumping still cost extra.
 func combustion_torque(r: float, thr: float) -> float:
 	if stalled:
 		return 0.0
-	var tq := curve_torque(r) * thr
+	var tq := (curve_torque(r) + warm_friction(r)) * thr
 	# heat soak and overheating rob power (detonation / timing pull)
 	var heat_loss := clampf((coolant_c - 108.0) / 25.0, 0.0, 0.4)
 	var health_loss := (1.0 - health) * 0.6
