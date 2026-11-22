@@ -1,0 +1,33 @@
+name: Build vehicle dimension database
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe (sample responses) or full (all years and makes)"
+        default: probe
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch Canadian Vehicle Specifications
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "full" ]; then
+            python3 tools/vehicle_db/fetch_cvs.py full vehicle_dimensions.json
+          else
+            python3 tools/vehicle_db/fetch_cvs.py probe
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vehicle-db-${{ github.event.inputs.mode }}
+          path: |
+            probe.json
+            vehicle_dimensions.json
+          if-no-files-found: error
