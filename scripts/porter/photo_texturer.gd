@@ -111,8 +111,8 @@ static func build(mesh: HalfMesh, project: PorterProject, colors: Dictionary, im
 static func _emit_textured(st: SurfaceTool, mesh: HalfMesh, f: PackedInt32Array, vs: PackedVector3Array,
 		project: PorterProject, view: String, sz: Vector2) -> void:
 	var n := mesh.face_normal(f, vs)
-	for k in range(1, f.size() - 1):
-		for idx in [f[0], f[k + 1], f[k]]:      # Godot front faces are clockwise
+	for tri in mesh.triangulate(f, vs):
+		for idx in [tri[0], tri[2], tri[1]]:    # Godot front faces are clockwise
 			st.set_normal(n)
 			st.set_uv(uv_for(project, view, vs[idx], sz))
 			st.set_color(Color.WHITE)

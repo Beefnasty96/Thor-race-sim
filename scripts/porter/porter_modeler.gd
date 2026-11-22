@@ -30,6 +30,13 @@ var fill := false
 var xray_btn: Button
 var add_btn: Button
 var _multi_before := false
+var wheel_panel: Control
+var wheel_view: WheelCropView
+var wheel_rear := false
+var wheel_axle_btns := {}
+var rear_same_btn: Button
+var arch_btn: Button
+var arch_row: Control
 
 func setup(p: PorterProject) -> void:
 	project = p
@@ -75,8 +82,10 @@ func _build() -> void:
 	hb.add_child(title)
 	mode_btns["shape"] = PorterUI.toggle("Shape", true, func(on): _set_mode("shape", on))
 	mode_btns["paint"] = PorterUI.toggle("Paint", false, func(on): _set_mode("paint", on))
+	mode_btns["wheels"] = PorterUI.toggle("Wheels", false, func(on): _set_mode("wheels", on))
 	hb.add_child(mode_btns["shape"])
 	hb.add_child(mode_btns["paint"])
+	hb.add_child(mode_btns["wheels"])
 	hb.add_child(VSeparator.new())
 	for v in [["side", "Side"], ["front", "Front"], ["top", "Top"], ["3d", "3D"]]:
 		var key: String = v[0]
@@ -112,8 +121,11 @@ func _build() -> void:
 	shape_panel = _build_panel()
 	paint_panel = _build_paint_panel()
 	paint_panel.visible = false
+	wheel_panel = _build_wheel_panel()
+	wheel_panel.visible = false
 	body.add_child(shape_panel)
 	body.add_child(paint_panel)
+	body.add_child(wheel_panel)
 
 func _build_panel() -> Control:
 	var panel := PanelContainer.new()
@@ -159,6 +171,21 @@ func _build_panel() -> Control:
 	r3b.add_child(_grow(PorterUI.button("Connect", _connect)))
 	r3b.add_child(_grow(PorterUI.button("Merge", _merge)))
 	v.add_child(r3b)
+	v.add_child(UIKit.label("WHEEL ARCHES", 24, UIKit.ACCENT))
+	var ra := HBoxContainer.new()
+	arch_btn = _grow(PorterUI.toggle("Draw an arch", false, func(on): _toggle_draw_arch(on)))
+	ra.add_child(arch_btn)
+	ra.add_child(_grow(PorterUI.button("Auto arches (both wheels)", _cut_arches)))
+	v.add_child(ra)
+	arch_row = HBoxContainer.new()
+	arch_row.add_child(_grow(PorterUI.button("Finish arch", _finish_arch)))
+	arch_row.add_child(_grow(PorterUI.button("Undo point", func():
+		if not view.arch_pts.is_empty():
+			view.arch_pts.pop_back()
+			view.overlay.queue_redraw())))
+	arch_row.add_child(_grow(PorterUI.button("Cancel", func(): _toggle_draw_arch(false))))
+	arch_row.visible = false
+	v.add_child(arch_row)
 	var r4 := HBoxContainer.new()
 	r4.add_child(_grow(PorterUI.button("↶ Undo", func():
 		if mesh.undo(): _after_structural()
@@ -208,6 +235,8 @@ func _grow(c: Control) -> Control:
 # ---------------------------------------------------------------- state
 
 func _select_view(v: String) -> void:
+	if v != "side":
+		_end_draw_arch()
 	view.set_view(v)
 	for k in tabs:
 		tabs[k].add_theme_color_override("font_color", Color.WHITE if k == v else UIKit.DIM)
@@ -280,6 +309,7 @@ func _extrude() -> void:
 
 func _toggle_add_point(on: bool) -> void:
 	if on:
+		_end_draw_arch()
 		_set_pick(ModelView.Pick.POINTS, true)
 		view.tool = "add_point"
 		_multi_before = view.multi
@@ -350,6 +380,10 @@ func _merge() -> void:
 	_after_structural()
 	_say("Points welded into one.")
 
+func _end_draw_arch() -> void:
+	if arch_btn and arch_btn.button_pressed:
+		_toggle_draw_arch(false)
+
 func _end_add_point() -> void:
 	if view.tool == "add_point":
 		view.tool = ""
@@ -358,6 +392,7 @@ func _end_add_point() -> void:
 
 func _start_loop_cut() -> void:
 	_end_add_point()
+	_end_draw_arch()
 	view.tool = "loop_cut"
 	view.overlay.queue_redraw()
 	_say("Tap an edge: a new ring of points is added across it, all the way around.")
@@ -447,17 +482,25 @@ func _set_mode(m: String, on: bool) -> void:
 	if not on:
 		mode_btns[m].set_pressed_no_signal(true)    # keep one lit
 		return
-	var painting := m == "paint"
-	mode_btns["shape"].set_pressed_no_signal(not painting)
-	mode_btns["paint"].set_pressed_no_signal(painting)
-	shape_panel.visible = not painting
-	paint_panel.visible = painting
-	view.tool = "paint" if painting else ""
+	_end_add_point()
+	_end_draw_arch()
+	for k in mode_btns:
+		mode_btns[k].set_pressed_no_signal(k == m)
+	shape_panel.visible = m == "shape"
+	paint_panel.visible = m == "paint"
+	wheel_panel.visible = m == "wheels"
+	var painting := m != "shape"
+	view.tool = {"paint": "paint", "wheels": "wheels"}.get(m, "")
 	view.show_paint = painting
 	view.clear_selection()
-	view.set_xray(not painting and xray_btn.button_pressed)
+	view.set_xray(m == "shape" and xray_btn.button_pressed)
 	view.rebuild_body()
-	_say("Pick a part on the right, then tap faces to paint them." if painting else "")
+	if m == "wheels":
+		_select_view("3d")
+		_pick_wheel_axle(false)
+		_say("The wheel picture is cut from your side photo around each wheel. Drag the photo to center it, pinch to size the orange circle to the tire's edge.")
+	else:
+		_say("Pick a part on the right, then tap faces to paint them." if painting else "")
 
 func _paint_colors() -> Dictionary:
 	var c := {}
@@ -624,3 +667,133 @@ func _on_face_painted(fi: int) -> void:
 	mesh.set_region(targets, val)
 	view.rebuild_body()
 	_queue_save()
+
+# ---------------------------------------------------------------- wheel arches
+
+func _toggle_draw_arch(on: bool) -> void:
+	view.arch_pts.clear()
+	arch_btn.set_pressed_no_signal(on)
+	arch_row.visible = on
+	if on:
+		_end_add_point()
+		_select_view("side")
+		view.tool = "draw_arch"
+		view.clear_selection()
+		_say("Tap along the wheel well in the photo, from one end of the arch to the other. The two ends drop onto the bottom of the body. Pinch to zoom in for accuracy.")
+	else:
+		if view.tool == "draw_arch":
+			view.tool = ""
+		_say("")
+	view.overlay.queue_redraw()
+
+func _finish_arch() -> void:
+	mesh.push_undo()
+	var msg := mesh.cut_arch_profile(view.arch_pts)
+	if msg != "":
+		mesh.undo()
+		_say(msg)
+		return
+	_toggle_draw_arch(false)
+	_after_structural()
+	_say("Arch cut. Draw the other one, or Undo to try again.")
+
+func _cut_arches() -> void:
+	var d := project.dims
+	mesh.push_undo()
+	var msgs := []
+	for rear in [false, true]:
+		var axle_z: float = (d["wheelbase_m"] * 0.5) * (1.0 if rear else -1.0)
+		var r := project.tire_radius(rear)
+		var msg := mesh.cut_wheel_arch(axle_z, r, r * 1.12 + 0.02, 8)
+		if msg != "":
+			msgs.append(("Rear: " if rear else "Front: ") + msg)
+	if msgs.size() == 2:
+		mesh.undo()
+		_say(" ".join(msgs))
+		return
+	_after_structural()
+	_say("Wheel arches cut around both axles, sized from the tires." if msgs.is_empty() else "Cut one arch. " + " ".join(msgs))
+
+# ---------------------------------------------------------------- wheels
+
+func _build_wheel_panel() -> Control:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(620, 0)
+	var sc := ScrollContainer.new()
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(sc)
+	var pad := MarginContainer.new()
+	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pad.add_theme_constant_override("margin_right", 22)
+	sc.add_child(pad)
+	var v := VBoxContainer.new()
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.add_theme_constant_override("separation", 10)
+	pad.add_child(v)
+	v.add_child(UIKit.label("WHEEL PICTURE", 24, UIKit.ACCENT))
+	var tabs_row := HBoxContainer.new()
+	wheel_axle_btns["front"] = _grow(PorterUI.toggle("Front wheel", true, func(on): _axle_toggled(false, on)))
+	wheel_axle_btns["rear"] = _grow(PorterUI.toggle("Rear wheel", false, func(on): _axle_toggled(true, on)))
+	tabs_row.add_child(wheel_axle_btns["front"])
+	tabs_row.add_child(wheel_axle_btns["rear"])
+	v.add_child(tabs_row)
+	rear_same_btn = _grow(PorterUI.toggle("Rear uses the front wheel picture", project.wheels.get("rear_same", true), func(on):
+		project.wheels["rear_same"] = on
+		project.save()
+		_pick_wheel_axle(wheel_rear)
+		_apply_wheel()))
+	v.add_child(rear_same_btn)
+	wheel_view = WheelCropView.new()
+	wheel_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wheel_view.crop_changed.connect(func(final):
+		if final:
+			_store_crop()
+			_apply_wheel())
+	v.add_child(wheel_view)
+	var g := GridContainer.new()
+	g.columns = 6
+	for spec in [["◀", func(): wheel_view.nudge_move(-1, 0)], ["▶", func(): wheel_view.nudge_move(1, 0)],
+			["▲", func(): wheel_view.nudge_move(0, -1)], ["▼", func(): wheel_view.nudge_move(0, 1)],
+			["−", func(): wheel_view.nudge_size(1.0 / 1.01)], ["+", func(): wheel_view.nudge_size(1.01)]]:
+		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
+	v.add_child(g)
+	v.add_child(_grow(PorterUI.button("Reset to the aligned wheel position", func():
+		var key := "rear" if wheel_rear and not project.wheels.get("rear_same", true) else "front"
+		project.wheels[key] = {}
+		project.save()
+		_pick_wheel_axle(wheel_rear)
+		_apply_wheel())))
+	var tip := UIKit.label("The wheel model is built from the tire size: a 16-sided drum with this picture on both faces and rubber on the tread. It's kept separate from the body so the game can spin and steer it. Tip: cut wheel arches in Shape so the wheels show.", 20, UIKit.DIM)
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(tip)
+	return panel
+
+func _axle_toggled(rear: bool, on: bool) -> void:
+	if not on:
+		wheel_axle_btns["rear" if rear else "front"].set_pressed_no_signal(true)
+		return
+	_pick_wheel_axle(rear)
+
+func _pick_wheel_axle(rear: bool) -> void:
+	if rear and project.wheels.get("rear_same", true):
+		rear = false
+		_say("The rear uses the front wheel picture. Turn that off to cut a separate rear wheel.")
+	wheel_rear = rear
+	wheel_axle_btns["front"].set_pressed_no_signal(not rear)
+	wheel_axle_btns["rear"].set_pressed_no_signal(rear)
+	wheel_view.setup(project, rear, project.load_photo("side"))
+	if project.load_wheel_texture(false) == null:
+		_apply_wheel()
+
+func _store_crop() -> void:
+	var key := "rear" if wheel_rear else "front"
+	project.wheels[key] = wheel_view.crop.duplicate()
+	project.save()
+
+## Re-cut the wheel pictures and refresh the wheels on the car.
+func _apply_wheel() -> void:
+	if project.load_photo("side") == null:
+		return
+	project.make_wheel_texture(false)
+	project.make_wheel_texture(true)
+	view.refresh_wheels()

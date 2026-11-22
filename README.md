@@ -113,6 +113,13 @@ later under the dimensions panel (*Apply tires*).
 - Tap points or faces to select (tap again to reach a hidden one), drag to
   move, with ↔ / ↕ locks and 1 cm / 1 mm nudge buttons. Extrude, loop cut,
   delete, undo/redo.
+- **Wheel arches**: *Draw an arch* — in the side view, tap along the wheel
+  well on the photo from one end to the other (live outline; Finish / Undo
+  point / Cancel); the ends drop onto the body's bottom edge and the points
+  between become the arch, any shape (round, squared, flared), one arch at a
+  time. *Auto arches (both wheels)* cuts round arches sized from the tires
+  (radius × 1.12 + 2 cm). Concave panels are ear-clipped so they render
+  cleanly.
 - **Add point**: tap an edge to add a connected point on it, or empty space
   for a free point (placed at the depth of the nearest geometry; tap an
   existing point to include it). **Connect**: 2 points on one face split it
@@ -127,6 +134,15 @@ later under the dimensions panel (*Apply tires*).
 - Parts use the material names the game already understands (Paint, Lower,
   Glass, Taillight, plus Headlight / Chrome / Trim / Grille), so export maps
   straight onto CarModel. Preview in the source car's factory colors.
+
+**Wheels** (*Wheels* switch in the modeler)
+- Each axle gets a separate low-poly wheel model built from the tire size
+  (16-sided drum, picture on both faces, rubber tread), kept apart from the
+  body so the game can spin and steer it.
+- The wheel picture is cut from the aligned side photo around each wheel
+  automatically (orange circle = tire edge, blue = rim from the tire size);
+  drag/pinch or nudge to adjust. The rear can reuse the front picture or get
+  its own. Saved as `wheel_front.png` / `wheel_rear.png` in the project.
 
 **Photo textures** (part *Photo texture* in Paint)
 - Faces take their texture from the aligned reference photos: each face

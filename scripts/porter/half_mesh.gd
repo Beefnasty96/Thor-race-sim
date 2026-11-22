@@ -210,10 +210,137 @@ func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
 
 func _emit_face(st: SurfaceTool, f: PackedInt32Array, vs: PackedVector3Array) -> void:
 	var n := face_normal(f, vs)
-	for k in range(1, f.size() - 1):
-		for idx in [f[0], f[k + 1], f[k]]:      # reversed: CCW-outward -> Godot front face
+	for tri in triangulate(f, vs):
+		for idx in [tri[0], tri[2], tri[1]]:    # reversed: CCW-outward -> Godot front face
 			st.set_normal(n)
 			st.add_vertex(vs[idx])
+
+## Split a face into triangles (vertex ids, CCW seen from outside). Faces
+## with more than 4 sides, or concave ones (like a side panel with a wheel
+## arch cut into it), are ear-clipped in the face's own plane.
+func triangulate(f: PackedInt32Array, vs: PackedVector3Array = verts) -> Array:
+	var out := []
+	if f.size() == 3:
+		return [[f[0], f[1], f[2]]]
+	var n := face_normal(f, vs)
+	var u := (vs[f[1]] - vs[f[0]])
+	u = (u - n * u.dot(n)).normalized()
+	if u.length() < 0.5:
+		u = n.cross(Vector3.UP if absf(n.y) < 0.9 else Vector3.RIGHT).normalized()
+	var w := n.cross(u)
+	var poly := PackedVector2Array()
+	for i in f:
+		poly.append(Vector2(vs[i].dot(u), vs[i].dot(w)))
+	var idx := Geometry2D.triangulate_polygon(poly)
+	if idx.is_empty():
+		for k in range(1, f.size() - 1):       # degenerate: fall back to a fan
+			out.append([f[0], f[k], f[k + 1]])
+		return out
+	for t in range(0, idx.size(), 3):
+		var a := f[idx[t]]
+		var b := f[idx[t + 1]]
+		var c := f[idx[t + 2]]
+		if (vs[b] - vs[a]).cross(vs[c] - vs[a]).dot(n) < 0.0:
+			out.append([a, c, b])
+		else:
+			out.append([a, b, c])
+	return out
+
+# ---------------------------------------------------------------- wheel arches
+
+## Cut a wheel arch into the body side at an axle: points are added along
+## the side's bottom edge and lifted onto a circle around the wheel, so the
+## side panel's lower edge follows the arch. `axle_z` / `center_y` place the
+## wheel; `radius` is the arch radius (tire radius plus clearance).
+## Returns "" or a message.
+func cut_wheel_arch(axle_z: float, center_y: float, radius: float, segments: int = 8) -> String:
+	# the side's bottom edge: the lowest side edge running past the axle
+	var low := _bottom_edge_height(axle_z)
+	if low == INF:
+		return "No body side found at this axle."
+	if low >= center_y + radius - 0.02:
+		return "This wheel already has an arch (or the body sits above it)."
+	var half := sqrt(maxf(radius * radius - pow(low - center_y, 2.0), 0.0))
+	var profile := []
+	for k in segments + 1:
+		var z := axle_z - half + 2.0 * half * k / segments
+		var dz := z - axle_z
+		profile.append(Vector2(z, center_y + sqrt(maxf(radius * radius - dz * dz, 0.0))))
+	return cut_arch_profile(profile)
+
+## Cut an arch of any shape: `profile` is a list of side-view points
+## (Vector2(z, y)), in either direction. The two ends drop onto the body
+## side's bottom edge; the points between become the arch outline.
+func cut_arch_profile(profile: Array) -> String:
+	if profile.size() < 3:
+		return "Tap at least 3 points: both ends of the arch and at least one over the wheel."
+	var pts := profile.duplicate()
+	pts.sort_custom(func(a, b): return a.x < b.x)
+	var z0: float = pts[0].x
+	var z1: float = pts[pts.size() - 1].x
+	if z1 - z0 < 0.1:
+		return "The arch is too narrow. Start and finish on either side of the wheel."
+	var mid := (z0 + z1) * 0.5
+	var low := _bottom_edge_height(mid)
+	if low == INF:
+		return "No body side found under that arch."
+	for i in range(1, pts.size()):
+		if pts[i].x - pts[i - 1].x < 0.005:
+			return "Two points are almost on top of each other. Undo one and tap again."
+	var ids := []
+	for p in pts:
+		var id := _point_on_bottom_edge(p.x, low)
+		if id < 0:
+			return "The body's bottom edge doesn't run all the way under that arch (has it been reshaped, or does the arch go past the bumper?)."
+		ids.append(id)
+	for k in range(1, pts.size() - 1):
+		var v := verts[ids[k]]
+		verts[ids[k]] = Vector3(v.x, maxf(pts[k].y, low), v.z)
+	return ""
+
+## Height of the side's bottom edge at depth z (lowest side edge there).
+func _bottom_edge_height(z: float) -> float:
+	var low := INF
+	for e in edges():
+		if is_center(e.x) or is_center(e.y):
+			continue
+		var a := verts[e.x]
+		var b := verts[e.y]
+		if (a.z - z) * (b.z - z) <= 0.0 and absf(a.z - b.z) > 0.01:
+			low = minf(low, lerpf(a.y, b.y, (z - a.z) / (b.z - a.z)))
+	return low
+
+## Point on the side's bottom edge at depth z (reuses a point within 1 cm,
+## otherwise splits the edge there).
+func _point_on_bottom_edge(z: float, low: float) -> int:
+	for i in verts.size():
+		if not is_center(i) and absf(verts[i].y - low) < 0.03 and absf(verts[i].z - z) < 0.01:
+			return i
+	for e in edges():
+		if is_center(e.x) or is_center(e.y):
+			continue
+		var a := verts[e.x]
+		var b := verts[e.y]
+		var z0 := minf(a.z, b.z)
+		var z1 := maxf(a.z, b.z)
+		if z > z0 + 0.005 and z < z1 - 0.005:
+			var t := (z - a.z) / (b.z - a.z)
+			var p := a.lerp(b, t)
+			if absf(p.y - low) > 0.03 or absf(a.y - low) > 0.1 or absf(b.y - low) > 0.1:
+				continue                    # not the bottom edge (or too sloped)
+			var id := verts.size()
+			verts.append(p)
+			for fi in faces.size():
+				var f: PackedInt32Array = faces[fi]
+				for k in f.size():
+					var u := f[k]
+					var v := f[(k + 1) % f.size()]
+					if (u == e.x and v == e.y) or (u == e.y and v == e.x):
+						f.insert(k + 1, id)
+						faces[fi] = f
+						break
+			return id
+	return -1
 
 # ---------------------------------------------------------------- operations
 
