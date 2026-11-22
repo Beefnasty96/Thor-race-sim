@@ -2,13 +2,10 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bkvglvf41hihn"
+uid="uid://bqftkm3dvdo0c"
 path="res://.godot/imported/tahoe_body_park_lens.png-2bb4067c50828be583b1eb975ab62147.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "9dae441632400654eee1167715223901"
 }
 
 [deps]
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

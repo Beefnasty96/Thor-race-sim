@@ -1,5 +1,6 @@
 // GT3-style baked body: a low-poly shell whose detail lives in textures.
-//   detail_tex : baked albedo of everything that isn't paint (paint = white)
+//   detail_tex : baked albedo of everything that isn't paint (paint = white);
+//                alpha < 1 marks the tinted, see-through window glass
 //   mask_tex   : R paint, G chrome/bright metal, B tail lamp, A ambient occlusion
 // Paint colour + GMT400 two-tone (lower colour, black band, chrome pinstripes)
 // are applied here so any paint scheme works with the same bake.
@@ -31,7 +32,8 @@ float edge(float y, float h) {
 }
 
 void fragment() {
-	vec3 detail = texture(detail_tex, UV).rgb;
+	vec4 dt = texture(detail_tex, UV);
+	vec3 detail = dt.rgb;
 	vec4 mk = texture(mask_tex, UV);
 	// paint, with the two-tone on the sides
 	vec3 pc = body_color; float pm = body_metallic; float pr = 0.28;
@@ -50,10 +52,16 @@ void fragment() {
 	float chrome = mk.g * (1.0 - paint);
 	float ao = mix(1.0, mk.a, ao_strength);
 	vec3 col = mix(detail, pc, paint);
+	if (!FRONT_FACING) {                // inside of the shell (cockpit view): plain trim colour
+		col = vec3(0.10, 0.11, 0.13);
+		paint = 0.0; chrome = 0.0;
+	}
 	ALBEDO = col * ao;
 	METALLIC = mix(mix(0.0, 1.0, chrome), pm, paint);
 	ROUGHNESS = mix(mix(0.55, 0.12, chrome), pr, paint);
 	CLEARCOAT = paint;
 	CLEARCOAT_ROUGHNESS = 0.06;
 	EMISSION = vec3(1.0, 0.06, 0.02) * mk.b * (0.25 + 2.5 * brake) * ao;
+	ALPHA = dt.a;                       // window openings are cut out (glass is a separate overlay)
+	ALPHA_SCISSOR_THRESHOLD = 0.5;
 }

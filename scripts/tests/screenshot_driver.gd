@@ -113,9 +113,9 @@ func _process(dt: float) -> void:
 			if t > 6.5 and not has_meta("flat_done"):
 				set_meta("flat_done", true)
 				_shot("11b_tire_flat")
-				cam.position = Vector3(-2.4, 0.09, 0.4)
+				cam.position = Vector3(-7.5, 1.0, -0.2)
 			if has_meta("flat_done"):
-				cam.look_at(main.car.to_global(Vector3(0.2, 0.42, -0.2)))
+				cam.look_at(main.car.to_global(Vector3(0.0, 0.95, -0.2)))
 			if t > 7.5:
 				_shot("11c_underside")
 				get_tree().quit()

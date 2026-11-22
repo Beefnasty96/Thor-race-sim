@@ -20,6 +20,7 @@ var body_drop := 0.0
 var _paint_mat: ShaderMaterial
 const PAINT_SHADER := preload("res://assets/shaders/body_paint.gdshader")
 const BAKED_SHADER := preload("res://assets/shaders/body_baked.gdshader")
+const GLASS_SHADER := preload("res://assets/shaders/body_glass.gdshader")
 var _model_dir := ""
 var _baked := false
 var _susp := {}                      # suspension part name -> MeshInstance3D
@@ -93,6 +94,16 @@ func _prepare_materials(root: Node) -> void:
 					_paint_mat.set_shader_parameter("mask_tex", load(_model_dir + "/" + bk.get("mask", "body_mask.png")))
 					_baked = true
 				m.set_surface_override_material(s, _paint_mat)
+				if m.get_node_or_null("GlassOverlay") == null:     # tinted glass over the window cut-outs
+					var gl := MeshInstance3D.new()
+					gl.name = "GlassOverlay"
+					gl.mesh = m.mesh
+					var gsm := ShaderMaterial.new()
+					gsm.shader = GLASS_SHADER
+					gsm.set_shader_parameter("detail_tex", _paint_mat.get_shader_parameter("detail_tex"))
+					gl.material_override = gsm
+					gl.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+					m.add_child(gl)
 			elif n == "Paint":
 				if _paint_mat == null:
 					_paint_mat = ShaderMaterial.new()

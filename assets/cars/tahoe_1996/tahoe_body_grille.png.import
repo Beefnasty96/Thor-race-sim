@@ -2,13 +2,10 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dsx6oygmhwutk"
+uid="uid://bjaxwevby8tpq"
 path="res://.godot/imported/tahoe_body_grille.png-c0739f9af444ad5dc0797337840206f8.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "61435173c260af12feac2d100a19beb5"
 }
 
 [deps]
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

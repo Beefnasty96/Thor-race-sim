@@ -2,13 +2,10 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0u6k62o148e3"
+uid="uid://bqofve0xqdbyf"
 path="res://.godot/imported/tahoe_body_amber_lens.png-df3a7ee6fafc6021a8a0f925c106d619.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "445a1c0f268f436bc13709894fc9636d"
 }
 
 [deps]
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
