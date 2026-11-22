@@ -13,7 +13,21 @@ const CENTER_EPS := 0.0005
 
 var verts := PackedVector3Array()
 var faces: Array = []               # Array[PackedInt32Array]
+var regions: Array = []             # paint region per face (keys of REGIONS), parallel to faces
 var template := ""
+
+## Paint regions. "material" is the glTF material name the game looks for
+## (Paint / Lower / Glass / Taillight get special handling in CarModel).
+const REGIONS := {
+	"paint":     {"label": "Body paint",   "color": Color(0.2, 0.25, 0.45), "material": "Paint"},
+	"second":    {"label": "Second color", "color": Color(0.62, 0.53, 0.43), "material": "Lower"},
+	"glass":     {"label": "Glass",        "color": Color(0.07, 0.09, 0.12), "material": "Glass"},
+	"headlight": {"label": "Headlight",    "color": Color(0.9, 0.92, 0.95), "material": "Headlight"},
+	"taillight": {"label": "Taillight",    "color": Color(0.62, 0.04, 0.04), "material": "Taillight"},
+	"chrome":    {"label": "Chrome",       "color": Color(0.82, 0.83, 0.85), "material": "Chrome"},
+	"trim":      {"label": "Black trim",   "color": Color(0.07, 0.07, 0.075), "material": "Trim"},
+	"grille":    {"label": "Grille",       "color": Color(0.03, 0.03, 0.035), "material": "Grille"},
+}
 
 var _undo: Array = []
 var _redo: Array = []
@@ -27,13 +41,54 @@ func snapshot() -> Dictionary:
 	var f := []
 	for face in faces:
 		f.append(PackedInt32Array(face))
-	return {"v": PackedVector3Array(verts), "f": f}
+	return {"v": PackedVector3Array(verts), "f": f, "r": regions.duplicate()}
 
 func restore(s: Dictionary) -> void:
 	verts = PackedVector3Array(s["v"])
 	faces = []
 	for face in s["f"]:
 		faces.append(PackedInt32Array(face))
+	regions = s.get("r", []).duplicate()
+	_fix_regions()
+
+## Keep one region per face (older saves / new faces default to body paint).
+func _fix_regions() -> void:
+	while regions.size() < faces.size():
+		regions.append("paint")
+	if regions.size() > faces.size():
+		regions.resize(faces.size())
+
+func region_of(fi: int) -> String:
+	return regions[fi] if fi < regions.size() else "paint"
+
+func set_region(face_ids: Array, region: String) -> void:
+	_fix_regions()
+	for fi in face_ids:
+		regions[fi] = region
+
+## Faces connected to `start` (sharing an edge) that have the same region.
+func connected_same_region(start: int) -> Array:
+	_fix_regions()
+	var want: String = regions[start]
+	var by_edge := {}
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var e := edge_key(f[k], f[(k + 1) % f.size()])
+			if not by_edge.has(e):
+				by_edge[e] = []
+			by_edge[e].append(fi)
+	var seen := {start: true}
+	var stack := [start]
+	while not stack.is_empty():
+		var fi: int = stack.pop_back()
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			for g in by_edge[edge_key(f[k], f[(k + 1) % f.size()])]:
+				if not seen.has(g) and regions[g] == want:
+					seen[g] = true
+					stack.append(g)
+	return seen.keys()
 
 ## Call before an edit so it can be undone.
 func push_undo() -> void:
@@ -117,14 +172,20 @@ func edges() -> Array:
 
 ## Full mirrored body as a flat-shaded ArrayMesh (one normal per face, the
 ## Gran Turismo look). Godot treats clockwise triangles as front-facing.
-func build_mesh(color: Color = Color(0.72, 0.74, 0.78)) -> ArrayMesh:
+## colors: region -> Color overrides (e.g. the chosen body paint); with
+## plain = true every face is drawn in one neutral grey (shape mode).
+func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
+	_fix_regions()
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	st.set_color(color)
 	var mirrored := PackedVector3Array()
 	for p in verts:
 		mirrored.append(Vector3(-p.x, p.y, p.z))
-	for f in faces:
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		var reg: String = regions[fi]
+		var col: Color = Color(0.72, 0.74, 0.78) if plain else colors.get(reg, REGIONS[reg]["color"])
+		st.set_color(col)
 		_emit_face(st, f, verts)
 		var r := PackedInt32Array()
 		for k in range(f.size() - 1, -1, -1):
@@ -169,7 +230,9 @@ func extrude_faces(face_ids: Array, dist: float = 0.05) -> Array:
 				remap[i] = verts.size()
 				verts.append(verts[i])
 	# side walls along the region boundary (in each face's winding order)
+	_fix_regions()
 	var walls := []
+	var wall_regions := []
 	for fi in face_ids:
 		var f: PackedInt32Array = faces[fi]
 		for k in f.size():
@@ -181,12 +244,14 @@ func extrude_faces(face_ids: Array, dist: float = 0.05) -> Array:
 			if is_center(a) and is_center(b) and use_all[e] == 1:
 				continue                   # open centerline edge: the mirror half closes it
 			walls.append(PackedInt32Array([a, b, remap[b], remap[a]]))
+			wall_regions.append(regions[fi])
 	for fi in face_ids:
 		var f: PackedInt32Array = faces[fi]
 		for k in f.size():
 			f[k] = remap[f[k]]
 		faces[fi] = f
 	faces.append_array(walls)
+	regions.append_array(wall_regions)
 	var moved: Array = remap.values()
 	move_verts(moved, n * dist)
 	return moved
@@ -235,6 +300,7 @@ func loop_cut(a: int, b: int, t: float = 0.5) -> Array:
 			e = opp
 	if cut_faces.is_empty():
 		return []
+	_fix_regions()
 	# new vertex on every cut edge (always measured from the lower vertex id)
 	var mids := {}
 	for e in cut_edges:
@@ -254,17 +320,22 @@ func loop_cut(a: int, b: int, t: float = 0.5) -> Array:
 		var m23: int = mids[edge_key(v2, v3)]
 		faces[fi] = PackedInt32Array([v0, m01, m23, v3])
 		faces.append(PackedInt32Array([m01, v1, v2, m23]))
+		regions.append(regions[fi])
 	return mids.values()
 
 func delete_faces(face_ids: Array) -> void:
 	var drop := {}
 	for fi in face_ids:
 		drop[fi] = true
+	_fix_regions()
 	var keep := []
+	var keep_r := []
 	for fi in faces.size():
 		if not drop.has(fi):
 			keep.append(faces[fi])
+			keep_r.append(regions[fi])
 	faces = keep
+	regions = keep_r
 	remove_unused_verts()
 
 func remove_unused_verts() -> void:
@@ -317,7 +388,8 @@ func to_dict() -> Dictionary:
 	var f := []
 	for face in faces:
 		f.append(Array(face))
-	return {"format": 1, "template": template, "verts": v, "faces": f}
+	_fix_regions()
+	return {"format": 1, "template": template, "verts": v, "faces": f, "regions": regions.duplicate()}
 
 static func from_dict(d: Dictionary) -> HalfMesh:
 	var m := HalfMesh.new()
@@ -326,6 +398,9 @@ static func from_dict(d: Dictionary) -> HalfMesh:
 		m.verts.append(Vector3(p[0], p[1], p[2]))
 	for f in d.get("faces", []):
 		m.faces.append(PackedInt32Array(f))
+	for r in d.get("regions", []):
+		m.regions.append(r if HalfMesh.REGIONS.has(r) else "paint")
+	m._fix_regions()
 	return m
 
 # ---------------------------------------------------------------- templates
@@ -403,14 +478,28 @@ static func from_template(key: String, dims: Dictionary) -> HalfMesh:
 		var A: PackedInt32Array = rings[r]
 		var B: PackedInt32Array = rings[r + 1]
 		var axis_y := (m.verts[A[0]].y + m.verts[A[4]].y + m.verts[B[0]].y + m.verts[B[4]].y) * 0.25
+		var tall_a: bool = secs[r][3] >= 0.85
+		var tall_b: bool = secs[r + 1][3] >= 0.85
 		for j in 4:
 			m._add_outward(PackedInt32Array([A[j], A[j + 1], B[j + 1], B[j]]), axis_y)
+			var reg := "paint"
+			if j == 0:
+				reg = "trim"                              # underbody
+			elif j == 2 and tall_a and tall_b and key != "box":
+				reg = "glass"                             # side windows
+			elif j == 3 and tall_a != tall_b and key != "box":
+				reg = "glass"                             # windshield / rear window
+			m.regions.append(reg)
 	# front and rear caps (a centerline point at belt height splits each into quads)
-	for cap in [rings[0], rings[rings.size() - 1]]:
+	for ci in 2:
+		var cap: PackedInt32Array = rings[0] if ci == 0 else rings[rings.size() - 1]
+		var sec: Array = secs[0] if ci == 0 else secs[secs.size() - 1]
 		var c_mid := m.verts.size()
 		m.verts.append(Vector3(0, m.verts[cap[2]].y, m.verts[cap[0]].z))
 		m._add_outward(PackedInt32Array([cap[0], cap[1], cap[2], c_mid]), 0.0)
+		m.regions.append("grille" if ci == 0 and key != "box" else "paint")
 		m._add_outward(PackedInt32Array([c_mid, cap[2], cap[3], cap[4]]), 0.0)
+		m.regions.append("glass" if ci == 1 and sec[3] >= 0.85 and key != "box" else "paint")
 	return m
 
 ## Add a face, flipping it if its normal points toward the body's axis at
