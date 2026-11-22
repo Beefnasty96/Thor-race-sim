@@ -71,11 +71,36 @@ cluster (working speedometer and tach), centre stack, steering column, airbag
 steering wheel that turns with the front wheels, seats and headliner. Paint
 combinations are chosen in the Vehicle Editor.
 
+## Car Porter (companion app)
+
+**Car Porter** is a second app built from the same Godot project, for building
+new cars on a phone (target: Samsung Galaxy S24 FE). It shares the game's car
+files and physics, so a car built in Car Porter drives the same in the game.
+The export preset *Car Porter* sets the `porter` feature tag, which switches
+the start scene to `scenes/porter.tscn` and the package to
+`com.racingsim.carporter`, so both apps install side by side.
+
+**v0.1: reference photos**
+- Start a project blank or with real dimensions copied from a car in the game.
+- Load side, front, rear and top photos (Android's photo picker).
+- Line each photo up with a true-scale outline: **Align: tap 2 points** (front
+  and rear wheel centers on the side view, tire contact points on front/rear,
+  bumper ends on top), or drag/pinch/twist, with fine-adjust buttons.
+- Edit dimensions in inches or millimeters; the outline updates live.
+- **3D check** shows every photo on its own side of a true-size box.
+
+Next: touch box-modeling with mirror symmetry, wheels, paint regions, specs
+and test targets, export to `data/cars/` + `assets/cars/`.
+
+Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
+zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`.
+Screenshots: `godot res://scenes/porter.tscn -- --shots`.
+
 ## Getting the APK onto the Thor
 
 **From GitHub (every push):** open the repo's **Actions** tab, then the latest
 *Build Android APK* run, and download the `racing-sim-apk` artifact (a zip
-containing the APK).
+containing the APK). Car Porter for the phone is the `car-porter-apk` artifact.
 
 **Install:** copy the APK to the Thor (USB, cloud drive, or download it on the
 device), open it with a file manager, and allow *Install unknown apps* for that
@@ -187,6 +212,7 @@ data/maps/*.json            Map definitions (proving ground, future towns)
 tools/blender/              Scripted Blender car models (exported to assets/)
 scripts/ui/                 HUD, theme, option rows
 scripts/tests/              Headless physics + lap tests, screenshot tool
+scripts/porter/             Car Porter app (projects, reference photos, 3D check)
 tools/sign_apk.py           Local APK v2 signer (when apksigner isn't available)
 .github/workflows/          Cloud APK build
 ```
