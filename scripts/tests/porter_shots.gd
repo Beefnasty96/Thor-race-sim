@@ -34,6 +34,22 @@ static func fake_side_photo() -> Image:
 					img.set_pixel(x, y, Color(0.08, 0.08, 0.08) if d > 60 else Color(0.7, 0.7, 0.72))
 	return img
 
+## Front view of the same fake SUV: body, windshield, grille, headlights, tires.
+static func fake_front_photo() -> Image:
+	var img := Image.create(1200, 900, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.62, 0.7, 0.78))
+	img.fill_rect(Rect2i(0, 760, 1200, 140), Color(0.35, 0.36, 0.35))
+	img.fill_rect(Rect2i(210, 380, 780, 330), Color(0.55, 0.06, 0.06))      # body
+	img.fill_rect(Rect2i(260, 170, 680, 220), Color(0.5, 0.05, 0.05))       # cab
+	img.fill_rect(Rect2i(290, 195, 620, 170), Color(0.15, 0.2, 0.28))       # windshield
+	img.fill_rect(Rect2i(330, 480, 540, 120), Color(0.06, 0.06, 0.07))      # grille
+	img.fill_rect(Rect2i(235, 480, 90, 120), Color(0.92, 0.93, 0.95))       # headlights
+	img.fill_rect(Rect2i(875, 480, 90, 120), Color(0.92, 0.93, 0.95))
+	img.fill_rect(Rect2i(230, 640, 740, 50), Color(0.8, 0.8, 0.82))         # bumper
+	img.fill_rect(Rect2i(250, 690, 120, 80), Color(0.08, 0.08, 0.08))       # tires
+	img.fill_rect(Rect2i(830, 690, 120, 80), Color(0.08, 0.08, 0.08))
+	return img
+
 func _process(delta: float) -> void:
 	t += delta
 	if t < 1.0:
@@ -49,6 +65,8 @@ func _process(delta: float) -> void:
 			p.import_image("side", fake_side_photo())
 			# wheel centres in the fake photo are at (470,540) and (1350,540)
 			p.align_two_points("side", Vector2(470, 540), Vector2(1350, 540), Vector2(1800, 820))
+			p.import_image("rear", fake_front_photo())
+			p.align_two_points("rear", Vector2(310, 770), Vector2(890, 770), Vector2(1200, 900))
 			p.save()
 			app._open(p)
 		2:
@@ -132,6 +150,17 @@ func _process(delta: float) -> void:
 		14:
 			_shot("porter_12_paint_side")
 			app.modeler._select_view("3d")
+			app.modeler._photos_on(["paint", "second", "grille"])
+			app.modeler.view.yaw = deg_to_rad(-120.0)
+			app.modeler.view._update_cam()
+			app.modeler.view.overlay.queue_redraw()
+		15:
+			_shot("porter_13_photo_textures")
+			app.modeler.view.yaw = deg_to_rad(-30.0)
+			app.modeler.view._update_cam()
+			app.modeler.view.overlay.queue_redraw()
+		16:
+			_shot("porter_14_photo_textures_rear")
 			var p2: PorterProject = app.project
 			for f in DirAccess.get_files_at(p2.dir()):
 				DirAccess.remove_absolute(p2.dir() + f)

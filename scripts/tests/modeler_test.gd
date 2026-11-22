@@ -203,5 +203,41 @@ func _initialize() -> void:
 	_check(old.regions == ["paint"], "models saved before paint existed load as body paint")
 	_check(r.build_mesh({"paint": Color.RED}).get_surface_count() == 1, "colored preview mesh builds")
 
+	# photo textures
+	var pp := PorterProject.create("photo texture test")
+	pp.fill_from_car(def, "4door")
+	var img := Image.create(1600, 700, false, Image.FORMAT_RGBA8)
+	img.fill(Color.GRAY)
+	pp.import_image("side", img)
+	var isz := Vector2(1600, 700)
+	pp.align_two_points("side", Vector2(400, 560), Vector2(1250, 560), isz)
+	var fa := Vector3(-0.5, pp.dims["tire_radius_m"], -pp.dims["wheelbase_m"] * 0.5)   # front axle center, any x
+	var uv := PhotoTexturer.uv_for(pp, "side", fa, isz)
+	_check((uv * isz).distance_to(Vector2(400, 560)) < 0.5, "front axle center maps to the tapped wheel pixel in the side photo")
+	var uv_m := PhotoTexturer.uv_for(pp, "side", Vector3(-fa.x, fa.y, fa.z), isz)
+	_check(uv_m.is_equal_approx(uv), "the mirrored side uses the same side-photo pixel")
+	var avail := {"side": true, "front": true, "rear": true, "top": true}
+	_check(PhotoTexturer.choose_view("photo", Vector3(-1, 0.1, 0), avail) == "side", "side-facing face takes the side photo")
+	_check(PhotoTexturer.choose_view("photo", Vector3(-0.1, 0.95, 0.1), avail) == "top", "roof face takes the top photo")
+	_check(PhotoTexturer.choose_view("photo", Vector3(0, 0.2, -0.95), avail) == "front", "nose face takes the front photo")
+	_check(PhotoTexturer.choose_view("photo", Vector3(0, 0.2, 0.95), avail) == "rear", "tail face takes the rear photo")
+	_check(PhotoTexturer.choose_view("photo:front", Vector3(-1, 0, 0), avail) == "front", "a forced photo is used")
+	_check(PhotoTexturer.choose_view("photo", Vector3(0, 1, 0), {"side": true}) == "side", "falls back to an available photo")
+	_check(PhotoTexturer.choose_view("photo", Vector3(0, 1, 0), {}) == "", "no photos: face stays plain")
+	var pm := HalfMesh.from_template("suv", pp.dims)
+	for pf in pm.faces.size():
+		if pm.regions[pf] == "paint":
+			pm.regions[pf] = "photo"
+	var built := PhotoTexturer.build(pm, pp, {}, {"side": pp.load_photo("side"), "front": null, "rear": null, "top": null})
+	var am: ArrayMesh = built[0]
+	_check(am.get_surface_count() == 2 and built[1] == ["side"], "textured preview: plain surface + side-photo surface")
+	_check(HalfMesh.region_valid("photo:top") and not HalfMesh.region_valid("photo:roof") and not HalfMesh.region_valid("paint:side"), "photo source names are validated")
+	pm.regions[0] = "photo:front"
+	var pm2 := HalfMesh.from_dict(JSON.parse_string(JSON.stringify(pm.to_dict())))
+	_check(pm2.regions[0] == "photo:front", "photo source survives save/load")
+	for f in DirAccess.get_files_at(pp.dir()):
+		DirAccess.remove_absolute(pp.dir() + f)
+	DirAccess.remove_absolute(pp.dir())
+
 	print("\n%s (%d failed)" % ["ALL PASSED" if fails == 0 else "FAILURES", fails])
 	quit(1 if fails else 0)

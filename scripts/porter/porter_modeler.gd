@@ -23,6 +23,9 @@ var shape_panel: Control
 var paint_panel: Control
 var region_btns := {}
 var region := "paint"
+var photo_src := ""                   # "" = auto, or side/front/rear/top
+var src_btns := {}
+var src_row: Control
 var fill := false
 var xray_btn: Button
 
@@ -410,6 +413,18 @@ func _build_paint_panel() -> Control:
 		region_btns[k] = [b, sw]
 		g.add_child(b)
 	v.add_child(g)
+	src_row = VBoxContainer.new()
+	src_row.add_child(UIKit.label("Photo to use:", 22, UIKit.DIM))
+	var sr := HBoxContainer.new()
+	for spec in [["", "Auto"], ["side", "Side"], ["front", "Front"], ["rear", "Rear"], ["top", "Top"]]:
+		var key2: String = spec[0]
+		var sb := _grow(PorterUI.toggle(spec[1], key2 == photo_src, func(on): _pick_src(key2, on)))
+		sb.custom_minimum_size.x = 0
+		src_btns[key2] = sb
+		sr.add_child(sb)
+	src_row.add_child(sr)
+	src_row.visible = false
+	v.add_child(src_row)
 	v.add_child(_grow(PorterUI.toggle("Fill: paint the whole connected area", false, func(on): fill = on)))
 	var r4 := HBoxContainer.new()
 	r4.add_child(_grow(PorterUI.button("↶ Undo", func():
@@ -420,6 +435,13 @@ func _build_paint_panel() -> Control:
 		else: _say("Nothing to redo."))))
 	v.add_child(r4)
 
+	v.add_child(HSeparator.new())
+	v.add_child(UIKit.label("PHOTO TEXTURES", 24, UIKit.ACCENT))
+	v.add_child(_grow(PorterUI.button("Photos on all body paint", func(): _photos_on(["paint", "second"]))))
+	v.add_child(_grow(PorterUI.button("Photos on everything except glass", func(): _photos_on(["paint", "second", "headlight", "taillight", "chrome", "trim", "grille"]))))
+	var ptip := UIKit.label("Each face takes the photo that looks straight at it, lined up from your Photos step. Match the shape to the photos first for the cleanest result. Photo faces keep the photo's color, so the paint shop won't recolor them.", 20, UIKit.DIM)
+	ptip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(ptip)
 	v.add_child(HSeparator.new())
 	v.add_child(UIKit.label("PREVIEW COLOR", 24, UIKit.ACCENT))
 	var paints := _factory_paints()
@@ -471,12 +493,46 @@ func _pick_region(k: String, on: bool) -> void:
 	region = k
 	for key in region_btns:
 		region_btns[key][0].set_pressed_no_signal(key == k)
+	src_row.visible = k == "photo"
+	if k == "photo" and project.photo_count() == 0:
+		_say("Add photos in the Photos step first.")
+
+func _pick_src(k: String, on: bool) -> void:
+	if not on and k == photo_src:
+		src_btns[k].set_pressed_no_signal(true)
+		return
+	photo_src = k
+	for key in src_btns:
+		src_btns[key].set_pressed_no_signal(key == k)
+
+## Region value to paint with (photo carries its source).
+func _paint_value() -> String:
+	if region == "photo" and photo_src != "":
+		return "photo:" + photo_src
+	return region
+
+func _photos_on(parts: Array) -> void:
+	if project.photo_count() == 0:
+		_say("Add photos in the Photos step first.")
+		return
+	var ids := []
+	for fi in mesh.faces.size():
+		if HalfMesh.region_base(mesh.region_of(fi)) in parts:
+			ids.append(fi)
+	if ids.is_empty():
+		return
+	mesh.push_undo()
+	mesh.set_region(ids, "photo")
+	view.rebuild_body()
+	_queue_save()
+	_say("Photos applied to %d faces. Tap faces with another part to change them, or Undo." % ids.size())
 
 func _on_face_painted(fi: int) -> void:
 	var targets: Array = mesh.connected_same_region(fi) if fill else [fi]
-	if mesh.region_of(fi) == region and targets.size() == 1:
+	var val := _paint_value()
+	if mesh.region_of(fi) == val and targets.size() == 1:
 		return
 	mesh.push_undo()
-	mesh.set_region(targets, region)
+	mesh.set_region(targets, val)
 	view.rebuild_body()
 	_queue_save()
