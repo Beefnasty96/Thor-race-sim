@@ -2,7 +2,7 @@ name: Build vehicle dimension database
 
 on:
   push:
-    branches: [vehicle-dimension-db]
+    branches: [vehicle-dimension-db, tire-sizes]
     paths: ["tools/vehicle_db/**", ".github/workflows/vehicle_db.yml"]
   workflow_dispatch:
     inputs:
@@ -49,7 +49,10 @@ jobs:
           git add data/vehicle_db/vehicle_dimensions.json tools/vehicle_db/MODE
           git commit -m "Vehicle dimension database from run ${SRC_RUN} (Transport Canada CVS via NHTSA vPIC)"
           git push
-      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' }}
+      - if: env.MODE == 'probe-tires'
+        name: Probe NHTSA tire sources
+        run: python3 tools/vehicle_db/probe_tires.py
+      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' && !startsWith(env.MODE, 'probe-tires') }}
         name: Fetch Canadian Vehicle Specifications
         run: |
           if [ "$MODE" = "full" ]; then
@@ -57,7 +60,7 @@ jobs:
           else
             python3 tools/vehicle_db/fetch_cvs.py probe
           fi
-      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' }}
+      - if: ${{ !startsWith(env.MODE, 'commit:') && env.MODE != 'done' && !startsWith(env.MODE, 'probe-tires') }}
         uses: actions/upload-artifact@v4
         with:
           name: vehicle-db-${{ env.MODE }}
