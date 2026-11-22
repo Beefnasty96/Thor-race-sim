@@ -23,7 +23,8 @@ var _mutex := Mutex.new()
 var _busy := 0
 
 func _ready() -> void:
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.02, 0.035, 0.065, 1.0)
 	sb.content_margin_left = 32; sb.content_margin_right = 32

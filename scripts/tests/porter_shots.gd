@@ -69,7 +69,7 @@ func _process(delta: float) -> void:
 			var b := PhotoBrowser.new()
 			b.folders = [dir]
 			b.picked.connect(func(path): app._import_photo_file(path))
-			app.add_child(b)
+			app.safe.add_child(b)
 			browser = b
 		5:
 			_shot("porter_04b_photo_browser")

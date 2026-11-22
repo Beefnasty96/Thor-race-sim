@@ -16,6 +16,8 @@ var mode_buttons := {}
 var opacity_slider: HSlider
 var _save_timer := 0.0
 var _file_dialog: FileDialog
+var safe: MarginContainer          # everything sits inside the phone's safe area
+var _safe_check := 0.0
 
 const DIM_FIELDS := [
 	["length_m", "Length"], ["width_m", "Width"], ["height_m", "Height"],
@@ -33,6 +35,11 @@ func _ready() -> void:
 	bg.color = Color(0.02, 0.035, 0.065)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	safe = MarginContainer.new()
+	safe.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(safe)
+	get_viewport().size_changed.connect(_apply_safe_area)
+	_apply_safe_area()
 	show_projects()
 	if "--shots" in OS.get_cmdline_user_args():
 		var d = load("res://scripts/tests/porter_shots.gd").new()
@@ -46,7 +53,35 @@ func _notification(what: int) -> void:
 		else:
 			get_tree().quit()
 
+## Keep the UI clear of the status bar, navigation bar and camera cutout.
+## Android reports the safe area in window pixels; the UI is laid out in a
+## stretched 1920x1080-based canvas, so convert.
+func _apply_safe_area() -> void:
+	if safe == null:
+		return
+	var win := Vector2(DisplayServer.window_get_size())
+	var canvas := get_viewport().get_visible_rect().size
+	var m := [0.0, 0.0, 0.0, 0.0]          # left, top, right, bottom (canvas px)
+	if win.x > 0 and win.y > 0 and OS.has_feature("mobile"):
+		var area := Rect2(DisplayServer.get_display_safe_area())
+		var k := canvas / win
+		m = [area.position.x * k.x, area.position.y * k.y,
+			maxf(0.0, win.x - area.end.x) * k.x, maxf(0.0, win.y - area.end.y) * k.y]
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--fake-safe="):     # dev: simulate phone insets, window px "l,t,r,b"
+			var f := arg.trim_prefix("--fake-safe=").split(",")
+			var k2 := canvas / win
+			m = [f[0].to_float() * k2.x, f[1].to_float() * k2.y, f[2].to_float() * k2.x, f[3].to_float() * k2.y]
+	var names := ["left", "top", "right", "bottom"]
+	for i in 4:
+		safe.add_theme_constant_override("margin_" + names[i], int(ceil(m[i])))
+
 func _process(delta: float) -> void:
+	# insets can arrive or change after start-up and on rotation; recheck now and then
+	_safe_check -= delta
+	if _safe_check <= 0.0:
+		_safe_check = 1.0
+		_apply_safe_area()
 	if _save_timer > 0.0:
 		_save_timer -= delta
 		if _save_timer <= 0.0 and project:
@@ -59,7 +94,7 @@ func _set_screen(c: Control) -> void:
 	if screen:
 		screen.queue_free()
 	screen = c
-	add_child(c)
+	safe.add_child(c)
 
 # =============================================================== projects screen
 
@@ -387,7 +422,7 @@ func _pick_photo() -> void:
 			_system_picker()
 		else:
 			_import_photo_file.call_deferred(path))
-	add_child(b)
+	safe.add_child(b)
 
 ## Android's own document picker (also reaches cloud drives and USB storage).
 func _system_picker() -> void:
