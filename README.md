@@ -108,6 +108,15 @@ the start scene to `scenes/porter.tscn` and the package to
   Glass, Taillight, plus Headlight / Chrome / Trim / Grille), so export maps
   straight onto CarModel. Preview in the source car's factory colors.
 
+**Photo textures** (part *Photo texture* in Paint)
+- Faces take their texture from the aligned reference photos: each face
+  uses the photo that looks most squarely at it (*Auto*), or a forced one
+  (Side / Front / Rear / Top). One-tap *Photos on all body paint* or
+  *Photos on everything except glass*.
+- The mirrored half samples its own side of the front, rear and top photos
+  and a mirror of the side photo. Roof and hood look best with a top photo.
+- Export will bake the used photo areas into one game-sized texture.
+
 Next: wheels and wheel arches, specs and test targets, export to
 `data/cars/` + `assets/cars/`.
 

@@ -27,7 +27,21 @@ const REGIONS := {
 	"chrome":    {"label": "Chrome",       "color": Color(0.82, 0.83, 0.85), "material": "Chrome"},
 	"trim":      {"label": "Black trim",   "color": Color(0.07, 0.07, 0.075), "material": "Trim"},
 	"grille":    {"label": "Grille",       "color": Color(0.03, 0.03, 0.035), "material": "Grille"},
+	"photo":     {"label": "Photo texture", "color": Color(0.5, 0.5, 0.5), "material": "Photo"},
 }
+
+## A face's region may carry a photo source: "photo" (auto) or "photo:side",
+## "photo:front", "photo:rear", "photo:top".
+static func region_base(r: String) -> String:
+	return r.get_slice(":", 0)
+
+static func region_valid(r: String) -> bool:
+	var b := region_base(r)
+	if not REGIONS.has(b):
+		return false
+	if b == "photo" and r.contains(":"):
+		return r.get_slice(":", 1) in ["side", "front", "rear", "top"]
+	return not r.contains(":")
 
 var _undo: Array = []
 var _redo: Array = []
@@ -184,7 +198,8 @@ func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
 	for fi in faces.size():
 		var f: PackedInt32Array = faces[fi]
 		var reg: String = regions[fi]
-		var col: Color = Color(0.72, 0.74, 0.78) if plain else colors.get(reg, REGIONS[reg]["color"])
+		var base := region_base(reg)
+		var col: Color = Color(0.72, 0.74, 0.78) if plain else colors.get(base, REGIONS[base]["color"])
 		st.set_color(col)
 		_emit_face(st, f, verts)
 		var r := PackedInt32Array()
@@ -399,7 +414,7 @@ static func from_dict(d: Dictionary) -> HalfMesh:
 	for f in d.get("faces", []):
 		m.faces.append(PackedInt32Array(f))
 	for r in d.get("regions", []):
-		m.regions.append(r if HalfMesh.REGIONS.has(r) else "paint")
+		m.regions.append(r if HalfMesh.region_valid(r) else "paint")
 	m._fix_regions()
 	return m
 

@@ -140,11 +140,50 @@ func set_xray(on: bool) -> void:
 
 func _apply_material() -> void:
 	var see_through := xray and view != "3d"
-	body_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if see_through else BaseMaterial3D.TRANSPARENCY_DISABLED
-	body_mat.albedo_color = Color(1, 1, 1, 0.45 if see_through else 1.0)
+	var mats: Array = [body_mat]
+	for v in _photos:
+		if _photos[v]["mat"]:
+			mats.append(_photos[v]["mat"])
+	for m in mats:
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if see_through else BaseMaterial3D.TRANSPARENCY_DISABLED
+		m.albedo_color = Color(1, 1, 1, 0.45 if see_through else 1.0)
+
+var _photos := {}                     # view -> {"img": Image, "mat": StandardMaterial3D}
+
+func _photo(view_name: String) -> Dictionary:
+	if not _photos.has(view_name):
+		var img := project.load_photo(view_name)
+		var entry := {"img": img, "mat": null}
+		if img:
+			var m := StandardMaterial3D.new()
+			var tex_img := img.duplicate() as Image
+			tex_img.generate_mipmaps()      # faces seen at an angle sample smaller levels
+			m.albedo_texture = ImageTexture.create_from_image(tex_img)
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			m.roughness = 0.6
+			entry["mat"] = m
+		_photos[view_name] = entry
+	return _photos[view_name]
 
 func rebuild_body() -> void:
-	body.mesh = mesh.build_mesh(paint_colors, not show_paint)
+	if not show_paint:
+		body.material_override = body_mat
+		body.mesh = mesh.build_mesh(paint_colors, true)
+		overlay.queue_redraw()
+		return
+	var images := {}
+	for v in PorterProject.VIEWS:
+		images[v] = _photo(v)["img"]
+	var built := PhotoTexturer.build(mesh, project, paint_colors, images)
+	var am: ArrayMesh = built[0]
+	body.material_override = null
+	am.surface_set_material(0, body_mat)
+	var order: Array = built[1]
+	for i in order.size():
+		am.surface_set_material(i + 1, _photo(order[i])["mat"])
+	body.mesh = am
+	_apply_material()
+	overlay.queue_redraw()
 	overlay.queue_redraw()
 
 # ---------------------------------------------------------------- scene dressing
