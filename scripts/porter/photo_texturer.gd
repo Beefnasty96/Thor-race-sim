@@ -16,6 +16,7 @@ const VIEW_DIRS := {
 	"front": Vector3(0, 0, -1),
 	"rear": Vector3(0, 0, 1),
 	"top": Vector3(0, 1, 0),
+	"dash": Vector3(0, 0, 1),       # dash photo: taken from the driver's seat, faces toward the driver
 }
 
 static func world_to_frame(project: PorterProject, view: String, p: Vector3) -> Vector2:
@@ -25,7 +26,7 @@ static func world_to_frame(project: PorterProject, view: String, p: Vector3) -> 
 			return Vector2(p.z + mid, p.y)
 		"front":
 			return Vector2(-p.x, p.y)
-		"rear":
+		"rear", "dash":
 			return Vector2(p.x, p.y)
 		_:
 			return Vector2(p.z + mid, p.x)

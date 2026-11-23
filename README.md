@@ -170,11 +170,34 @@ later under the dimensions panel (*Apply tires*).
   interior* toggles it; *Driver's seat view* puts the camera at the driver's
   head (drag to look around) as a preview of the first-person mode.
 
+**Interior** (*Interior* switch in the modeler)
+- *Driver's seat*: the first-person camera; nudge eye height, fore/aft and
+  side-to-side.
+- *Dashboard*: start from a template (90s truck, curved, sports cockpit),
+  sized to the cab in front of the seat, then *Edit the dash shape*: every
+  Shape tool works on it (it mirrors like the body; the body shows as a
+  ghost). Load a dash photo taken from the driver's seat, drag / pinch it
+  until the blue outline sits on the dash; faces looking at the driver take
+  the photo, the rest are black trim. Each half samples its own side of the
+  photo, so the gauge cluster stays on the driver's side.
+- *Gauges*: pick Speedo / Tach / Fuel / Temp / Oil / Volts and tap on the dash
+  photo; size them and set full scale (mph, rpm). They land on the dash face
+  and get live needles in the game.
+- *Steering wheel*: a round template with the steering-wheel photo on it.
+  Fit the orange circle to the rim, then *Draw a hole* around each gap
+  between the spokes; the holes are cut right through (walls on every cut
+  edge). Diameter, rim thickness, tilt and position are adjustable.
+- Saved as `dash.json`, `steering_wheel.png` and `interior` in project.json;
+  `PorterProject.interior_model_info()` is what export writes into the
+  game's `model_info.json` (driver_eye, steering_wheel_pivot,
+  steering_rake_deg, cluster). The game's cluster entries accept
+  `{"pos", "r", "max"}` so each car's gauge size and full scale carry over.
+
 Next: specs and test targets, export to
 `data/cars/` + `assets/cars/`.
 
 Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
-zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd` and
+zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`, `interior_test.gd` and
 `res://scripts/tests/modeler_test.gd`.
 Screenshots: `godot res://scenes/porter.tscn -- --shots`.
 

@@ -40,7 +40,7 @@ static func region_valid(r: String) -> bool:
 	if not REGIONS.has(b):
 		return false
 	if b == "photo" and r.contains(":"):
-		return r.get_slice(":", 1) in ["side", "front", "rear", "top"]
+		return r.get_slice(":", 1) in ["side", "front", "rear", "top", "dash"]
 	return not r.contains(":")
 
 var _undo: Array = []

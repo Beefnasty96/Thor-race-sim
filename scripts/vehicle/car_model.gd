@@ -32,6 +32,8 @@ var _steer_base := Transform3D.IDENTITY
 var _speedo: Node3D
 var _tach: Node3D
 var _small: Dictionary = {}          # fuel / volts / oil / temp needles
+var _speedo_max := SPEEDO_MAX_MPH
+var _tach_max := TACH_MAX_RPM
 var _tire_mats: Array[ShaderMaterial] = []
 var _tire_meshes: Array[MeshInstance3D] = []
 var _tire_scale: Array[float] = []
@@ -271,15 +273,25 @@ func _build_gauges() -> void:
 	if cl.is_empty():
 		return
 	var tilt := deg_to_rad(float(cl.get("tilt_deg", -12)))
+	_speedo_max = SPEEDO_MAX_MPH
+	_tach_max = TACH_MAX_RPM
 	for key in ["speedo", "tach", "fuel", "volts", "oil", "temp"]:
 		if not cl.has(key):
 			continue
-		var p: Array = cl[key]
+		# [x, y, z], or from Car Porter {"pos": [x, y, z], "r": radius m, "max": full-scale mph / rpm}
+		var entry = cl[key]
+		var p: Array = entry["pos"] if entry is Dictionary else entry
 		var holder := Node3D.new()
 		holder.position = Vector3(p[0], p[1] + body_drop, p[2] + 0.004)
 		holder.rotation = Vector3(-tilt, 0, 0)
 		add_child(holder)
 		var r := 0.062 if key == "speedo" else (0.05 if key == "tach" else 0.024)
+		if entry is Dictionary:
+			r = float(entry.get("r", r))
+			if key == "speedo":
+				_speedo_max = float(entry.get("max", SPEEDO_MAX_MPH))
+			elif key == "tach":
+				_tach_max = float(entry.get("max", TACH_MAX_RPM))
 		holder.add_child(_dial(r))
 		var n := _needle(r * 0.85, Color(1.0, 0.45, 0.1))
 		n.position = Vector3(0, 0, 0.003)
@@ -302,11 +314,11 @@ func _process(_dt: float) -> void:
 		var a := -car.steer_actual * steering_lock_rad
 		_steering.transform = _steer_base * Transform3D(Basis(Vector3(0, 0, 1), a), Vector3.ZERO)
 	if _speedo:
-		var mph := clampf(absf(car.speed_ms) * 2.23694, 0.0, SPEEDO_MAX_MPH)
-		_speedo.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * mph / SPEEDO_MAX_MPH)
+		var mph := clampf(absf(car.speed_ms) * 2.23694, 0.0, _speedo_max)
+		_speedo.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * mph / _speedo_max)
 	if _tach:
-		var rpm := clampf(car.engine.rpm(), 0.0, TACH_MAX_RPM)
-		_tach.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * rpm / TACH_MAX_RPM)
+		var rpm := clampf(car.engine.rpm(), 0.0, _tach_max)
+		_tach.rotation = Vector3(0, 0, NEEDLE_SWEEP * 0.5 - NEEDLE_SWEEP * rpm / _tach_max)
 	var rpm_now: float = car.engine.rpm()
 	_set_small("fuel", 0.75)
 	_set_small("volts", 0.55 if rpm_now > 400.0 else 0.4)                  # ~14 V running, ~12 V off

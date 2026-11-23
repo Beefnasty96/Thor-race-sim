@@ -12,7 +12,13 @@ extends RefCounted
 
 const ROOT := "user://porter/projects/"
 const VIEWS := ["side", "front", "rear", "top"]
-const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top"}
+## Interior photos (not part of the blueprint alignment):
+##   dash     : taken from the driver's seat looking forward; frame = (x, y)
+##              like the rear view (screen right = car's right), fitted to the
+##              dash in the Interior screen
+##   steering : the steering wheel face-on; cut out with a crop circle
+const INTERIOR_VIEWS := ["dash", "steering"]
+const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top", "dash": "Dashboard", "steering": "Steering wheel"}
 const IMAGE_MAX_PX := 2048        # photos are downscaled to this on import (phone memory)
 
 var id := ""
@@ -37,11 +43,21 @@ var paint := {}                   # preview paint: {"color": [r,g,b], "lower": [
 ## Per view: file, cx, cy (photo center in frame meters), mpp (meters per pixel),
 ## rot (radians), flip (mirror horizontally), opacity.
 var views := {}
+## Interior for the first-person view (all metres in the game's coordinates):
+##   driver_eye : [x, y, z] the driver's eye ([] = default from the body size)
+##   gauges     : [{type, x, y, z, r, max}] live gauges on the dash face; type
+##                speedo / tach / fuel / temp / oil / volts; max = full-scale
+##                mph or rpm (speedo / tach)
+##   steering   : {diameter_m, thickness_m, tilt_deg, center: [x,y,z] or [],
+##                crop: {cx, cy, r} in steering-photo pixels,
+##                holes: [[[u, v], ...]] cut-outs in unit-circle coordinates
+##                (u right, v down, as on the photo)}
+var interior := {"driver_eye": [], "gauges": [], "steering": {}}
 
 signal changed
 
 func _init() -> void:
-	for v in VIEWS:
+	for v in VIEWS + INTERIOR_VIEWS:
 		views[v] = _blank_view()
 
 static func _blank_view() -> Dictionary:
@@ -274,7 +290,8 @@ static func create(project_name: String) -> PorterProject:
 func to_dict() -> Dictionary:
 	return {"format": 1, "id": id, "name": name, "source_car": source_car,
 		"units": units, "dims": dims, "views": views, "paint": paint,
-		"source_db": source_db, "db_row": db_row, "tires": tires, "wheels": wheels}
+		"source_db": source_db, "db_row": db_row, "tires": tires, "wheels": wheels,
+		"interior": interior}
 
 func save() -> bool:
 	DirAccess.make_dir_recursive_absolute(dir())
@@ -302,11 +319,14 @@ static func load_project(project_id: String) -> PorterProject:
 	p.db_row = d.get("db_row", {})
 	p.tires = d.get("tires", p.tires)
 	p.wheels = d.get("wheels", p.wheels)
+	var inn: Dictionary = d.get("interior", {})
+	for k in inn:
+		p.interior[k] = inn[k]
 	if not d.get("dims", {}).has("tire_radius_rear_m"):
 		p.dims["tire_radius_rear_m"] = p.dims["tire_radius_m"]      # projects saved before staggered tires
 	for k in d.get("dims", {}):
 		p.dims[k] = float(d["dims"][k])
-	for v in VIEWS:
+	for v in VIEWS + INTERIOR_VIEWS:
 		var src: Dictionary = d.get("views", {}).get(v, {})
 		for k in src:
 			p.views[v][k] = src[k]
@@ -401,6 +421,124 @@ func load_mesh() -> HalfMesh:
 		return null
 	var d = JSON.parse_string(FileAccess.get_file_as_string(dir() + "body.json"))
 	return HalfMesh.from_dict(d) if d is Dictionary else null
+
+# ---------------------------------------------------------------- interior
+
+func has_dash() -> bool:
+	return FileAccess.file_exists(dir() + "dash.json")
+
+func save_dash(m: HalfMesh) -> bool:
+	DirAccess.make_dir_recursive_absolute(dir())
+	var f := FileAccess.open(dir() + "dash.json", FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(JSON.stringify(m.to_dict()))
+	return true
+
+func load_dash() -> HalfMesh:
+	if not has_dash():
+		return null
+	var d = JSON.parse_string(FileAccess.get_file_as_string(dir() + "dash.json"))
+	return HalfMesh.from_dict(d) if d is Dictionary else null
+
+## The driver's eye (left-hand drive): saved, or behind the windshield, left
+## of center, from the body size.
+func driver_eye() -> Vector3:
+	var e: Array = interior.get("driver_eye", [])
+	if e.size() == 3:
+		return Vector3(e[0], e[1], e[2])
+	return Vector3(-dims["width_m"] * 0.2, dims["height_m"] * 0.68, -dims["wheelbase_m"] * 0.12)
+
+func set_driver_eye(p: Vector3) -> void:
+	interior["driver_eye"] = [snappedf(p.x, 0.001), snappedf(p.y, 0.001), snappedf(p.z, 0.001)]
+
+const STEERING_DEFAULTS := {"diameter_m": 0.40, "thickness_m": 0.03, "tilt_deg": 22.0}
+
+## Steering wheel settings with defaults filled in.
+func steering() -> Dictionary:
+	var s: Dictionary = interior.get("steering", {})
+	for k in STEERING_DEFAULTS:
+		if not s.has(k):
+			s[k] = STEERING_DEFAULTS[k]
+	if not s.has("holes"):
+		s["holes"] = []
+	if not s.has("crop"):
+		s["crop"] = {}
+	interior["steering"] = s
+	return s
+
+## Where the steering wheel hub sits: saved, or ~50 cm ahead of and 30 cm
+## below the driver's eye.
+func steering_center() -> Vector3:
+	var c: Array = steering().get("center", [])
+	if c.size() == 3:
+		return Vector3(c[0], c[1], c[2])
+	var e := driver_eye()
+	return Vector3(e.x, e.y - 0.30, e.z - 0.50)
+
+func set_steering_center(p: Vector3) -> void:
+	steering()["center"] = [snappedf(p.x, 0.001), snappedf(p.y, 0.001), snappedf(p.z, 0.001)]
+
+## Default crop circle for the steering photo: centered, 45% of the short side.
+func steering_crop() -> Dictionary:
+	var c: Dictionary = steering()["crop"]
+	if c.is_empty():
+		var img := load_photo("steering")
+		if img == null:
+			return {}
+		c = {"cx": img.get_width() * 0.5, "cy": img.get_height() * 0.5, "r": mini(img.get_width(), img.get_height()) * 0.45}
+	return c
+
+const STEERING_TEX_PX := 512
+
+## Cut the steering wheel picture (inside the crop circle) out of its photo.
+func make_steering_texture() -> Image:
+	var src := load_photo("steering")
+	var c := steering_crop()
+	if src == null or c.is_empty():
+		return null
+	var n := STEERING_TEX_PX
+	var out := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var cx: float = c["cx"]
+	var cy: float = c["cy"]
+	var r: float = c["r"]
+	var dark := Color(0.08, 0.08, 0.085)
+	for y in n:
+		for x in n:
+			var sx := cx + ((x + 0.5) / n * 2.0 - 1.0) * r
+			var sy := cy + ((y + 0.5) / n * 2.0 - 1.0) * r
+			if sx < 0 or sy < 0 or sx >= src.get_width() or sy >= src.get_height():
+				out.set_pixel(x, y, dark)
+			else:
+				out.set_pixel(x, y, src.get_pixel(int(sx), int(sy)))
+	out.save_png(dir() + "steering_wheel.png")
+	return out
+
+## The interior part of the game's model_info.json (what export will write):
+## driver_eye, steering_wheel_pivot, steering_rake_deg and the gauge cluster.
+## Gauges carry their size and full scale; the cluster tilt is 0 because each
+## gauge already sits on the dash face. Only gauges on the dash are written,
+## and only the first of each type (the game has one needle per reading).
+func interior_model_info() -> Dictionary:
+	var e := driver_eye()
+	var s := steering()
+	var c := steering_center()
+	var cluster := {"tilt_deg": 0}
+	for g in interior.get("gauges", []):
+		if not g.get("on_dash", true) or cluster.has(g["type"]):
+			continue
+		var entry := {"pos": [g["x"], g["y"], g["z"]], "r": g["r"]}
+		if g["type"] in ["speedo", "tach"]:
+			entry["max"] = g["max"]
+		cluster[g["type"]] = entry
+	return {"driver_eye": [e.x, e.y, e.z], "steering_wheel_pivot": [c.x, c.y, c.z],
+		"steering_rake_deg": s["tilt_deg"], "steering_diameter_m": s["diameter_m"], "cluster": cluster}
+
+func load_steering_texture() -> Image:
+	var f := dir() + "steering_wheel.png"
+	if not FileAccess.file_exists(f):
+		return null
+	return Image.load_from_file(ProjectSettings.globalize_path(f))
 
 # ---------------------------------------------------------------- wheels
 
