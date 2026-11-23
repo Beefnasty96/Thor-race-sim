@@ -1,0 +1,1094 @@
+{
+ "make": "Honda",
+ "paints": [
+  {
+   "name": "Cypress Green Pearl",
+   "codes": "G-82P",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Prelude"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Eucalyptus Green Pearl",
+   "codes": "G-83P",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Prelude"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Flamenco Black Pri Metallic",
+   "codes": "NH-592P",
+   "years": [
+    1997,
+    1999
+   ],
+   "models": [
+    "Civic",
+    "Prelude"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Granada Black Metallic",
+   "codes": "NH-503P",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Prelude"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Nordic Mist Metallic",
+   "codes": "B-83M",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Prelude"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.55,
+    0.62,
+    0.68
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "San Marino Red",
+   "codes": "R-94",
+   "years": [
+    1997,
+    2003
+   ],
+   "models": [
+    "Accord",
+    "Prelude"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Supermarine Pearl",
+   "codes": "B-84P",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Prelude"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.1,
+    0.18,
+    0.4
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Taffeta White",
+   "codes": "NH-578",
+   "years": [
+    1997,
+    1999,
+    2003
+   ],
+   "models": [
+    "Accord",
+    "Civic",
+    "Prelude"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Vogue Silver Metallic",
+   "codes": "NH-583M",
+   "years": [
+    1997,
+    1999
+   ],
+   "models": [
+    "Civic",
+    "Prelude"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+   ]
+  },
+  {
+   "name": "Champagne Beige Metallic",
+   "codes": "YR-523M",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.75,
+    0.68,
+    0.55
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Champion White",
+   "codes": "NHO",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.95,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Clover Green Pearl Metallic",
+   "codes": "G-95P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Dark Amethyst Pearl",
+   "codes": "PB-74P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.275,
+    0.275,
+    0.275
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Metallic",
+   "codes": "B-77P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Electron Blue Pearl",
+   "codes": "B-95P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Green",
+   "codes": "G-86P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Iced Teal Pearl",
+   "codes": "BG-41P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.05,
+    0.38,
+    0.38
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Inza Red Pearl",
+   "codes": "R-96P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Light Aqua",
+   "codes": "BG-45M",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.675,
+    0.675,
+    0.675
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Milano Red",
+   "codes": "R-81",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Roma Red",
+   "codes": "R-97",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Super Sonic Blue Pearl",
+   "codes": "B-90P",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Berlina Black",
+   "codes": "NH-547",
+   "years": [
+    2002,
+    2003
+   ],
+   "models": [
+    "Accord",
+    "S2000"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "Grand Prix White",
+   "codes": "NH-565",
+   "years": [
+    2002
+   ],
+   "models": [
+    "S2000"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "Indy Yellow Pearl Tricoat",
+   "codes": "Y-52P",
+   "years": [
+    2002
+   ],
+   "models": [
+    "S2000"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.96,
+    0.8,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "Montecarlo Blue Pearl",
+   "codes": "B-66P",
+   "years": [
+    2002
+   ],
+   "models": [
+    "S2000"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "New Formula Red",
+   "codes": "R-510",
+   "years": [
+    2002
+   ],
+   "models": [
+    "S2000"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.78,
+    0.04,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "Sebring Silver Metallic",
+   "codes": "NH-552M",
+   "years": [
+    2002
+   ],
+   "models": [
+    "S2000"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.71,
+    0.72
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "Suzuka Blue Metallic",
+   "codes": "B-513M",
+   "years": [
+    2002
+   ],
+   "models": [
+    "S2000"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.2,
+    0.3,
+    0.58
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2002-Honda-S2000.html"
+   ]
+  },
+  {
+   "name": "Arctic Blue Metallic",
+   "codes": "B-507P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Desert Mist Metallic",
+   "codes": "YR-538M",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.68,
+    0.6,
+    0.47
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Eternal Blue Pearl",
+   "codes": "B-96P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Graphite Pearl",
+   "codes": "NH-658P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.25,
+    0.26,
+    0.28
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Indigo Blue Metallic",
+   "codes": "B-502P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.1,
+    0.13,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Nighthawk Black Pearl",
+   "codes": "B-92P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Noble Green Pearl",
+   "codes": "G-508P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Redondo Red Pearl",
+   "codes": "R-522P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Sapphire Blue Pearl",
+   "codes": "B-517P",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Satin Silver Metallic",
+   "codes": "NH-623M",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Accord"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Boost Blue Pearl",
+   "codes": "B-637P",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.1,
+    0.25,
+    0.62
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Championship White",
+   "codes": "NH-0",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.95,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Cosmic Blue Metallic",
+   "codes": "B-607M",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Crimson Pearl Metallic",
+   "codes": "R-543P",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.55,
+    0.05,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Crystal Black Pearl",
+   "codes": "NH-731P",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Lunar Silver Metallic",
+   "codes": "NH-830M",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Modern Steel Metallic",
+   "codes": "NH-797M",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.46,
+    0.48,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Obsidian Blue Pearl",
+   "codes": "B-588P",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Platinum White Tricoat",
+   "codes": "NH-883P",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Polished Gray Metal Metallic",
+   "codes": "NH-737M",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Rallye Red",
+   "codes": "R-513",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Sonic Gray",
+   "codes": "NH-877P",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+   ]
+  }
+ ]
+}

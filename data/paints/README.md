@@ -21,3 +21,8 @@ make | name | codes | years | models | source URL).
 
 Coverage grows in batches: GM, Ford / Chrysler / Jeep and the Japanese makes
 for the 1990s–2000s, then 2015+ for all major makes.
+
+- Batch 1: GM / Ford / Dodge 1990s–2000s (111 colors).
+- Batch 2: Toyota, Honda, Nissan, Mazda, Subaru, Mitsubishi 1990s–2000s;
+  more Ford, Dodge and Jeep; first 2019–2020 colors (Supra, Camaro, Mustang,
+  Civic, WRX, 370Z, Challenger, Wrangler). Database total: 386 colors, 12 makes.

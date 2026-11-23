@@ -2,6 +2,288 @@
  "make": "Jeep",
  "paints": [
   {
+   "name": "Black Crystal",
+   "codes": "X8/DX8",
+   "years": [
+    1998,
+    2005
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html",
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Bright Jade Pearl",
+   "codes": "QP/SQP",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.165,
+    0.525,
+    0.429
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Bright White",
+   "codes": "W7/GW7",
+   "years": [
+    1998,
+    2020
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.921,
+    0.921,
+    0.897
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html",
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Chargold 2 S/G Pearl",
+   "codes": "J7/RJ7",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.55,
+    0.47,
+    0.33
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Chili Pepper Red Pearl Coat",
+   "codes": "EA/VEA",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Dark Slate Pearl",
+   "codes": "AW/VAW",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.275,
+    0.275,
+    0.275
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Deep Amethyst Pearl",
+   "codes": "CN/TCN",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.3,
+    0.3,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Emerald Green Pearl",
+   "codes": "GF/PGF",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.05,
+    0.3,
+    0.18
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Flame Red",
+   "codes": "R4/PR4",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.8,
+    0.06,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Forest Green Pearl",
+   "codes": "G8/SG8",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Moss Green Pearl",
+   "codes": "JN/RJN",
+   "years": [
+    1998
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html"
+   ]
+  },
+  {
+   "name": "Stone White",
+   "codes": "W1/SW1",
+   "years": [
+    1998,
+    2005
+   ],
+   "models": [
+    "Cherokee",
+    "Grand Cherokee",
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/1998-Jeep-all-models.html",
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
    "name": "Shale Green Metallic",
    "codes": "GR/XGR",
    "years": [
@@ -20,6 +302,405 @@
    "rgb_estimated": true,
    "sources": [
     "https://paintscratch.com/touch_up_paint/Jeep/2000-Jeep-All-Models-Shale-Green-Metallic-Clearcoat-GR-XGR.html"
+   ]
+  },
+  {
+   "name": "Bright Silver Metallic",
+   "codes": "S2/WS2",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.657,
+    0.669,
+    0.693
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Brilliant Black Pearl",
+   "codes": "XR/AXR",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Dark Khaki Metallic",
+   "codes": "JT/PJT",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.33,
+    0.303,
+    0.22
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Deep Beryl Green Metallic",
+   "codes": "GV/CGV",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.072,
+    0.198,
+    0.12
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Inferno Red Crystal Pearl",
+   "codes": "RJ/ARJ",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Inferno Red Pearl Tricoat",
+   "codes": "EL/WEL",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Light Khaki Metallic",
+   "codes": "JC/AJC",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.74,
+    0.708,
+    0.61
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Midnight Blue Pearl",
+   "codes": "B8/BB8",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Grand Cherokee"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2005-Jeep-Grand-Cherokee.html"
+   ]
+  },
+  {
+   "name": "Bikini Pearl Metallic",
+   "codes": "PT/SPT",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.0,
+    0.52,
+    0.72
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Billet Silver Metallic",
+   "codes": "SC/JSC",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Black",
+   "codes": "X8/DX8",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Destroyer Gray",
+   "codes": "DN/PDN",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Firecracker Red",
+   "codes": "RC/MRC",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Gobi",
+   "codes": "UA/RUA",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.72,
+    0.65,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Granite Crystal Metallic",
+   "codes": "AU/LAU",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.24,
+    0.25,
+    0.27
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Ocean Blue Metallic",
+   "codes": "BM/SBM",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Punkn Metallic",
+   "codes": "E4/PE4",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.82,
+    0.38,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Sarge Green",
+   "codes": "GG/PGG",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.33,
+    0.36,
+    0.25
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
+   ]
+  },
+  {
+   "name": "Velvet Red Pearl",
+   "codes": "RV/NRV",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Wrangler"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Jeep/2020-Jeep-Wrangler.html"
    ]
   }
  ]

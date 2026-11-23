@@ -2,6 +2,795 @@
  "make": "Toyota",
  "paints": [
   {
+   "name": "Black",
+   "codes": "202",
+   "years": [
+    1995,
+    1997,
+    2005
+   ],
+   "models": [
+    "Camry",
+    "Supra",
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Dark Brown Gray Pearl Metallic",
+   "codes": "1A1",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.231,
+    0.237,
+    0.248
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Deep Red Pearl",
+   "codes": "3H8",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.372,
+    0.042,
+    0.042
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Garnet Pearl",
+   "codes": "3K3",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.36,
+    0.05,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Opal Teal Blue Pearl Metallic",
+   "codes": "752",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.05,
+    0.38,
+    0.38
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "199",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Super Red",
+   "codes": "3E5",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Super Red",
+   "codes": "3L2",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Super White 2",
+   "codes": "040",
+   "years": [
+    1995,
+    1997,
+    2001
+   ],
+   "models": [
+    "Camry",
+    "Supra",
+    "Tacoma"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "White Pearl Tri-coat",
+   "codes": "051",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Beige Metallic",
+   "codes": "4M9",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.63,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Pearl Metallic",
+   "codes": "8L3",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Dark Green Pearl Metallic",
+   "codes": "6P2",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.066,
+    0.182,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Gray Pearl Metallic",
+   "codes": "1B2",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Gray Purple Pearl Metallic",
+   "codes": "930",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Light Purple Opal Metallic",
+   "codes": "931",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.565,
+    0.467,
+    0.61
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Magenta Pearl",
+   "codes": "3L3",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.55,
+    0.1,
+    0.35
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Red Pearl",
+   "codes": "3K4",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Beige Metallic",
+   "codes": "4P7",
+   "years": [
+    2001
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.63,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Black Pearl",
+   "codes": "209",
+   "years": [
+    2001
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Dark Green Pearl",
+   "codes": "6Q7",
+   "years": [
+    2001
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.066,
+    0.182,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Impulse Red Metallic",
+   "codes": "3P1",
+   "years": [
+    2001
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Radiant Red",
+   "codes": "3L5",
+   "years": [
+    2001
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "1C8",
+   "years": [
+    2001
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Beige Mica Pearl Metallic",
+   "codes": "4Q2",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.7,
+    0.63,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Blue Pearl",
+   "codes": "8M6",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Pearl Metallic",
+   "codes": "8J7",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Dark Green Pearl Metallic",
+   "codes": "6T8",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.066,
+    0.182,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Dark Red Metallic",
+   "codes": "3Q3",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.341,
+    0.039,
+    0.039
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Phantom Gray Metallic",
+   "codes": "1E3",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "1D6",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "White",
+   "codes": "056",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.93,
+    0.92
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+   ]
+  },
+  {
+   "name": "Absolute Zero Tricoat",
+   "codes": "D01",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.93,
+    0.94,
+    0.95
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Nitro Yellow",
+   "codes": "D06",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.8,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Nocturnal Pearl",
+   "codes": "D04",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.08,
+    0.1,
+    0.22
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Renaissance Red",
+   "codes": "D05",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Turbulence Gray Metallic",
+   "codes": "D03",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Supra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html"
+   ]
+  },
+  {
    "name": "Bronze Oxide",
    "codes": "",
    "years": [

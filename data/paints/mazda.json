@@ -1,0 +1,173 @@
+{
+ "make": "Mazda",
+ "paints": [
+  {
+   "name": "Brilliant Black",
+   "codes": "PZ/PX",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Chaste White",
+   "codes": "PT",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Classic Red",
+   "codes": "SU",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Merlot Pearl",
+   "codes": "A1Q",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.35,
+    0.06,
+    0.12
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Montego Blue Pearl",
+   "codes": "M8/2A",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Perky Blue Metallic",
+   "codes": "6W",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Satellite Blue Pearl",
+   "codes": "A5",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  },
+  {
+   "name": "Silver Stone Metallic",
+   "codes": "3L/4G",
+   "years": [
+    1995
+   ],
+   "models": [
+    "Miata"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mazda/1995-Mazda-Miata.html"
+   ]
+  }
+ ]
+}

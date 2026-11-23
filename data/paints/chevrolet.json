@@ -1335,6 +1335,153 @@
    "sources": [
     "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
    ]
+  },
+  {
+   "name": "Abalone White Tricoat",
+   "codes": "G1W/GE8/WA486B",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Black",
+   "codes": "WA8555/GBA",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Crush",
+   "codes": "WA413C/G16",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.42,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Glory Red Pearl",
+   "codes": "WA434B/GPJ",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Satin Steel Metallic",
+   "codes": "WA464C/G9K",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.46,
+    0.48,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Switchblade Silver Pearl",
+   "codes": "WA636R/GAN",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "White",
+   "codes": "WA8624/GAZ",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.93,
+    0.92
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+   ]
   }
  ]
 }

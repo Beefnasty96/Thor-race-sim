@@ -1,0 +1,425 @@
+{
+ "make": "Mitsubishi",
+ "paints": [
+  {
+   "name": "Barcelona Red Pearl Metallic",
+   "codes": "P75",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Cayenne Red Pearl",
+   "codes": "P88",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Kalapana Black",
+   "codes": "X13",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Magenta Gray Pearl",
+   "codes": "A87",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.55,
+    0.1,
+    0.35
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Minden Silver Pearl",
+   "codes": "A52",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Monarch Green Pearl",
+   "codes": "G56",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Northstar White",
+   "codes": "W12",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Radiant Fire Red",
+   "codes": "R87",
+   "years": [
+    1997
+   ],
+   "models": [
+    "Eclipse"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/1997-Mitsubishi-Eclipse.html"
+   ]
+  },
+  {
+   "name": "Cool Silver Metallic",
+   "codes": "A31",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Diamond White Pearl Tricoat",
+   "codes": "W13",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Effect Gray Pearl Metallic",
+   "codes": "A39",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Innsbruck White",
+   "codes": "W37",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Ion Blue Metallic",
+   "codes": "T35",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Labrador Black Pearl",
+   "codes": "X42",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Lightning Yellow",
+   "codes": "Y01",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.94,
+    0.78,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Mystic Blue Pearl",
+   "codes": "T54",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Phoenix Red Pearl",
+   "codes": "P85",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Rio Red Metallic",
+   "codes": "R20",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Warm Silver Metallic",
+   "codes": "A17",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Yellow Metallic",
+   "codes": "Y12",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Lancer"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.94,
+    0.78,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  }
+ ]
+}

@@ -2,12 +2,217 @@
  "make": "Dodge",
  "paints": [
   {
+   "name": "Shark Blue Pearl",
+   "codes": "T45/PQH",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Viper"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/1999-Dodge-Viper.html"
+   ]
+  },
+  {
+   "name": "Viper Black",
+   "codes": "X3/MX3",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Viper"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/1999-Dodge-Viper.html"
+   ]
+  },
+  {
+   "name": "Viper Red",
+   "codes": "RN/LRN",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Viper"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.75,
+    0.05,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/1999-Dodge-Viper.html"
+   ]
+  },
+  {
+   "name": "Viper Silver Metallic",
+   "codes": "A9/VA9",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Viper"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/1999-Dodge-Viper.html"
+   ]
+  },
+  {
+   "name": "Atlantic Blue Pearl Metallic",
+   "codes": "BJ/ZBJ",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Black Crystal",
+   "codes": "X8/DX8",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Bright Silver Metallic",
+   "codes": "S2/WS2",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.657,
+    0.669,
+    0.693
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Bright Silver Pri Metallic",
+   "codes": "SB/WSB",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.657,
+    0.669,
+    0.693
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Bright White",
+   "codes": "W7/GW7",
+   "years": [
+    2002,
+    2020
+   ],
+   "models": [
+    "Challenger",
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.921,
+    0.921,
+    0.897
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
    "name": "Dark Garnet Red Pearl",
    "codes": "RV/XRV",
    "years": [
+    2002,
     2003
    ],
    "models": [
+    "Pick-up",
+    "Pickup",
     "Ram"
    ],
    "finish": "pearl",
@@ -19,7 +224,128 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Dark-Garnet-Red-Pearl-Clearcoat-RV-XRV.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Dark-Garnet-Red-Pearl-Clearcoat-RV-XRV.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Deep Hunter Green Pearl",
+   "codes": "G8/SG8",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.072,
+    0.198,
+    0.12
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Flame Red",
+   "codes": "R4/PR4",
+   "years": [
+    2002,
+    2003
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram",
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.8,
+    0.06,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Flame-Red-Clearcoat-R4-PR4.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Graphite Grey Pearl Metallic",
+   "codes": "DR/ZDR",
+   "years": [
+    2002,
+    2003
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.25,
+    0.26,
+    0.28
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Graphite-Grey-Pearl-Metallic-Clearcoat-DR-ZDR.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Light Almond Pearl Metallic",
+   "codes": "KJ/ZKJ",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.675,
+    0.675,
+    0.675
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Patriot Blue Pearl",
+   "codes": "B7/WB7",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Pick-up",
+    "Pickup",
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
    ]
   },
   {
@@ -45,48 +371,6 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/Ram-Pick-up.html"
-   ]
-  },
-  {
-   "name": "Flame Red",
-   "codes": "R4/PR4",
-   "years": [
-    2003
-   ],
-   "models": [
-    "all"
-   ],
-   "finish": "solid",
-   "metallic": 0.05,
-   "rgb": [
-    0.8,
-    0.06,
-    0.05
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Flame-Red-Clearcoat-R4-PR4.html"
-   ]
-  },
-  {
-   "name": "Graphite Grey Pearl Metallic",
-   "codes": "DR/ZDR",
-   "years": [
-    2003
-   ],
-   "models": [
-    "Ram"
-   ],
-   "finish": "pearl",
-   "metallic": 0.45,
-   "rgb": [
-    0.25,
-    0.26,
-    0.28
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Graphite-Grey-Pearl-Metallic-Clearcoat-DR-ZDR.html"
    ]
   },
   {
@@ -133,6 +417,237 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Timberline-Green-Pearl-Clearcoat-GW-AGW.html"
+   ]
+  },
+  {
+   "name": "Ceramic Gray",
+   "codes": "DN/PDN",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Frost Bite Pearl",
+   "codes": "CA/VCA",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.05,
+    0.25,
+    0.55
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Go Man Go",
+   "codes": "VP/NVP",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.42,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Gold Rush Pearl",
+   "codes": "JB/VJB",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.85,
+    0.6,
+    0.12
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Granite Crystal Metallic",
+   "codes": "AU/LAU",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.24,
+    0.25,
+    0.27
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Green Go",
+   "codes": "GM/PGM",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.15,
+    0.55,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Jazz Blue Metallic",
+   "codes": "BX/KBX",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Maximum Steel Metallic",
+   "codes": "AR/KAR",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.46,
+    0.48,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Plum Crazy Pearl",
+   "codes": "HG/FHG",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.35,
+    0.12,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Sinamon Stick Metallic",
+   "codes": "EC/VEC",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.55,
+    0.25,
+    0.12
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Sublime Metallic",
+   "codes": "FB/FFB",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Challenger"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.5,
+    0.78,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
    ]
   }
  ]
