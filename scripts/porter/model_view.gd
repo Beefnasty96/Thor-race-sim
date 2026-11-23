@@ -12,6 +12,7 @@ signal mesh_edited(final: bool)      # final = edit finished (save / undo point)
 signal edge_tapped(a: int, b: int)
 signal face_tapped(fi: int)
 signal add_point_tap(s: Vector2)
+signal paint_pick_tap(s: Vector2)     # "Pick the paint colour" tap on a photo view
 signal arch_point_added
 
 enum Pick { POINTS, FACES }
@@ -30,6 +31,7 @@ signal window_point_added
 var show_interior := true             # hollow shell inside (paint/wheels modes)
 var driver_view := false              # 3D camera in the driver's seat
 var driver_fov := 75.0                # pinch zooms the driver's-seat view
+var constrain_fn: Callable            # called with moved point ids after a move (keeps the dash inside the body)
 var glass_mi: MeshInstance3D
 var interior_mi: MeshInstance3D
 var dash: HalfMesh                    # interior dashboard (shown inside the body)
@@ -39,6 +41,11 @@ var cabin: Node3D                     # dash + steering wheel + gauges
 var show_cabin := true
 var show_steering := true             # hide the wheel to see / place gauges behind it
 var demo_reading := 0.35              # needle position for the gauge preview (0..1)
+var recolor_on := false               # photo paint shown in recolor_color
+var show_paint_match := false         # tint what counts as paint
+var recolor_color := Color(0.12, 0.2, 0.45)
+var _recolor_mats := {}               # view -> ShaderMaterial
+const RECOLOR_SHADER := preload("res://assets/shaders/photo_recolor.gdshader")
 var paint_colors := {}                # region -> Color used for display (body paint etc.)
 var show_paint := false               # colour faces by region (Paint mode)
 var sel_verts := {}                   # id -> true
@@ -229,7 +236,8 @@ func rebuild_body() -> void:
 	am.surface_set_material(0, body_mat)
 	var order: Array = built[1]
 	for i in order.size():
-		am.surface_set_material(i + 1, _photo(order[i])["mat"])
+		var use_recolor: bool = (recolor_on or show_paint_match) and project.has_paint_key()
+		am.surface_set_material(i + 1, _recolor_mat(order[i]) if use_recolor else _photo(order[i])["mat"])
 	body.mesh = am
 	_apply_material()
 	overlay.queue_redraw()
@@ -266,6 +274,33 @@ func _build_inside() -> void:
 ## Forget cached photos (after a photo was replaced).
 func photo_changed(view_name: String) -> void:
 	_photos.erase(view_name)
+	_recolor_mats.erase(view_name)
+
+## The photo through the recolour shader (paint key, touch-up mask, colour).
+func _recolor_mat(view_name: String) -> ShaderMaterial:
+	if not _recolor_mats.has(view_name):
+		var m := ShaderMaterial.new()
+		m.shader = RECOLOR_SHADER
+		m.set_shader_parameter("photo", (_photo(view_name)["mat"] as StandardMaterial3D).albedo_texture)
+		_recolor_mats[view_name] = m
+		paint_mask_changed(view_name)
+	var sm: ShaderMaterial = _recolor_mats[view_name]
+	sm.set_shader_parameter("key_color", project.paint_key_color())
+	sm.set_shader_parameter("tolerance", project.paint_tolerance())
+	sm.set_shader_parameter("new_color", recolor_color)
+	sm.set_shader_parameter("recolor", recolor_on)
+	sm.set_shader_parameter("show_mask", show_paint_match)
+	return sm
+
+## Reload a photo's touch-up mask into its recolour material.
+func paint_mask_changed(view_name: String) -> void:
+	if not _recolor_mats.has(view_name):
+		return
+	var mk := project.load_paint_mask(view_name)
+	var sm: ShaderMaterial = _recolor_mats[view_name]
+	sm.set_shader_parameter("has_override", mk != null)
+	if mk:
+		sm.set_shader_parameter("override_tex", ImageTexture.create_from_image(mk))
 
 var _steer_tex_cache: Texture2D
 var _steer_tex_dirty := true
@@ -764,6 +799,9 @@ func _begin() -> void:
 func _on_tap(s: Vector2) -> void:
 	if tool == "wheels" or tool == "interior":
 		return
+	if tool == "pick_paint":
+		paint_pick_tap.emit(s)
+		return
 	if tool == "draw_window":
 		if view == "3d":
 			return
@@ -808,6 +846,8 @@ func _on_drag() -> void:
 			var w := screen_delta_to_world(d)
 			for i in _start_pos:
 				mesh.set_vert(i, _start_pos[i] + w)
+			if constrain_fn.is_valid():
+				constrain_fn.call(_start_pos.keys())
 			rebuild_body()
 			mesh_edited.emit(false)
 		elif view == "3d":
@@ -858,6 +898,8 @@ func nudge(dir: Vector2, metres: float) -> void:
 	mesh.push_undo()
 	var b := cam.global_transform.basis
 	mesh.move_verts(ids, (b.x * dir.x - b.y * dir.y) * metres)
+	if constrain_fn.is_valid():
+		constrain_fn.call(ids)
 	rebuild_body()
 	mesh_edited.emit(true)
 
@@ -868,6 +910,8 @@ func nudge_depth(metres: float) -> void:
 		return
 	mesh.push_undo()
 	mesh.move_verts(ids, cam.global_transform.basis.z * metres)
+	if constrain_fn.is_valid():
+		constrain_fn.call(ids)
 	rebuild_body()
 	mesh_edited.emit(true)
 

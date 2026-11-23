@@ -148,6 +148,61 @@ func _initialize() -> void:
 	var tex := p.make_steering_texture()
 	_check(tex != null and tex.get_width() == PorterProject.STEERING_TEX_PX and tex.get_pixel(256, 256).g > 0.7, "steering picture is cut from the photo")
 
+	# --- the dash can't stick out of the body
+	var shell := HalfMesh.from_template("suv", p.dims)
+	var stris := InteriorBuilder.body_triangles(shell)
+	var inside_ok := func(dm: HalfMesh) -> bool:
+		for vi in dm.verts.size():
+			var q := dm.verts[vi]
+			if not dm.is_center(vi):
+				var tw := InteriorBuilder._first_hit(stris, Vector3(-0.0005, q.y, q.z), Vector3(-4.0, q.y, q.z))
+				if tw > 1.0 or q.x < lerpf(-0.0005, -4.0, tw) + InteriorBuilder.DASH_MARGIN - 1e-4:
+					return false
+			if InteriorBuilder._first_hit(stris, Vector3(0, eye.y, eye.z), q) <= 1.0:
+				return false
+		return true
+	for key in InteriorBuilder.DASH_TEMPLATES:
+		var dk := InteriorBuilder.dash_from_template(key, p)
+		InteriorBuilder.keep_dash_inside(dk, shell, eye)
+		_check(inside_ok.call(dk), "%s dash sits inside the body (3 cm clear of the sides, behind the windshield)" % key)
+	for bk in ["suv", "sedan", "coupe", "pickup", "hatch"]:
+		var pb := PorterProject.new()
+		pb.fill_from_car(def, "4door")
+		var sb := HalfMesh.from_template(bk, pb.dims)
+		_check(InteriorBuilder.fit_driver_to_body(pb, sb), "%s body: driver seated from the windshield" % bk)
+		var ws = InteriorBuilder.windshield_base(sb)
+		var pulled := 0
+		for key in InteriorBuilder.DASH_TEMPLATES:
+			pulled += InteriorBuilder.keep_dash_inside(InteriorBuilder.dash_from_template(key, pb, sb), sb, pb.driver_eye())
+		_check(pulled == 0 and pb.driver_eye().z > ws.y + 0.9, "%s body: every dash template starts inside, behind the windshield" % bk)
+	var photo_ws := HalfMesh.from_template("suv", p.dims)
+	var ws_glass = InteriorBuilder.windshield_base(photo_ws)
+	for fi in photo_ws.faces.size():
+		if photo_ws.regions[fi] == "glass":
+			photo_ws.regions[fi] = "photo"           # "Photos on everything"
+	var ws_photo = InteriorBuilder.windshield_base(photo_ws)
+	_check(ws_photo != null and ws_photo.distance_to(ws_glass) < 0.01, "the windshield is still found when it's photo-textured, not glass")
+	var saved_eye := PorterProject.new()
+	saved_eye.set_driver_eye(Vector3(-0.4, 1.3, 0.1))
+	_check(not InteriorBuilder.fit_driver_to_body(saved_eye, shell) and saved_eye.driver_eye() == Vector3(-0.4, 1.3, 0.1), "a seat position you set yourself is kept")
+	var wide := InteriorBuilder.dash_from_template("truck", p)
+	for vi in wide.verts.size():
+		if not wide.is_center(vi):
+			wide.verts[vi].x -= 0.4                 # dragged 40 cm out through the door
+	var n_moved := InteriorBuilder.keep_dash_inside(wide, shell, eye)
+	_check(n_moved > 0 and inside_ok.call(wide), "a dash dragged out through the side is pulled back inside (%d points)" % n_moved)
+	var centers_ok := true
+	for vi in wide.verts.size():
+		if wide.is_center(vi) and wide.verts[vi].x != 0.0:
+			centers_ok = false
+	_check(centers_ok, "centerline points stay on the centerline")
+	var poke := InteriorBuilder.dash_from_template("truck", p)
+	poke.verts[0] += Vector3(0, 0.5, -1.2)          # windshield end pushed up and out through the glass
+	InteriorBuilder.keep_dash_inside(poke, shell, eye, [0])
+	_check(inside_ok.call(poke) and poke.verts[0].x == 0.0, "a point pushed through the windshield comes back inside")
+	var before_pts := PackedVector3Array(poke.verts)
+	_check(InteriorBuilder.keep_dash_inside(poke, shell, eye) == 0 and poke.verts == before_pts, "a dash already inside isn't touched")
+
 	# --- stretching a photo to fix a slightly off-square shot
 	var sv: Dictionary = p.views["dash"]
 	var piv := Vector2(-0.3, float(sv["cy"]))

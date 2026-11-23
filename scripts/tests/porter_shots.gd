@@ -255,17 +255,58 @@ func _process(delta: float) -> void:
 			mdp2.view.overlay.queue_redraw()
 		18:
 			_shot("porter_14b_windows_outside")
-			app.modeler._driver_view(true)
-			app.modeler.view.yaw = deg_to_rad(-140.0 + 55.0)
-			app.modeler.view._update_cam()
+			# recolour photo paint: pick the red on the side photo
+			var mr: PorterModeler = app.modeler
+			mr._select_view("side")
+			mr._toggle_pick_paint(true)
+			var fp: Vector2 = app.project.image_to_frame("side", Vector2(1000, 470), Vector2(1800, 820))
+			var midp: float = app.project.front_axle_x() + app.project.dims["wheelbase_m"] * 0.5
+			_tap(mr.view, mr.view.project_point(Vector3(-5, fp.y, fp.x - midp)))
+			print("PAINT TEST: key ", app.project.paint_key, " grey ", PaintKey.is_grey(app.project.paint_key_color()), " msg ", mr.hint.text.left(60))
+			mr._select_view("3d")
+			mr.view.yaw = deg_to_rad(-110.0)
+			mr.view.pitch = deg_to_rad(12.0)
+			mr.view._update_cam()
+			mr.view.overlay.queue_redraw()
 		19:
+			_shot("porter_14d_paint_match")
+			var mr2: PorterModeler = app.modeler
+			mr2._set_preview_paint({"name": "Blue", "color": [0.1, 0.22, 0.6]})
+			mr2.recolor_btn.button_pressed = true
+		20:
+			_shot("porter_14e_recolor_blue")
+			var mr3: PorterModeler = app.modeler
+			var sc5: ScrollContainer = mr3.paint_panel.get_child(0)
+			sc5.scroll_vertical = int(mr3.mask_editor.position.y) - 260
+			mr3.match_btn.button_pressed = true
+			# brush "Not paint" across the middle of the side photo (a stripe / sticker)
+			var me: PaintMaskEditor = mr3.mask_editor
+			var y0: float = me.size.y * 0.55
+			var tch := InputEventScreenTouch.new(); tch.index = 0; tch.position = Vector2(me.size.x * 0.25, y0); tch.pressed = true
+			me._gui_input(tch)
+			for k in 12:
+				var dr := InputEventScreenDrag.new(); dr.index = 0; dr.position = Vector2(me.size.x * (0.25 + 0.04 * (k + 1)), y0)
+				me._gui_input(dr)
+			var up := InputEventScreenTouch.new(); up.index = 0; up.position = Vector2(me.size.x * 0.73, y0); up.pressed = false
+			me._gui_input(up)
+			var mk: Image = app.project.load_paint_mask("side")
+			print("PAINT TEST: touch-up saved %s" % str(mk != null))
+		21:
+			_shot("porter_14f_touchup")
+			var mr4: PorterModeler = app.modeler
+			mr4.match_btn.button_pressed = false
+			mr4.recolor_btn.button_pressed = false
+			mr4._driver_view(true)
+			mr4.view.yaw = deg_to_rad(-140.0 + 55.0)
+			mr4.view._update_cam()
+		22:
 			_shot("porter_14c_driver_seat")
 			app.modeler._driver_view(false)
 			# Add point + Connect, driven by simulated taps in the side view
 			var md: PorterModeler = app.modeler
 			md._set_mode("shape", true)
 			md._select_view("side")
-		20:
+		23:
 			var md2: PorterModeler = app.modeler
 			var mv3: ModelView = md2.view
 			md2.add_btn.button_pressed = true
@@ -283,12 +324,12 @@ func _process(delta: float) -> void:
 			_tap(mv3, mid + Vector2(160, -90))        # another
 			print("ADD TEST: points %d -> %d, selected %d" % [nv, mv3.mesh.verts.size(), mv3.sel_verts.size()])
 			_shot("porter_16_add_points")
-		21:
+		24:
 			var md3: PorterModeler = app.modeler
 			var nf := md3.mesh.faces.size()
 			md3._connect()
 			print("CONNECT TEST: faces %d -> %d, message: %s" % [nf, md3.mesh.faces.size(), md3.hint.text])
-		22:
+		25:
 			_shot("porter_17_connected")
 			var mdw: PorterModeler = app.modeler
 			mdw.mesh.undo()
@@ -300,23 +341,23 @@ func _process(delta: float) -> void:
 			for zy in [Vector2(fz - 0.5, 0.35), Vector2(fz - 0.38, 0.9), Vector2(fz + 0.38, 0.9), Vector2(fz + 0.52, 0.35)]:
 				_tap(mvw, mvw.project_point(Vector3(xs, zy.y, zy.x)))
 			print("ARCH TEST: %d points drawn" % mvw.arch_pts.size())
-		23:
+		26:
 			_shot("porter_17a_drawing_arch")
 			var mdw: PorterModeler = app.modeler
 			mdw._finish_arch()
 			mdw._cut_arches()
 			print("ARCH TEST: ", mdw.hint.text)
 			mdw._select_view("side")
-		24:
+		27:
 			_shot("porter_17b_arches_side")
 			app.modeler._set_mode("wheels", true)
-		25:
+		28:
 			_shot("porter_17c_wheels")
 			app.modeler.view.yaw = deg_to_rad(-75.0)
 			app.modeler.view.pitch = deg_to_rad(8.0)
 			app.modeler.view._update_cam()
 			app.modeler.view.overlay.queue_redraw()
-		26:
+		29:
 			_shot("porter_17d_wheels_low")
 			var mvl: ModelView = app.modeler.view
 			mvl.yaw = deg_to_rad(-118.0)
@@ -336,7 +377,7 @@ func _process(delta: float) -> void:
 			mdi.on_photo_loaded("dash")
 			app.project.import_image("steering", fake_steering_photo())
 			mdi.on_photo_loaded("steering")
-		27:
+		30:
 			var mdi2: PorterModeler = app.modeler
 			var pj: PorterProject = app.project
 			var dsz := Vector2(1600, 700)
@@ -358,14 +399,14 @@ func _process(delta: float) -> void:
 				mdi2._finish_hole()
 			mdi2._toggle_hole(false)
 			print("INTERIOR TEST: gauges %d (on dash %s), holes %d, msg: %s" % [gs.size(), str(gs.map(func(g): return g["on_dash"])), pj.steering()["holes"].size(), mdi2.hint.text])
-		28:
+		31:
 			_shot("porter_22_driver_seat")
 			app.modeler._hide_wheel(true)
 			app.modeler.dash_view.stretch(1.08, 0.94)
 			print("STRETCH TEST: dash sx %.3f sy %.3f" % [app.project.views["dash"]["sx"], app.project.views["dash"]["sy"]])
 			var sc: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc.scroll_vertical = int(app.modeler.dash_view.position.y) - 40
-		29:
+		32:
 			_shot("porter_23_dash_photo_gauges")
 			var has_wheel := false
 			for c in app.modeler.view.cabin.get_children():
@@ -375,7 +416,7 @@ func _process(delta: float) -> void:
 			app.modeler._hide_wheel(false)
 			var sc2: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc2.scroll_vertical = int(app.modeler.steer_view.position.y) - 60
-		30:
+		33:
 			_shot("porter_24_steering_holes")
 			# inside panels: door + ceiling photos, Auto paint, look toward the driver's door
 			var mdp: PorterModeler = app.modeler
@@ -393,7 +434,7 @@ func _process(delta: float) -> void:
 				var ir := mdp.mesh.inner_region_of(fi)
 				cnt[ir] = cnt.get(ir, 0) + 1
 			print("INSIDE TEST: ", cnt, " surfaces ", mdp.view.interior_mi.mesh.get_surface_count() if mdp.view.interior_mi.mesh else 0)
-		31:
+		34:
 			_shot("porter_24b_inside_door")
 			var mdp2: PorterModeler = app.modeler
 			mdp2.view.yaw = deg_to_rad(-140.0 + 30.0)
@@ -401,11 +442,11 @@ func _process(delta: float) -> void:
 			mdp2.view._update_cam()
 			var sc3: ScrollContainer = mdp2.interior_panel.get_child(0)
 			sc3.scroll_vertical = int(mdp2.inside_photo_view.position.y) - 120
-		32:
+		35:
 			_shot("porter_24c_inside_ceiling_panel")
 			app.modeler._hide_wheel(false)
 			app.modeler._start_edit_dash()
-		33:
+		36:
 			_shot("porter_25_edit_dash")
 			# from the driver's seat: tap the top-rear corner of the dash at the door, drag it up
 			var mde: PorterModeler = app.modeler
@@ -429,7 +470,7 @@ func _process(delta: float) -> void:
 			var up := InputEventScreenTouch.new(); up.index = 0; up.position = sp + Vector2(0, -72); up.pressed = false
 			mv._gui_input(up)
 			print("SEAT EDIT: cabin editing %s, selected %d, moved %.3f m up, %.3f m sideways" % [str(mv.cabin_editing()), mv.sel_verts.size(), mv.mesh.verts[best].y - before.y, absf(mv.mesh.verts[best].x - before.x)])
-		34:
+		37:
 			_shot("porter_25b_edit_dash_seat_moved")
 			app.modeler._end_edit_dash()
 			app.modeler._set_mode("shape", true)
@@ -438,24 +479,24 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p2.dir() + f)
 			DirAccess.remove_absolute(p2.dir())
 			app.show_finder()
-		35:
+		38:
 			var fd: CarFinder = app.screen.get_child(0)
 			fd._pick_year(1999)
 			fd._pick_make("Chevrolet")
 			fd.search.text = "tahoe 4dr"
 			fd._fill_models()
-		36:
+		39:
 			var fd2: CarFinder = app.screen.get_child(0)
 			var r: Dictionary = VehicleDB.models(1999, "Chevrolet", "tahoe k1500 4dr")[0]
 			fd2._pick_model(r)
 			fd2.tire_form.front_size.text = "P245/75R16"
 			fd2.tire_form.front_psi.text = "35"
 			fd2.tire_form._update()
-		37:
+		40:
 			_shot("porter_18_car_finder")
 			var fd3: CarFinder = app.screen.get_child(0)
 			fd3.create_btn.pressed.emit()
-		38:
+		41:
 			_shot("porter_19_from_database")
 			print("DB PROJECT: %s  L %.3f  WB %.3f  overhang %.3f  tires %s/%s @ %d psi, radius %.3f" % [app.project.name, app.project.dims["length_m"], app.project.dims["wheelbase_m"], app.project.dims["front_overhang_m"], app.project.tires["front"], app.project.tires["rear"], app.project.tires["front_psi"], app.project.dims["tire_radius_m"]])
 			var p3: PorterProject = app.project
@@ -463,14 +504,14 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p3.dir() + f)
 			DirAccess.remove_absolute(p3.dir())
 			app.show_tire_step("My new car", {}, func(_p): pass)
-		39:
+		42:
 			_shot("porter_20_tire_step_empty")
 			var form: TireForm = app.screen.find_children("*", "TireForm", true, false)[0]
 			form.front_size.text = "245/40ZR18"
 			form.rear_size.text = "285/35zr18"
 			form.front_psi.text = "36"
 			form._update()
-		40:
+		43:
 			_shot("porter_21_tire_step_staggered")
 			get_tree().quit()
 	step += 1
