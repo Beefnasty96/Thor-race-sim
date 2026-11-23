@@ -38,15 +38,74 @@ const DASH_TEMPLATES := {
 }
 
 ## The dash rows of a template: top-rear edge at (z_face, y_top), across to
-## half-width hw.
-static func dash_frame(project: PorterProject) -> Dictionary:
+## half-width hw. With the body, the dash sits behind its windshield (top just
+## under the windshield's bottom edge, face 50 cm back); otherwise in front of
+## the driver's eye.
+static func dash_frame(project: PorterProject, body: HalfMesh = null) -> Dictionary:
 	var e := project.driver_eye()
-	return {"z_face": e.z - 0.62, "y_top": e.y - 0.20, "hw": project.dims["width_m"] * 0.5 - 0.08}
+	var fr := {"z_face": e.z - 0.62, "y_top": e.y - 0.20, "hw": project.dims["width_m"] * 0.5 - 0.08}
+	var ws = windshield_base(body) if body else null
+	if ws != null:
+		fr["z_face"] = ws.y + 0.50
+		fr["y_top"] = ws.x - 0.01
+	return fr
 
-static func dash_from_template(key: String, project: PorterProject) -> HalfMesh:
+## The bottom edge of the windshield: Vector2(height, z) of the lowest point
+## of the front-facing glass; if the windshield isn't glass (photo-textured),
+## of the sloped, forward-facing panels that reach up toward the roof.
+## null if neither.
+static func windshield_base(body: HalfMesh):
+	var top := 0.0
+	for p in body.verts:
+		top = maxf(top, p.y)
+	for pass_glass in [true, false]:
+		var best = null
+		for fi in body.faces.size():
+			var f: PackedInt32Array = body.faces[fi]
+			var n := body.face_normal(f)
+			if n.z > -0.3:
+				continue
+			if pass_glass:
+				if HalfMesh.region_base(body.regions[fi]) != "glass":
+					continue
+			else:
+				# a windshield slopes up toward the roof (a hood lip doesn't reach that high)
+				var hi := 0.0
+				for i in f:
+					hi = maxf(hi, body.verts[i].y)
+				if n.y < 0.25 or hi < top * 0.8:
+					continue
+			for i in f:
+				var p := body.verts[i]
+				if best == null or p.y < best.x - 1e-4:
+					best = Vector2(p.y, p.z)
+		if best != null:
+			return best
+	return null
+
+## Seat the driver for this body when no seat position is saved: eye ~1.1 m
+## behind and ~28 cm above the windshield's bottom edge, under the roof.
+static func fit_driver_to_body(project: PorterProject, body: HalfMesh) -> bool:
+	if (project.interior.get("driver_eye", []) as Array).size() == 3 or body == null:
+		return false
+	var ws = windshield_base(body)
+	if ws == null:
+		return false
+	var e := project.driver_eye()
+	var roof := -INF
+	for p in body.verts:
+		if absf(p.z - (ws.y + 1.12)) < 0.6:
+			roof = maxf(roof, p.y)
+	var y: float = ws.x + 0.28
+	if roof > -INF:
+		y = minf(y, roof - 0.12)
+	project.set_driver_eye(Vector3(e.x, y, ws.y + 1.12))
+	return true
+
+static func dash_from_template(key: String, project: PorterProject, body: HalfMesh = null) -> HalfMesh:
 	var m := HalfMesh.new()
 	m.template = "dash_" + key
-	var fr := dash_frame(project)
+	var fr := dash_frame(project, body)
 	var z0: float = fr["z_face"]
 	var y0: float = fr["y_top"]
 	var hw: float = fr["hw"]
@@ -326,3 +385,71 @@ static func auto_inside(m: HalfMesh, has_photo: Dictionary) -> int:
 		m.set_inner_region([fi], assign[fi])
 		n_done += 1
 	return n_done
+
+# ---------------------------------------------------------------- keeping the dash inside the body
+
+const DASH_MARGIN := 0.03            # 2 cm shell + 1 cm gap
+
+## The body's left half as triangles (all faces, glass too: the dash can't go
+## through the windshield either).
+static func body_triangles(body: HalfMesh) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	for f in body.faces:
+		for t in body.triangulate(f):
+			out.append(body.verts[t[0]])
+			out.append(body.verts[t[1]])
+			out.append(body.verts[t[2]])
+	return out
+
+## Nearest hit of a segment with the triangles (as a 0..1 fraction), or 2.0.
+static func _first_hit(tris: PackedVector3Array, from: Vector3, to: Vector3) -> float:
+	var best := 2.0
+	var seg := to - from
+	var len2 := seg.length_squared()
+	if len2 < 1e-10:
+		return best
+	for i in range(0, tris.size(), 3):
+		var hit = Geometry3D.segment_intersects_triangle(from, to, tris[i], tris[i + 1], tris[i + 2])
+		if hit != null:
+			best = minf(best, (Vector3(hit) - from).dot(seg) / len2)
+	return best
+
+## Keep dash points inside the body: (1) sideways, at least DASH_MARGIN inside
+## the nearest wall at the point's own height and depth (wheel-well walls
+## count); (2) looking out from the driver's seat (on the centerline), not
+## through the windshield, roof or floor. `ids` = points to check ([] = all).
+## Returns how many points moved.
+static func keep_dash_inside(dash: HalfMesh, body: HalfMesh, eye: Vector3, ids: Array = [], tris: PackedVector3Array = PackedVector3Array()) -> int:
+	if dash == null or body == null:
+		return 0
+	if tris.is_empty():
+		tris = body_triangles(body)
+	if ids.is_empty():
+		ids = range(dash.verts.size())
+	var center := Vector3(0.0, eye.y, eye.z)
+	var moved := 0
+	for i in ids:
+		var p := dash.verts[i]
+		var q := p
+		# (1) sideways from the centerline at this height and depth
+		if not dash.is_center(i):
+			var from := Vector3(-0.0005, p.y, p.z)
+			var to := Vector3(-4.0, p.y, p.z)
+			var t := _first_hit(tris, from, to)
+			if t <= 1.0:
+				var wall_x := lerpf(from.x, to.x, t)
+				var lim := minf(wall_x + DASH_MARGIN, 0.0)
+				if q.x < lim:
+					q.x = lim
+		# (2) seen from the seat, nothing between the eye and the point
+		var t2 := _first_hit(tris, center, q)
+		if t2 <= 1.0:
+			var dir := (q - center)
+			var dist := dir.length()
+			q = center + dir / dist * maxf(dist * t2 - DASH_MARGIN, 0.0)
+		if dash.is_center(i):
+			q.x = 0.0
+		if not q.is_equal_approx(p):
+			dash.verts[i] = q
+			moved += 1
+	return moved

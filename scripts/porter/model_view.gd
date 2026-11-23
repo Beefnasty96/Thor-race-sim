@@ -31,6 +31,7 @@ signal window_point_added
 var show_interior := true             # hollow shell inside (paint/wheels modes)
 var driver_view := false              # 3D camera in the driver's seat
 var driver_fov := 75.0                # pinch zooms the driver's-seat view
+var constrain_fn: Callable            # called with moved point ids after a move (keeps the dash inside the body)
 var glass_mi: MeshInstance3D
 var interior_mi: MeshInstance3D
 var dash: HalfMesh                    # interior dashboard (shown inside the body)
@@ -845,6 +846,8 @@ func _on_drag() -> void:
 			var w := screen_delta_to_world(d)
 			for i in _start_pos:
 				mesh.set_vert(i, _start_pos[i] + w)
+			if constrain_fn.is_valid():
+				constrain_fn.call(_start_pos.keys())
 			rebuild_body()
 			mesh_edited.emit(false)
 		elif view == "3d":
@@ -895,6 +898,8 @@ func nudge(dir: Vector2, metres: float) -> void:
 	mesh.push_undo()
 	var b := cam.global_transform.basis
 	mesh.move_verts(ids, (b.x * dir.x - b.y * dir.y) * metres)
+	if constrain_fn.is_valid():
+		constrain_fn.call(ids)
 	rebuild_body()
 	mesh_edited.emit(true)
 
@@ -905,6 +910,8 @@ func nudge_depth(metres: float) -> void:
 		return
 	mesh.push_undo()
 	mesh.move_verts(ids, cam.global_transform.basis.z * metres)
+	if constrain_fn.is_valid():
+		constrain_fn.call(ids)
 	rebuild_body()
 	mesh_edited.emit(true)
 

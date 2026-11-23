@@ -200,6 +200,14 @@ later under the dimensions panel (*Apply tires*).
   until the blue outline sits on the dash; faces looking at the driver take
   the photo, the rest are black trim. Each half samples its own side of the
   photo, so the gauge cluster stays on the driver's side.
+- The dash can't stick out of the body: every dash point stays 3 cm inside
+  the nearest wall at its height and depth (wheel-well walls count) and,
+  seen from the seat, behind the windshield, roof and floor. Applied to the
+  templates, live while dragging / nudging, after Extrude / Add point / …,
+  and when Interior opens (in case the body was reshaped). The seat and dash
+  start from the body's windshield (its bottom edge, or the sloped panel
+  reaching the roof if the windshield is photo-textured): dash face 50 cm
+  behind it, eye ~1.1 m back; a seat position you set yourself is kept.
 - *Gauges*: pick Speedo / Tach / Fuel / Temp / Oil / Volts and tap on the dash
   photo; size them and set full scale (mph, rpm). *Hide steering wheel*
   clears the view of the whole dash (also in the dash-editing banner). They land on the dash face

@@ -369,6 +369,8 @@ func _queue_save() -> void:
 	_save_t = 0.8
 
 func _after_structural() -> void:
+	if editing_dash:
+		_keep_dash_inside([])
 	view.sel_verts.clear()
 	view.sel_faces.clear()
 	view.rebuild_body()
@@ -532,7 +534,7 @@ func _show_template_picker(first: bool) -> void:
 			var dk: String = key
 			var db := PorterUI.button(InteriorBuilder.DASH_TEMPLATES[dk]["label"], func():
 				mesh.push_undo()
-				mesh.restore(InteriorBuilder.dash_from_template(dk, project).snapshot())
+				mesh.restore(InteriorBuilder.dash_from_template(dk, project, body_mesh).snapshot())
 				mesh.template = "dash_" + dk
 				_after_structural()
 				pc.queue_free()
@@ -1201,6 +1203,14 @@ func _hide_wheel(on: bool) -> void:
 	_say("Steering wheel hidden: the whole dash is visible for placing gauges. Turn it back on to check the view through the wheel." if on else "Steering wheel shown.")
 
 func _open_interior() -> void:
+	if InteriorBuilder.fit_driver_to_body(project, mesh):
+		project.save()
+		view._update_cam()
+	# the body may have been reshaped since: pull the dash back inside it
+	if dash_mesh and InteriorBuilder.keep_dash_inside(dash_mesh, mesh, project.driver_eye()) > 0:
+		project.save_dash(dash_mesh)
+		view.dash = dash_mesh
+		view.refresh_cabin()
 	dash_view.setup(project, dash_mesh)
 	inside_photo_view.setup(project, dash_mesh, inside_view, mesh)
 	steer_view.setup(project)
@@ -1252,8 +1262,19 @@ func _move_eye(d: Vector3) -> void:
 
 # ---- dashboard
 
+var _body_tris := PackedVector3Array()
+
+## While editing the dash: moved points can't leave the body.
+func _keep_dash_inside(ids: Array) -> void:
+	if not editing_dash or body_mesh == null:
+		return
+	InteriorBuilder.keep_dash_inside(mesh, body_mesh, project.driver_eye(), ids, _body_tris)
+
 func _new_dash(key: String) -> void:
-	dash_mesh = InteriorBuilder.dash_from_template(key, project)
+	if InteriorBuilder.fit_driver_to_body(project, mesh):
+		project.save()
+	dash_mesh = InteriorBuilder.dash_from_template(key, project, mesh)
+	InteriorBuilder.keep_dash_inside(dash_mesh, mesh, project.driver_eye())
 	project.save_dash(dash_mesh)
 	view.dash = dash_mesh
 	var img := project.load_photo("dash")
@@ -1277,6 +1298,8 @@ func _start_edit_dash() -> void:
 	body_mesh = mesh
 	mesh = dash_mesh
 	editing_dash = true
+	_body_tris = InteriorBuilder.body_triangles(body_mesh)
+	view.constrain_fn = _keep_dash_inside
 	view.ghost = body_mesh
 	view.mesh = dash_mesh
 	dash_bar.visible = true
@@ -1291,6 +1314,7 @@ func _end_edit_dash(to_interior: bool = true) -> void:
 	mesh = body_mesh
 	body_mesh = null
 	editing_dash = false
+	view.constrain_fn = Callable()
 	view.ghost = null
 	view.mesh = mesh
 	view.dash = dash_mesh
