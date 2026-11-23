@@ -1,0 +1,62 @@
+# Batch 4: Chevrolet 2019-2022 from GM press releases and GM Authority color guides
+# make | name | codes | years | models | source
+Chevrolet|Torch Red|GKZ/WA9075|2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Arctic White||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Black|GBA|2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Sebring Orange Tintcoat||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Elkhart Lake Blue Metallic|GS7/WA625D|2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Rapid Blue|GMO/WA632D|2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Ceramic Matrix Gray Metallic||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Blade Silver Metallic||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Shadow Gray Metallic|GJI|2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Long Beach Red Metallic Tintcoat||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Accelerate Yellow||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Zeus Bronze Metallic||2020|Corvette|https://www.corvsport.com/2020-c8-corvette/
+Chevrolet|Crush|G16/WA413C|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Red Hot|G7C|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Garnet Red Tintcoat||2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Satin Steel Metallic|G9K|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Summit White|GAZ|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Black|GBA|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Shadow Gray Metallic|GJI/WA626D|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Riverside Blue Metallic|GKK/WA627D|2019-2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Silver Ice Metallic||2019|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Mosaic Black Metallic||2019|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/
+Chevrolet|Shock|GKO/WA628D|2019-2021|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2021-chevrolet-camaro/2021-chevrolet-camaro-colors/2021-chevrolet-camaro-exterior-colors/
+Chevrolet|Rally Green Metallic||2020|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2020-chevrolet-camaro/2020-chevrolet-camaro-colors
+Chevrolet|Wild Cherry Tintcoat|GSK/WA252F|2021|Camaro|https://gmauthority.com/blog/gm/chevrolet/camaro/2021-chevrolet-camaro/2021-chevrolet-camaro-colors/2021-chevrolet-camaro-exterior-colors/
+Chevrolet|Iridescent Pearl Tricoat|G1W|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Havana Brown Metallic||2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Satin Steel Metallic|G9K|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Northsky Blue Metallic|GA0|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Silver Ice Metallic||2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Summit White|GAZ|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Black|GBA|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Oakwood Metallic||2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Shadow Gray Metallic|GJI|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Cajun Red Tintcoat||2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Red Hot|G7C|2019|Silverado,Silverado 1500|https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/
+Chevrolet|Dark Ash Metallic||2022|Silverado,Silverado 1500|https://gmauthority.com/blog/2022/04/2022-chevy-silverado-1500-gets-new-glacier-blue-metallic-color-first-look/
+Chevrolet|Glacier Blue Metallic|GLT/WA327E|2022|Silverado,Silverado 1500|https://gmauthority.com/blog/2022/04/2022-chevy-silverado-1500-gets-new-glacier-blue-metallic-color-first-look/
+Chevrolet|Sand Dune Metallic||2022|Silverado,Silverado 1500|https://gmauthority.com/blog/2022/04/2022-chevy-silverado-1500-gets-new-glacier-blue-metallic-color-first-look/
+Chevrolet|Siren Red Tintcoat|G1E|2019|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2019-chevrolet-tahoe/2019-chevrolet-tahoe-colors/
+Chevrolet|Blue Velvet Metallic||2019|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2019-chevrolet-tahoe/2019-chevrolet-tahoe-colors/
+Chevrolet|Pepperdust Metallic|GMU|2019|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2019-chevrolet-tahoe/2019-chevrolet-tahoe-colors/
+Chevrolet|Iridescent Pearl Tricoat|G1W|2019,2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Satin Steel Metallic|G9K|2019,2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Summit White|GAZ|2019,2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Black|GBA|2019,2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Shadow Gray Metallic|GJI|2019,2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Empire Beige Metallic|GJW|2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Midnight Blue Metallic||2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Graywood Metallic|GS6|2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Cherry Red Tintcoat||2021|Tahoe,Suburban|https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/
+Chevrolet|Evergreen Gray Metallic||2022|Tahoe,Suburban|https://news.chevrolet.com/newsroom.detail.html/Pages/news/us/en/2021/sep/0927-technology.html
+Chevrolet|Auburn Metallic||2022|Tahoe,Suburban|https://news.chevrolet.com/newsroom.detail.html/Pages/news/us/en/2021/sep/0927-technology.html
+Chevrolet|Dark Ash Metallic||2022|Tahoe,Suburban|https://news.chevrolet.com/newsroom.detail.html/Pages/news/us/en/2021/sep/0927-technology.html
+Chevrolet|Crush|G16|2019|Colorado|https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/
+Chevrolet|Kinetic Blue Metallic||2019|Colorado|https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/
+Chevrolet|Cajun Red Tintcoat||2019|Colorado|https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/
+Chevrolet|Pacific Blue Metallic||2019|Colorado|https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/
+Chevrolet|Shadow Gray Metallic|GJI|2019|Colorado|https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/
+Chevrolet|Red Hot|G7C|2019|Colorado|https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/

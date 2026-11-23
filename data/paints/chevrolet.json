@@ -279,7 +279,8 @@
    "name": "Arctic White",
    "codes": "10/WA9567",
    "years": [
-    1999
+    1999,
+    2020
    ],
    "models": [
     "Camaro",
@@ -294,7 +295,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html",
+    "https://www.corvsport.com/2020-c8-corvette/"
    ]
   },
   {
@@ -1433,10 +1435,12 @@
    "name": "Blade Silver Metallic",
    "codes": "17U/WA636R",
    "years": [
-    2010
+    2010,
+    2020
    ],
    "models": [
-    "Camaro"
+    "Camaro",
+    "Corvette"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -1447,7 +1451,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html",
+    "https://www.corvsport.com/2020-c8-corvette/"
    ]
   },
   {
@@ -1578,12 +1583,19 @@
   },
   {
    "name": "Black",
-   "codes": "WA8555/GBA",
+   "codes": "GBA",
    "years": [
-    2019
+    2019,
+    2020,
+    2021
    ],
    "models": [
-    "Camaro"
+    "Camaro",
+    "Corvette",
+    "Silverado",
+    "Silverado 1500",
+    "Suburban",
+    "Tahoe"
    ],
    "finish": "solid",
    "metallic": 0.05,
@@ -1594,17 +1606,68 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+    "https://www.corvsport.com/2020-c8-corvette/",
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
    ]
   },
   {
-   "name": "Crush",
-   "codes": "WA413C/G16",
+   "name": "Blue Velvet Metallic",
+   "codes": "",
    "years": [
     2019
    ],
    "models": [
-    "Camaro"
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.1,
+    0.12,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2019-chevrolet-tahoe/2019-chevrolet-tahoe-colors/"
+   ]
+  },
+  {
+   "name": "Cajun Red Tintcoat",
+   "codes": "",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Colorado",
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.5,
+    0.06,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+   ]
+  },
+  {
+   "name": "Crush",
+   "codes": "G16/WA413C",
+   "years": [
+    2019,
+    2020
+   ],
+   "models": [
+    "Camaro",
+    "Colorado"
    ],
    "finish": "solid",
    "metallic": 0.05,
@@ -1615,17 +1678,272 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
    ]
   },
   {
-   "name": "Satin Steel Metallic",
-   "codes": "WA464C/G9K",
+   "name": "Garnet Red Tintcoat",
+   "codes": "",
+   "years": [
+    2019,
+    2020
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.36,
+    0.05,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/"
+   ]
+  },
+  {
+   "name": "Havana Brown Metallic",
+   "codes": "",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.3,
+    0.2,
+    0.13
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+   ]
+  },
+  {
+   "name": "Iridescent Pearl Tricoat",
+   "codes": "G1W",
+   "years": [
+    2019,
+    2021
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500",
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.91,
+    0.88
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Kinetic Blue Metallic",
+   "codes": "",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Colorado"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.1,
+    0.35,
+    0.65
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+   ]
+  },
+  {
+   "name": "Mosaic Black Metallic",
+   "codes": "",
    "years": [
     2019
    ],
    "models": [
     "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/"
+   ]
+  },
+  {
+   "name": "Northsky Blue Metallic",
+   "codes": "GA0",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.2,
+    0.35
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+   ]
+  },
+  {
+   "name": "Oakwood Metallic",
+   "codes": "",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.4,
+    0.33,
+    0.27
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+   ]
+  },
+  {
+   "name": "Pacific Blue Metallic",
+   "codes": "",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Colorado"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+   ]
+  },
+  {
+   "name": "Pepperdust Metallic",
+   "codes": "GMU",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.45,
+    0.4,
+    0.36
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2019-chevrolet-tahoe/2019-chevrolet-tahoe-colors/"
+   ]
+  },
+  {
+   "name": "Red Hot",
+   "codes": "G7C",
+   "years": [
+    2019,
+    2020
+   ],
+   "models": [
+    "Camaro",
+    "Colorado",
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.78,
+    0.06,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+   ]
+  },
+  {
+   "name": "Riverside Blue Metallic",
+   "codes": "GKK/WA627D",
+   "years": [
+    2019,
+    2020
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.1,
+    0.3,
+    0.6
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/"
+   ]
+  },
+  {
+   "name": "Satin Steel Metallic",
+   "codes": "G9K",
+   "years": [
+    2019,
+    2020,
+    2021
+   ],
+   "models": [
+    "Camaro",
+    "Silverado",
+    "Silverado 1500",
+    "Suburban",
+    "Tahoe"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -1636,14 +1954,51 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
    ]
   },
   {
-   "name": "White",
-   "codes": "WA8624/GAZ",
+   "name": "Shadow Gray Metallic",
+   "codes": "GJI",
    "years": [
-    2019
+    2019,
+    2020,
+    2021
+   ],
+   "models": [
+    "Camaro",
+    "Colorado",
+    "Corvette",
+    "Silverado",
+    "Silverado 1500",
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/",
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+   ]
+  },
+  {
+   "name": "Shock",
+   "codes": "GKO/WA628D",
+   "years": [
+    2019,
+    2020,
+    2021
    ],
    "models": [
     "Camaro"
@@ -1651,13 +2006,499 @@
    "finish": "solid",
    "metallic": 0.05,
    "rgb": [
-    0.93,
-    0.93,
-    0.92
+    0.85,
+    0.95,
+    0.1
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2021-chevrolet-camaro/2021-chevrolet-camaro-colors/2021-chevrolet-camaro-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Silver Ice Metallic",
+   "codes": "",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Camaro",
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+   ]
+  },
+  {
+   "name": "Siren Red Tintcoat",
+   "codes": "G1E",
+   "years": [
+    2019
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2019-chevrolet-tahoe/2019-chevrolet-tahoe-colors/"
+   ]
+  },
+  {
+   "name": "Summit White",
+   "codes": "GAZ",
+   "years": [
+    2019,
+    2020,
+    2021
+   ],
+   "models": [
+    "Camaro",
+    "Silverado",
+    "Silverado 1500",
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.933,
+    0.933,
+    0.918
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Accelerate Yellow",
+   "codes": "",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.85,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Ceramic Matrix Gray Metallic",
+   "codes": "",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.55,
+    0.57,
+    0.58
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Elkhart Lake Blue Metallic",
+   "codes": "GS7/WA625D",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.08,
+    0.2,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Long Beach Red Metallic Tintcoat",
+   "codes": "",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.45,
+    0.04,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Rally Green Metallic",
+   "codes": "",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.3,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2020-chevrolet-camaro/2020-chevrolet-camaro-colors"
+   ]
+  },
+  {
+   "name": "Rapid Blue",
+   "codes": "GMO/WA632D",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.0,
+    0.42,
+    0.78
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Sebring Orange Tintcoat",
+   "codes": "",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.85,
+    0.35,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Torch Red",
+   "codes": "GKZ/WA9075",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.78,
+    0.05,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Zeus Bronze Metallic",
+   "codes": "",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.4,
+    0.3,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.corvsport.com/2020-c8-corvette/"
+   ]
+  },
+  {
+   "name": "Cherry Red Tintcoat",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.45,
+    0.04,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Empire Beige Metallic",
+   "codes": "GJW",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.63,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Graywood Metallic",
+   "codes": "GS6",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.4,
+    0.38,
+    0.35
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Midnight Blue Metallic",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Wild Cherry Tintcoat",
+   "codes": "GSK/WA252F",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.45,
+    0.04,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/gm/chevrolet/camaro/2021-chevrolet-camaro/2021-chevrolet-camaro-colors/2021-chevrolet-camaro-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Auburn Metallic",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.45,
+    0.15,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://news.chevrolet.com/newsroom.detail.html/Pages/news/us/en/2021/sep/0927-technology.html"
+   ]
+  },
+  {
+   "name": "Dark Ash Metallic",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500",
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.165,
+    0.171,
+    0.176
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/2022/04/2022-chevy-silverado-1500-gets-new-glacier-blue-metallic-color-first-look/",
+    "https://news.chevrolet.com/newsroom.detail.html/Pages/news/us/en/2021/sep/0927-technology.html"
+   ]
+  },
+  {
+   "name": "Evergreen Gray Metallic",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://news.chevrolet.com/newsroom.detail.html/Pages/news/us/en/2021/sep/0927-technology.html"
+   ]
+  },
+  {
+   "name": "Glacier Blue Metallic",
+   "codes": "GLT/WA327E",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.92,
+    0.93,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/2022/04/2022-chevy-silverado-1500-gets-new-glacier-blue-metallic-color-first-look/"
+   ]
+  },
+  {
+   "name": "Sand Dune Metallic",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Silverado",
+    "Silverado 1500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.62,
+    0.48
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://gmauthority.com/blog/2022/04/2022-chevy-silverado-1500-gets-new-glacier-blue-metallic-color-first-look/"
    ]
   }
  ]
