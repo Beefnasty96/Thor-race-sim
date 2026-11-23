@@ -120,6 +120,12 @@ later under the dimensions panel (*Apply tires*).
   time. *Auto arches (both wheels)* cuts round arches sized from the tires
   (radius × 1.12 + 2 cm). Concave panels are ear-clipped so they render
   cleanly.
+- **Wheel wells** are built automatically behind every arch you cut: a liner
+  following your arch line inward, and an inner wall just inboard of the
+  tire (track ÷ 2 − tire width ÷ 2, plus 3 cm, plus 5 cm more at the front
+  for steering). The underbody goes back flat with the wheel opening left
+  open below; every edge is shared, so no cracks. Black trim by default.
+  *Build wheel wells* adds them behind arches cut before this existed.
 - **Add point**: tap an edge to add a connected point on it, or empty space
   for a free point (placed at the depth of the nearest geometry; tap an
   existing point to include it). **Connect**: 2 points on one face split it

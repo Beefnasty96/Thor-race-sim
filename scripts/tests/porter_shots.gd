@@ -318,6 +318,16 @@ func _process(delta: float) -> void:
 			app.modeler.view.overlay.queue_redraw()
 		26:
 			_shot("porter_17d_wheels_low")
+			var mvl: ModelView = app.modeler.view
+			mvl.yaw = deg_to_rad(-118.0)
+			mvl.pitch = deg_to_rad(-14.0)
+			mvl.dist = 3.3
+			mvl._update_cam()
+			mvl.overlay.queue_redraw()
+			await get_tree().process_frame
+			await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			_shot("porter_17e_wheel_well_close")
 			# interior: dash template, dash + steering photos
 			var mdi: PorterModeler = app.modeler
 			mdi._set_mode("interior", true)

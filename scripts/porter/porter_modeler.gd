@@ -233,6 +233,9 @@ func _build_panel() -> Control:
 	ra.add_child(arch_btn)
 	ra.add_child(_grow(PorterUI.button("Auto arches (both wheels)", _cut_arches)))
 	v.add_child(ra)
+	ra = HBoxContainer.new()
+	ra.add_child(_grow(PorterUI.button("Build wheel wells (for arches already cut)", _wheel_wells_button)))
+	v.add_child(ra)
 	arch_row = HBoxContainer.new()
 	arch_row.add_child(_grow(PorterUI.button("Finish arch", _finish_arch)))
 	arch_row.add_child(_grow(PorterUI.button("Undo point", func():
@@ -815,8 +818,9 @@ func _finish_arch() -> void:
 		_say(msg)
 		return
 	_toggle_draw_arch(false)
+	var wells := _add_wheel_wells()
 	_after_structural()
-	_say("Arch cut. Draw the other one, or Undo to try again.")
+	_say("Arch cut%s. Draw the other one, or Undo to try again." % (" and its wheel well built (liner + inner wall %d cm inboard of the tire)" % int(round(WELL_CLEARANCE * 100.0)) if wells > 0 else ""))
 
 func _cut_arches() -> void:
 	var d := project.dims
@@ -832,8 +836,41 @@ func _cut_arches() -> void:
 		mesh.undo()
 		_say(" ".join(msgs))
 		return
+	var wells := _add_wheel_wells()
 	_after_structural()
-	_say("Wheel arches cut around both axles, sized from the tires." if msgs.is_empty() else "Cut one arch. " + " ".join(msgs))
+	var well_txt := (" %d wheel well%s built inside." % [wells, "" if wells == 1 else "s"]) if wells > 0 else ""
+	_say(("Wheel arches cut around both axles, sized from the tires." if msgs.is_empty() else "Cut one arch. " + " ".join(msgs)) + well_txt)
+
+const WELL_CLEARANCE := 0.03          # tire to inner wall
+const WELL_STEER := 0.05              # extra at the front for the tire swinging when steering
+
+## Where a wheel well's inner wall goes: the tire's inner face (from the
+## track and tire width) plus clearance, more at the front for steering.
+func _well_inner_x(rear: bool) -> float:
+	var d := project.dims
+	var track: float = d["track_rear_m"] if rear else d["track_front_m"]
+	var w: float = project.tires.get("rear_width_m" if rear else "front_width_m", 0.22)
+	return -track * 0.5 + w * 0.5 + WELL_CLEARANCE + (0.0 if rear else WELL_STEER)
+
+## Build wheel wells behind every open arch. Returns how many were built.
+func _add_wheel_wells() -> int:
+	var n := 0
+	for rear in [false, true]:
+		var axle_z: float = (project.dims["wheelbase_m"] * 0.5) * (1.0 if rear else -1.0)
+		var r := project.tire_radius(rear)
+		if mesh.add_wheel_tub(axle_z, r, r * 1.3, _well_inner_x(rear)) == "":
+			n += 1
+	return n
+
+func _wheel_wells_button() -> void:
+	mesh.push_undo()
+	var n := _add_wheel_wells()
+	if n == 0:
+		mesh.undo()
+		_say("No open arches to build wheel wells behind: cut arches first (they get wheel wells automatically), or they already have them.")
+		return
+	_after_structural()
+	_say("Built %d wheel well%s: a liner following your arch line and an inner wall just inboard of the tire. They're black trim; Undo takes them back." % [n, "" if n == 1 else "s"])
 
 # ---------------------------------------------------------------- wheels
 
