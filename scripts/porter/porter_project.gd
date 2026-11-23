@@ -17,8 +17,15 @@ const VIEWS := ["side", "front", "rear", "top"]
 ##              like the rear view (screen right = car's right), fitted to the
 ##              dash in the Interior screen
 ##   steering : the steering wheel face-on; cut out with a crop circle
-const INTERIOR_VIEWS := ["dash", "steering"]
-const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top", "dash": "Dashboard", "steering": "Steering wheel"}
+##   door     : inside of the driver's door, face-on from the cabin; frame =
+##              (-z, y) (forward to the right); both doors use it
+##   pillar   : the driver's A-pillar from the seat; frame = (-|x|, y); both
+##              pillars use it
+##   ceiling  : headliner, phone overhead with its top toward the windshield;
+##              frame = (-x, -z)
+const INTERIOR_VIEWS := ["dash", "steering", "door", "pillar", "ceiling"]
+const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top", "dash": "Dashboard",
+	"steering": "Steering wheel", "door": "Inside door", "pillar": "A-pillar", "ceiling": "Ceiling"}
 const IMAGE_MAX_PX := 2048        # photos are downscaled to this on import (phone memory)
 
 var id := ""

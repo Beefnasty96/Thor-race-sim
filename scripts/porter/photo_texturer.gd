@@ -28,6 +28,12 @@ static func world_to_frame(project: PorterProject, view: String, p: Vector3) -> 
 			return Vector2(-p.x, p.y)
 		"rear", "dash":
 			return Vector2(p.x, p.y)
+		"door":        # inside, looking at the left door: forward is to the right
+			return Vector2(-p.z, p.y)
+		"pillar":      # from the driver's seat looking forward; both pillars use the left one's photo
+			return Vector2(-absf(p.x), p.y)
+		"ceiling":     # phone overhead, top toward the windshield: car's left is on the right
+			return Vector2(-p.x, -p.z)
 		_:
 			return Vector2(p.z + mid, p.x)
 
@@ -70,7 +76,7 @@ static func build(mesh: HalfMesh, project: PorterProject, colors: Dictionary, im
 	var any_plain := false
 	for fi in mesh.faces.size():
 		var f: PackedInt32Array = mesh.faces[fi]
-		var reg: String = mesh.regions[fi]
+		var reg: String = HalfMesh.region_outer(mesh.regions[fi])
 		var base := HalfMesh.region_base(reg)
 		if skip_glass and base == "glass":
 			continue                    # drawn separately, see-through
@@ -105,6 +111,59 @@ static func build(mesh: HalfMesh, project: PorterProject, colors: Dictionary, im
 			plain.set_normal(Vector3.UP)
 			plain.add_vertex(Vector3.ZERO)
 		plain.commit(am)
+	var order := []
+	for v in tex:
+		tex[v].commit(am)
+		order.append(v)
+	return [am, order]
+
+## Inside of the hollow shell: faces painted with a colour go in surface 0
+## (vertex colours, rims too), faces painted "photo:door" / "photo:pillar" /
+## "photo:ceiling" take that interior photo. Returns [ArrayMesh, view names
+## for surfaces 1..n].
+static func build_inside(mesh: HalfMesh, project: PorterProject, colors: Dictionary, images: Dictionary, thickness: float = 0.02) -> Array:
+	var pts := mesh.inner_points(thickness)
+	var inner: PackedVector3Array = pts[0]
+	var inner_m: PackedVector3Array = pts[1]
+	var outer_m: PackedVector3Array = pts[2]
+	var rims := mesh.opening_edges()
+	var plain := SurfaceTool.new()
+	plain.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var tex := {}
+	for fi in rims:
+		var f: PackedInt32Array = mesh.faces[fi]
+		var reg := HalfMesh.region_inner(mesh.regions[fi])
+		var ib := reg.get_slice(":", 0)
+		var view := reg.get_slice(":", 1) if reg.contains(":") else ""
+		var col: Color = colors.get(ib, HalfMesh.INNER_REGIONS[ib]["color"])
+		var rf := HalfMesh._reversed(f)
+		if view != "" and images.get(view) != null:
+			if not tex.has(view):
+				var s2 := SurfaceTool.new()
+				s2.begin(Mesh.PRIMITIVE_TRIANGLES)
+				tex[view] = s2
+			var img: Image = images[view]
+			var sz := Vector2(img.get_width(), img.get_height())
+			_emit_textured(tex[view], mesh, rf, inner, project, view, sz)
+			_emit_textured(tex[view], mesh, f, inner_m, project, view, sz)
+			col = HalfMesh.INNER_REGIONS["dark"]["color"]
+		else:
+			plain.set_color(col)
+			mesh._emit_face(plain, rf, inner)
+			mesh._emit_face(plain, f, inner_m)
+		plain.set_color(col)
+		for e in rims[fi]:
+			var a: int = e[0]
+			var b: int = e[1]
+			mesh._emit_face(plain, PackedInt32Array([0, 1, 2, 3]), PackedVector3Array([mesh.verts[b], mesh.verts[a], inner[a], inner[b]]))
+			mesh._emit_face(plain, PackedInt32Array([0, 1, 2, 3]), PackedVector3Array([outer_m[a], outer_m[b], inner_m[b], inner_m[a]]))
+	# keep surface 0 even if empty
+	plain.set_color(Color.BLACK)
+	for i in 3:
+		plain.set_normal(Vector3.UP)
+		plain.add_vertex(Vector3.ZERO)
+	var am := ArrayMesh.new()
+	plain.commit(am)
 	var order := []
 	for v in tex:
 		tex[v].commit(am)

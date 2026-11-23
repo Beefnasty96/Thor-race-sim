@@ -30,18 +30,56 @@ const REGIONS := {
 	"photo":     {"label": "Photo texture", "color": Color(0.5, 0.5, 0.5), "material": "Photo"},
 }
 
-## A face's region may carry a photo source: "photo" (auto) or "photo:side",
-## "photo:front", "photo:rear", "photo:top".
+## Paint for the inside of the hollow shell (door cards, pillars, headliner,
+## floor). "photo:door" / "photo:pillar" / "photo:ceiling" use the interior
+## photos of those names.
+const INNER_REGIONS := {
+	"dark":   {"label": "Dark plastic", "color": Color(0.16, 0.16, 0.17)},
+	"lining": {"label": "Grey cloth",   "color": Color(0.52, 0.52, 0.5)},
+	"tan":    {"label": "Tan",          "color": Color(0.62, 0.52, 0.4)},
+	"carpet": {"label": "Carpet",       "color": Color(0.1, 0.1, 0.11)},
+	"photo":  {"label": "Photo",        "color": Color(0.4, 0.4, 0.42)},
+}
+const INNER_PHOTOS := ["door", "pillar", "ceiling"]
+const INNER_DEFAULT := "dark"
+
+## A face's region string is "outer" or "outer|inner": the paint on the
+## outside and, after "|", on the inside of the shell (default dark plastic).
+## The outer part may carry a photo source: "photo" (auto) or "photo:side",
+## "photo:front", "photo:rear", "photo:top" (or "photo:dash" on the dash).
+static func region_outer(r: String) -> String:
+	return r.get_slice("|", 0)
+
+static func region_inner(r: String) -> String:
+	return r.get_slice("|", 1) if r.contains("|") else INNER_DEFAULT
+
+static func region_join(outer: String, inner: String) -> String:
+	return outer if inner == INNER_DEFAULT else outer + "|" + inner
+
 static func region_base(r: String) -> String:
-	return r.get_slice(":", 0)
+	return region_outer(r).get_slice(":", 0)
+
+static func inner_base(r: String) -> String:
+	return region_inner(r).get_slice(":", 0)
 
 static func region_valid(r: String) -> bool:
-	var b := region_base(r)
+	var o := region_outer(r)
+	var b := o.get_slice(":", 0)
 	if not REGIONS.has(b):
 		return false
-	if b == "photo" and r.contains(":"):
-		return r.get_slice(":", 1) in ["side", "front", "rear", "top", "dash"]
-	return not r.contains(":")
+	if b == "photo" and o.contains(":"):
+		if not (o.get_slice(":", 1) in ["side", "front", "rear", "top", "dash"]):
+			return false
+	elif o.contains(":"):
+		return false
+	if r.contains("|"):
+		var i := region_inner(r)
+		var ib := i.get_slice(":", 0)
+		if not INNER_REGIONS.has(ib):
+			return false
+		if i.contains(":") and (ib != "photo" or not (i.get_slice(":", 1) in INNER_PHOTOS)):
+			return false
+	return true
 
 var _undo: Array = []
 var _redo: Array = []
@@ -73,17 +111,29 @@ func _fix_regions() -> void:
 		regions.resize(faces.size())
 
 func region_of(fi: int) -> String:
-	return regions[fi] if fi < regions.size() else "paint"
+	return region_outer(regions[fi]) if fi < regions.size() else "paint"
 
+func inner_region_of(fi: int) -> String:
+	return region_inner(regions[fi]) if fi < regions.size() else INNER_DEFAULT
+
+## Paint the outside of faces (the inside paint is kept).
 func set_region(face_ids: Array, region: String) -> void:
 	_fix_regions()
 	for fi in face_ids:
-		regions[fi] = region
+		regions[fi] = region_join(region_outer(region), region_inner(regions[fi]))
 
-## Faces connected to `start` (sharing an edge) that have the same region.
-func connected_same_region(start: int) -> Array:
+## Paint the inside of faces (the outside paint is kept).
+func set_inner_region(face_ids: Array, inner: String) -> void:
 	_fix_regions()
-	var want: String = regions[start]
+	for fi in face_ids:
+		regions[fi] = region_join(region_outer(regions[fi]), inner)
+
+## Faces connected to `start` (sharing an edge) that have the same region
+## (outside paint, or inside paint when inside is true).
+func connected_same_region(start: int, inside: bool = false) -> Array:
+	_fix_regions()
+	var key := func(r: String) -> String: return region_inner(r) if inside else region_outer(r)
+	var want: String = key.call(regions[start])
 	var by_edge := {}
 	for fi in faces.size():
 		var f: PackedInt32Array = faces[fi]
@@ -99,7 +149,7 @@ func connected_same_region(start: int) -> Array:
 		var f: PackedInt32Array = faces[fi]
 		for k in f.size():
 			for g in by_edge[edge_key(f[k], f[(k + 1) % f.size()])]:
-				if not seen.has(g) and regions[g] == want:
+				if not seen.has(g) and key.call(regions[g]) == want:
 					seen[g] = true
 					stack.append(g)
 	return seen.keys()
@@ -241,7 +291,9 @@ func build_glass() -> ArrayMesh:
 ## inward and turned to face the cabin, plus rims around window openings
 ## (glass or deleted faces) so the panels have visible thickness from the
 ## driver's seat. Generated from the body, so it follows every edit.
-func build_interior(thickness: float = 0.02, color: Color = Color(0.16, 0.16, 0.17)) -> ArrayMesh:
+## The inside surface's points: [inner, inner mirrored, outer mirrored],
+## `thickness` inside the panels along the vertex normals.
+func inner_points(thickness: float = 0.02) -> Array:
 	_fix_regions()
 	# vertex normals from the panels around each point
 	var vn := []
@@ -267,7 +319,50 @@ func build_interior(thickness: float = 0.02, color: Color = Color(0.16, 0.16, 0.
 	var inner_m := PackedVector3Array()
 	for q in inner:
 		inner_m.append(Vector3(-q.x, q.y, q.z))
-	var outer_m := _mirrored_verts()
+	return [inner, inner_m, _mirrored_verts()]
+
+## Edges along an opening (a glass face or no face), per solid face:
+## fi -> [[a, b], ...] needing a rim joining the outside to the inside
+## (centerline seams excluded).
+func opening_edges() -> Dictionary:
+	var out := {}
+	var solid_use := _solid_edge_use()
+	var all_use := edge_use()
+	for fi in faces.size():
+		if region_base(regions[fi]) == "glass":
+			continue
+		var f: PackedInt32Array = faces[fi]
+		var list := []
+		for k in f.size():
+			var a := f[k]
+			var b := f[(k + 1) % f.size()]
+			var e := edge_key(a, b)
+			if solid_use.get(e, 0) != 1:
+				continue
+			if is_center(a) and is_center(b) and all_use.get(e, 0) == 1:
+				continue
+			list.append([a, b])
+		out[fi] = list
+	return out
+
+func _solid_edge_use() -> Dictionary:
+	var solid_use := {}
+	for fi in faces.size():
+		if region_base(regions[fi]) == "glass":
+			continue
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var e := edge_key(f[k], f[(k + 1) % f.size()])
+			solid_use[e] = solid_use.get(e, 0) + 1
+	return solid_use
+
+## Plain-coloured inside of the shell (one colour per face from its inside
+## paint; photo faces show grey here, PhotoTexturer.build_inside textures them).
+func build_interior(thickness: float = 0.02, colors: Dictionary = {}) -> ArrayMesh:
+	var pts := inner_points(thickness)
+	var inner: PackedVector3Array = pts[0]
+	var inner_m: PackedVector3Array = pts[1]
+	var outer_m: PackedVector3Array = pts[2]
 	# which edges border an opening (a glass face or no face at all)
 	var solid_use := {}
 	var all_use := edge_use()
@@ -280,11 +375,12 @@ func build_interior(thickness: float = 0.02, color: Color = Color(0.16, 0.16, 0.
 			solid_use[e] = solid_use.get(e, 0) + 1
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	st.set_color(color)
 	for fi in faces.size():
 		if region_base(regions[fi]) == "glass":
 			continue
 		var f: PackedInt32Array = faces[fi]
+		var ib := inner_base(regions[fi])
+		st.set_color(colors.get(ib, INNER_REGIONS[ib]["color"]))
 		# inside panel faces the cabin: reversed winding
 		_emit_face(st, _reversed(f), inner)
 		_emit_face(st, f, inner_m)

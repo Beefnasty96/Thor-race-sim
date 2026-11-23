@@ -214,7 +214,7 @@ func rebuild_body() -> void:
 	ghost_mi.mesh = ghost.build_mesh({}, true) if ghost else null
 	refresh_cabin()
 	glass_mi.mesh = mesh.build_glass() if show_paint else null
-	interior_mi.mesh = mesh.build_interior() if (show_paint and show_interior) else null
+	_build_inside()
 	if not show_paint:
 		body.material_override = body_mat
 		body.mesh = mesh.build_mesh(paint_colors, true)
@@ -236,6 +236,36 @@ func rebuild_body() -> void:
 	overlay.queue_redraw()
 
 # ---------------------------------------------------------------- cabin
+
+var _inside_mat: StandardMaterial3D
+
+## Inside of the shell: painted colours plus the door / pillar / ceiling photos.
+func _build_inside() -> void:
+	if not (show_paint and show_interior):
+		interior_mi.mesh = null
+		return
+	var images := {}
+	for v in HalfMesh.INNER_PHOTOS:
+		images[v] = _photo(v)["img"]
+	var built := PhotoTexturer.build_inside(mesh, project, {}, images)
+	var am: ArrayMesh = built[0]
+	if _inside_mat == null:
+		_inside_mat = StandardMaterial3D.new()
+		_inside_mat.vertex_color_use_as_albedo = true
+		_inside_mat.roughness = 0.9
+	interior_mi.material_override = null
+	am.surface_set_material(0, _inside_mat)
+	var order: Array = built[1]
+	for i in order.size():
+		var m: StandardMaterial3D = (_photo(order[i])["mat"] as StandardMaterial3D).duplicate()
+		m.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+		m.albedo_color = Color.WHITE
+		am.surface_set_material(i + 1, m)
+	interior_mi.mesh = am
+
+## Forget cached photos (after a photo was replaced).
+func photo_changed(view_name: String) -> void:
+	_photos.erase(view_name)
 
 var _steer_tex_cache: Texture2D
 var _steer_tex_dirty := true

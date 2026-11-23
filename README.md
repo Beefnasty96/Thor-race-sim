@@ -190,6 +190,14 @@ later under the dimensions panel (*Apply tires*).
   Fit the orange circle to the rim, then *Draw a hole* around each gap
   between the spokes; the holes are cut right through (walls on every cut
   edge). Diameter, rim thickness, tilt and position are adjustable.
+- *Inside panels*: the inside of the hollow shell can be painted per panel
+  (grey cloth, dark plastic, tan, carpet) or take the door / A-pillar /
+  ceiling photos. Pick a choice and tap panels from the driver's seat (Fill
+  connected for areas), or *Auto*: ceiling, doors, the panels beside the
+  windshield and a carpet floor in one tap. Each photo has a fit view (drag /
+  pinch onto the blue outline, Flip, Rotate 90°). Both doors and both pillars
+  share their photo. The inside paint rides along in each face's region as
+  `outer|inner` (e.g. `paint|photo:door`), so cuts and extrudes keep it.
 - Saved as `dash.json`, `steering_wheel.png` and `interior` in project.json;
   `PorterProject.interior_model_info()` is what export writes into the
   game's `model_info.json` (driver_eye, steering_wheel_pivot,
