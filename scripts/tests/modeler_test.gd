@@ -370,6 +370,69 @@ func _initialize() -> void:
 	_check(dr.cut_wheel_arch(fz, r_t, r_t * 1.12 + 0.02) != "", "auto arch won't cut over an arch that's already there")
 	_check(dr.cut_wheel_arch(wb2, r_t, r_t * 1.12 + 0.02) == "", "auto arch still cuts the other wheel")
 
+	# windows cut into the geometry
+	var wv := HalfMesh.from_template("suv", d)
+	for pf in wv.faces.size():
+		if wv.regions[pf] == "glass":
+			wv.regions[pf] = "photo"          # like a fully photo-textured body
+	var glass_before := wv.regions.count("glass")
+	var L2: float = d["length_m"]
+	var H2: float = d["height_m"]
+	var mid2: float = d["front_overhang_m"] + d["wheelbase_m"] * 0.5
+	# a side window inside one panel (z from 0.45 L to 0.62 L, between belt and roof)
+	var zf := 0.45 * L2 - mid2
+	var zr := 0.62 * L2 - mid2
+	var side_win := PackedVector2Array([Vector2(zf, H2 * 0.62), Vector2(zr, H2 * 0.62), Vector2(zr, H2 * 0.9), Vector2(zf, H2 * 0.9)])
+	var area_before := 0.0
+	for pf in wv.faces.size():
+		if wv.face_normal(wv.faces[pf]).x < -0.15:
+			var poly := PackedVector2Array()
+			for i in wv.faces[pf]:
+				poly.append(HalfMesh.view_to2d("side", wv.verts[i]))
+			area_before += absf(HalfMesh._signed_area(poly))
+	_check(wv.cut_window("side", side_win) == "", "a side window cuts")
+	_check(_closed_and_consistent(wv), "body stays closed after cutting a window (no cracks)")
+	_check(wv.regions.count("glass") > glass_before, "the window piece becomes glass")
+	var glass_area := 0.0
+	var area_after := 0.0
+	for pf in wv.faces.size():
+		if wv.face_normal(wv.faces[pf]).x < -0.15:
+			var poly2 := PackedVector2Array()
+			for i in wv.faces[pf]:
+				poly2.append(HalfMesh.view_to2d("side", wv.verts[i]))
+			var ar2 := absf(HalfMesh._signed_area(poly2))
+			area_after += ar2
+			if wv.regions[pf] == "glass":
+				glass_area += ar2
+	_check(absf(area_after - area_before) < 0.002, "panels keep their total area (%.3f vs %.3f m2)" % [area_after, area_before])
+	_check(absf(glass_area - absf(HalfMesh._signed_area(side_win))) < 0.002, "glass is exactly the drawn window (%.3f m2)" % glass_area)
+	# a second window in the same area, overlapping two cut panels
+	var side_win2 := PackedVector2Array([Vector2(zr + 0.08, H2 * 0.62), Vector2(zr + 0.7, H2 * 0.62), Vector2(zr + 0.7, H2 * 0.9), Vector2(zr + 0.08, H2 * 0.9)])
+	_check(wv.cut_window("side", side_win2) == "", "a second window next to it cuts")
+	_check(_closed_and_consistent(wv), "still closed after two windows")
+	# windshield across the centerline, drawn in the front view
+	var ws_y0 := H2 * 0.68
+	var ws_y1 := H2 * 0.93
+	var hw2: float = d["width_m"] * 0.5
+	var shield := PackedVector2Array([Vector2(-hw2 * 0.8, ws_y0), Vector2(hw2 * 0.8, ws_y0), Vector2(hw2 * 0.7, ws_y1), Vector2(-hw2 * 0.7, ws_y1)])
+	var g_before := wv.regions.count("glass")
+	_check(wv.cut_window("front", shield) == "", "a windshield across the centerline cuts")
+	_check(wv.regions.count("glass") > g_before and _closed_and_consistent(wv), "windshield glass added, body closed")
+	_check(_all_left(wv), "cut points stay on the left half (the mirror makes the right)")
+	_check(wv.cut_window("side", PackedVector2Array([Vector2(50, 50), Vector2(51, 50), Vector2(51, 51)])) != "", "an outline away from the body is refused")
+	# hollow shell
+	var inner := wv.build_interior(0.02)
+	_check(inner != null and inner.get_surface_count() == 1, "hollow interior builds")
+	var solid_tris := 0
+	for pf in wv.faces.size():
+		if wv.regions[pf] != "glass":
+			solid_tris += wv.triangulate(wv.faces[pf]).size()
+	_check(inner.surface_get_array_len(0) > solid_tris * 2 * 3, "interior has every panel plus rims around the window openings")
+	var gm3 := wv.build_glass()
+	_check(gm3 != null and gm3.get_surface_count() == 1, "glass builds as its own see-through mesh")
+	var plain_tris := wv.build_mesh({}, false, true).surface_get_array_len(0) / 3
+	_check(plain_tris == (wv.triangle_count() - gm3.surface_get_array_len(0) / 3), "body without glass + glass = whole body")
+
 	# wheel model + picture
 	var wm2 := WheelBuilder.build(0.387, 0.245, 16)
 	_check(wm2.get_surface_count() == 2, "wheel model has a picture surface and a rubber surface")

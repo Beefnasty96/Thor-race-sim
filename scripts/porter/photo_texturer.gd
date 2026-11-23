@@ -54,7 +54,7 @@ static func choose_view(region: String, normal: Vector3, available: Dictionary) 
 ## Full mirrored body: colored faces in surface 0 (vertex colors), then one
 ## textured surface per photo used. Returns [ArrayMesh, Array of view names
 ## for surfaces 1..n].
-static func build(mesh: HalfMesh, project: PorterProject, colors: Dictionary, images: Dictionary) -> Array:
+static func build(mesh: HalfMesh, project: PorterProject, colors: Dictionary, images: Dictionary, skip_glass: bool = true) -> Array:
 	mesh._fix_regions()
 	var available := {}
 	for v in images:
@@ -71,6 +71,8 @@ static func build(mesh: HalfMesh, project: PorterProject, colors: Dictionary, im
 		var f: PackedInt32Array = mesh.faces[fi]
 		var reg: String = mesh.regions[fi]
 		var base := HalfMesh.region_base(reg)
+		if skip_glass and base == "glass":
+			continue                    # drawn separately, see-through
 		var rf := PackedInt32Array()
 		for k in range(f.size() - 1, -1, -1):
 			rf.append(f[k])
