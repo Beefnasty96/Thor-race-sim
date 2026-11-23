@@ -328,10 +328,17 @@ func _process(delta: float) -> void:
 			print("INTERIOR TEST: gauges %d (on dash %s), holes %d, msg: %s" % [gs.size(), str(gs.map(func(g): return g["on_dash"])), pj.steering()["holes"].size(), mdi2.hint.text])
 		28:
 			_shot("porter_22_driver_seat")
+			app.modeler._hide_wheel(true)
 			var sc: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc.scroll_vertical = int(app.modeler.dash_view.position.y) - 40
 		29:
 			_shot("porter_23_dash_photo_gauges")
+			var has_wheel := false
+			for c in app.modeler.view.cabin.get_children():
+				if c.name == "SteeringWheel" and not c.is_queued_for_deletion():
+					has_wheel = true
+			print("WHEEL TOGGLE: wheel shown while hidden = %s" % str(has_wheel))
+			app.modeler._hide_wheel(false)
 			var sc2: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc2.scroll_vertical = int(app.modeler.steer_view.position.y) - 60
 		30:

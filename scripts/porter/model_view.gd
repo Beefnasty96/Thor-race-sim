@@ -37,6 +37,7 @@ var ghost: HalfMesh                   # body shown see-through while the dash is
 var ghost_mi: MeshInstance3D
 var cabin: Node3D                     # dash + steering wheel + gauges
 var show_cabin := true
+var show_steering := true             # hide the wheel to see / place gauges behind it
 var demo_reading := 0.35              # needle position for the gauge preview (0..1)
 var paint_colors := {}                # region -> Color used for display (body paint etc.)
 var show_paint := false               # colour faces by region (Paint mode)
@@ -276,6 +277,8 @@ func refresh_cabin() -> void:
 	for g in project.interior.get("gauges", []):
 		cabin.add_child(_gauge_node(g))
 	# steering wheel + column
+	if not show_steering:
+		return
 	var s := project.steering()
 	if _steer_tex_dirty:
 		_steer_tex_dirty = false

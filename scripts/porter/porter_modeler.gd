@@ -57,6 +57,7 @@ var hole_btn: Button
 var hole_row: Control
 var seat_btn: Button
 var dash_seat_btn: Button             # edit the dash from the driver's seat
+var wheel_btns: Array = []            # "Hide steering wheel" toggles (kept in sync)
 var depth_row: Control                # closer / farther (driver's-seat editing)
 var steer_labels := {}
 
@@ -185,6 +186,7 @@ func _build_panel() -> Control:
 	dash_bar.add_child(db_tip)
 	dash_seat_btn = _grow(PorterUI.toggle("Edit from the driver's seat", true, func(on): _driver_view(on)))
 	dash_bar.add_child(dash_seat_btn)
+	dash_bar.add_child(_wheel_toggle())
 	dash_bar.add_child(_grow(PorterUI.button("Done editing the dash ▶ Interior", _end_edit_dash)))
 	dash_bar.visible = false
 	v.add_child(dash_bar)
@@ -1058,6 +1060,7 @@ func _build_interior_panel() -> Control:
 		gauge_btns[k] = _grow(PorterUI.toggle(InteriorBuilder.GAUGE_TYPES[k]["label"], false, func(on): _pick_gauge_type(k, on)))
 		gg.add_child(gauge_btns[k])
 	v.add_child(gg)
+	v.add_child(_wheel_toggle())
 	gauge_info = UIKit.label("", 20, UIKit.DIM)
 	gauge_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(gauge_info)
@@ -1110,6 +1113,18 @@ func _build_interior_panel() -> Control:
 	_stepper(v, "s_z", "Toward driver / dash", func(): _steer_move(Vector3(0, 0, 0.01)), func(): _steer_move(Vector3(0, 0, -0.01)))
 	_tip(v, "The steering wheel is a round template with your photo on it. Fit the orange circle to the rim, then draw around each gap between the spokes: those holes are cut right through, so you see the gauges through them from the driver's seat. In the game it turns with the car's real steering lock.")
 	return panel
+
+func _wheel_toggle() -> Button:
+	var b := _grow(PorterUI.toggle("Hide steering wheel", not view.show_steering if view else false, func(on): _hide_wheel(on)))
+	wheel_btns.append(b)
+	return b
+
+func _hide_wheel(on: bool) -> void:
+	view.show_steering = not on
+	for b in wheel_btns:
+		b.set_pressed_no_signal(on)
+	view.refresh_cabin()
+	_say("Steering wheel hidden: the whole dash is visible for placing gauges. Turn it back on to check the view through the wheel." if on else "Steering wheel shown.")
 
 func _open_interior() -> void:
 	dash_view.setup(project, dash_mesh)

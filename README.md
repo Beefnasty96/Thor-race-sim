@@ -183,7 +183,8 @@ later under the dimensions panel (*Apply tires*).
   the photo, the rest are black trim. Each half samples its own side of the
   photo, so the gauge cluster stays on the driver's side.
 - *Gauges*: pick Speedo / Tach / Fuel / Temp / Oil / Volts and tap on the dash
-  photo; size them and set full scale (mph, rpm). They land on the dash face
+  photo; size them and set full scale (mph, rpm). *Hide steering wheel*
+  clears the view of the whole dash (also in the dash-editing banner). They land on the dash face
   and get live needles in the game.
 - *Steering wheel*: a round template with the steering-wheel photo on it.
   Fit the orange circle to the rim, then *Draw a hole* around each gap
