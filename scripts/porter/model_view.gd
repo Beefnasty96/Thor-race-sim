@@ -29,6 +29,7 @@ var window_pts: Array = []            # 2D points (view axes) of a window outlin
 signal window_point_added
 var show_interior := true             # hollow shell inside (paint/wheels modes)
 var driver_view := false              # 3D camera in the driver's seat
+var driver_fov := 75.0                # pinch zooms the driver's-seat view
 var glass_mi: MeshInstance3D
 var interior_mi: MeshInstance3D
 var dash: HalfMesh                    # interior dashboard (shown inside the body)
@@ -289,6 +290,9 @@ func refresh_cabin() -> void:
 		wm.albedo_texture = _steer_tex_cache
 	else:
 		wm.albedo_color = Color(0.12, 0.12, 0.13)
+	if editing_dash:
+		wm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA     # see the dash through it
+		wm.albedo_color.a = 0.3
 	wheel.material_override = wm
 	var c := project.steering_center()
 	wheel.transform = InteriorBuilder.steering_transform(c, s["tilt_deg"])
@@ -480,11 +484,13 @@ func _update_cam() -> void:
 	if view == "3d" and driver_view:
 		# left-hand drive: driver's eye behind the windshield, left of center
 		cam.projection = Camera3D.PROJECTION_PERSPECTIVE
-		cam.fov = 75.0
+		cam.fov = driver_fov
 		cam.near = 0.02
 		cam.position = project.driver_eye()
+		ghost_mi.visible = false          # the body ghost would wash over the cabin
 		cam.basis = Basis.from_euler(Vector3(pitch * 0.5 - deg_to_rad(5.0), yaw + deg_to_rad(140.0), 0))
 		return
+	ghost_mi.visible = true
 	if view == "3d":
 		cam.projection = Camera3D.PROJECTION_PERSPECTIVE
 		cam.fov = 40.0
@@ -512,6 +518,16 @@ func _update_cam() -> void:
 
 ## World metres per screen pixel in the view plane.
 func _m_per_px() -> float:
+	if view == "3d" and driver_view:
+		# at the depth of what's being moved (the selection), else ~80 cm away
+		var depth := 0.8
+		var ids := selected_vert_ids()
+		if not ids.is_empty():
+			var c := Vector3.ZERO
+			for i in ids:
+				c += mesh.verts[i]
+			depth = maxf(_depth(c / ids.size()), 0.1)
+		return 2.0 * depth * tan(deg_to_rad(cam.fov) * 0.5) / maxf(size.y, 1.0)
 	if view == "3d":
 		var dd := cam.position.distance_to(_target())
 		return 2.0 * dd * tan(deg_to_rad(cam.fov) * 0.5) / maxf(size.y, 1.0)
@@ -709,7 +725,7 @@ func _gui_input(e: InputEvent) -> void:
 			zoom(1.12)
 
 func _begin() -> void:
-	_g = {"t": _touches.duplicate(), "pan": pan, "yaw": yaw, "pitch": pitch,
+	_g = {"t": _touches.duplicate(), "pan": pan, "yaw": yaw, "pitch": pitch, "fov": driver_fov,
 		"size": ortho_size, "dist": dist}
 
 func _on_tap(s: Vector2) -> void:
@@ -774,7 +790,11 @@ func _on_drag() -> void:
 		_moved = true
 		var k2: float = (st[keys[1]] - st[keys[0]]).length() / maxf((_touches[keys[1]] - _touches[keys[0]]).length(), 1.0)
 		_user_zoomed = true
-		if view == "3d":
+		if view == "3d" and driver_view:
+			if not _g.has("fov"):
+				_g["fov"] = driver_fov
+			driver_fov = clampf(float(_g["fov"]) * k2, 30.0, 100.0)
+		elif view == "3d":
 			dist = clampf(_g["dist"] * k2, 1.5, 40.0)
 		else:
 			ortho_size = clampf(_g["size"] * k2, 0.3, 30.0)
@@ -788,7 +808,9 @@ func _end_move() -> void:
 
 func zoom(k: float) -> void:
 	_user_zoomed = true
-	if view == "3d":
+	if view == "3d" and driver_view:
+		driver_fov = clampf(driver_fov * k, 30.0, 100.0)
+	elif view == "3d":
 		dist = clampf(dist * k, 1.5, 40.0)
 	else:
 		ortho_size = clampf(ortho_size * k, 0.3, 30.0)
@@ -806,10 +828,25 @@ func nudge(dir: Vector2, metres: float) -> void:
 	rebuild_body()
 	mesh_edited.emit(true)
 
+## Move the selection toward (+) or away from (-) the camera, in metres.
+func nudge_depth(metres: float) -> void:
+	var ids := selected_vert_ids()
+	if ids.is_empty():
+		return
+	mesh.push_undo()
+	mesh.move_verts(ids, cam.global_transform.basis.z * metres)
+	rebuild_body()
+	mesh_edited.emit(true)
+
 # ---------------------------------------------------------------- overlay
 
+## Editing the dash from the driver's seat: points and faces are shown and
+## can be picked and dragged in the first-person camera.
+func cabin_editing() -> bool:
+	return driver_view and view == "3d" and ghost != null
+
 func _draw_overlay() -> void:
-	if mesh == null or (driver_view and view == "3d"):
+	if mesh == null or (driver_view and view == "3d" and ghost == null):
 		return
 	var o := overlay
 	# selected faces

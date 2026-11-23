@@ -339,6 +339,30 @@ func _process(delta: float) -> void:
 			app.modeler._start_edit_dash()
 		31:
 			_shot("porter_25_edit_dash")
+			# from the driver's seat: tap the top-rear corner of the dash at the door, drag it up
+			var mde: PorterModeler = app.modeler
+			var mv: ModelView = mde.view
+			var best := -1
+			var best_d := INF
+			for i in mv.mesh.verts.size():
+				var q := mv.mesh.verts[i]
+				var score := absf(q.x + 0.45) + absf(q.y - 1.05) * 2.0 + absf(q.z + 0.98)
+				if score < best_d:
+					best_d = score
+					best = i
+			var before := mv.mesh.verts[best]
+			var sp := mv.project_point(before)
+			_tap(mv, sp)
+			var tch := InputEventScreenTouch.new(); tch.index = 0; tch.position = sp; tch.pressed = true
+			mv._gui_input(tch)
+			for k in 6:
+				var dr := InputEventScreenDrag.new(); dr.index = 0; dr.position = sp + Vector2(0, -12.0 * (k + 1))
+				mv._gui_input(dr)
+			var up := InputEventScreenTouch.new(); up.index = 0; up.position = sp + Vector2(0, -72); up.pressed = false
+			mv._gui_input(up)
+			print("SEAT EDIT: cabin editing %s, selected %d, moved %.3f m up, %.3f m sideways" % [str(mv.cabin_editing()), mv.sel_verts.size(), mv.mesh.verts[best].y - before.y, absf(mv.mesh.verts[best].x - before.x)])
+		32:
+			_shot("porter_25b_edit_dash_seat_moved")
 			app.modeler._end_edit_dash()
 			app.modeler._set_mode("shape", true)
 			var p2: PorterProject = app.project
@@ -346,24 +370,24 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p2.dir() + f)
 			DirAccess.remove_absolute(p2.dir())
 			app.show_finder()
-		32:
+		33:
 			var fd: CarFinder = app.screen.get_child(0)
 			fd._pick_year(1999)
 			fd._pick_make("Chevrolet")
 			fd.search.text = "tahoe 4dr"
 			fd._fill_models()
-		33:
+		34:
 			var fd2: CarFinder = app.screen.get_child(0)
 			var r: Dictionary = VehicleDB.models(1999, "Chevrolet", "tahoe k1500 4dr")[0]
 			fd2._pick_model(r)
 			fd2.tire_form.front_size.text = "P245/75R16"
 			fd2.tire_form.front_psi.text = "35"
 			fd2.tire_form._update()
-		34:
+		35:
 			_shot("porter_18_car_finder")
 			var fd3: CarFinder = app.screen.get_child(0)
 			fd3.create_btn.pressed.emit()
-		35:
+		36:
 			_shot("porter_19_from_database")
 			print("DB PROJECT: %s  L %.3f  WB %.3f  overhang %.3f  tires %s/%s @ %d psi, radius %.3f" % [app.project.name, app.project.dims["length_m"], app.project.dims["wheelbase_m"], app.project.dims["front_overhang_m"], app.project.tires["front"], app.project.tires["rear"], app.project.tires["front_psi"], app.project.dims["tire_radius_m"]])
 			var p3: PorterProject = app.project
@@ -371,14 +395,14 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p3.dir() + f)
 			DirAccess.remove_absolute(p3.dir())
 			app.show_tire_step("My new car", {}, func(_p): pass)
-		36:
+		37:
 			_shot("porter_20_tire_step_empty")
 			var form: TireForm = app.screen.find_children("*", "TireForm", true, false)[0]
 			form.front_size.text = "245/40ZR18"
 			form.rear_size.text = "285/35zr18"
 			form.front_psi.text = "36"
 			form._update()
-		37:
+		38:
 			_shot("porter_21_tire_step_staggered")
 			get_tree().quit()
 	step += 1

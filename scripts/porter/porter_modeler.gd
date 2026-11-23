@@ -56,6 +56,8 @@ var gauge_info: Label
 var hole_btn: Button
 var hole_row: Control
 var seat_btn: Button
+var dash_seat_btn: Button             # edit the dash from the driver's seat
+var depth_row: Control                # closer / farther (driver's-seat editing)
 var steer_labels := {}
 
 func setup(p: PorterProject) -> void:
@@ -178,9 +180,11 @@ func _build_panel() -> Control:
 
 	dash_bar = VBoxContainer.new()
 	dash_bar.add_child(UIKit.label("EDITING THE DASHBOARD", 24, UIKit.WARN))
-	var db_tip := UIKit.label("All the point tools work on the dash now (it mirrors like the body). The body is the faint ghost around it.", 20, UIKit.DIM)
+	var db_tip := UIKit.label("All the point tools work on the dash now (it mirrors like the body). In Side / Front / Top the body shows as a faint ghost around it.", 20, UIKit.DIM)
 	db_tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dash_bar.add_child(db_tip)
+	dash_seat_btn = _grow(PorterUI.toggle("Edit from the driver's seat", true, func(on): _driver_view(on)))
+	dash_bar.add_child(dash_seat_btn)
 	dash_bar.add_child(_grow(PorterUI.button("Done editing the dash ▶ Interior", _end_edit_dash)))
 	dash_bar.visible = false
 	v.add_child(dash_bar)
@@ -256,6 +260,11 @@ func _build_panel() -> Control:
 		step_btn.text = "1 mm" if step_m < 0.005 else "1 cm")
 	g.add_child(step_btn)
 	v.add_child(g)
+	depth_row = HBoxContainer.new()
+	depth_row.add_child(_grow(PorterUI.button("Closer to me", func(): view.nudge_depth(step_m))))
+	depth_row.add_child(_grow(PorterUI.button("Farther away", func(): view.nudge_depth(-step_m))))
+	depth_row.visible = false
+	v.add_child(depth_row)
 
 	v.add_child(UIKit.label("DISPLAY", 24, UIKit.ACCENT))
 	var r6 := HBoxContainer.new()
@@ -279,8 +288,14 @@ func _grow(c: Control) -> Control:
 func _select_view(v: String) -> void:
 	if v != "side":
 		_end_draw_arch()
-	if v != "3d" and driver_btn and driver_btn.button_pressed:
+	if v != "3d" and view.driver_view:
 		driver_btn.set_pressed_no_signal(false)
+		if seat_btn:
+			seat_btn.set_pressed_no_signal(false)
+		if dash_seat_btn:
+			dash_seat_btn.set_pressed_no_signal(false)
+		if depth_row:
+			depth_row.visible = false
 		view.driver_view = false
 	view.set_view(v)
 	for k in tabs:
@@ -928,16 +943,28 @@ func _driver_view(on: bool) -> void:
 	driver_btn.set_pressed_no_signal(on)
 	if seat_btn:
 		seat_btn.set_pressed_no_signal(on)
+	if dash_seat_btn:
+		dash_seat_btn.set_pressed_no_signal(on)
 	view.driver_view = on
+	if depth_row:
+		depth_row.visible = on and editing_dash
 	if on:
 		if window_btn.button_pressed:
 			_toggle_cut_window(false)
 		view.yaw = deg_to_rad(-140.0)
 		view.pitch = 0.0
 		_select_view("3d")
-		_say("Driver's seat: drag to look around. This is roughly what the first-person view will see.")
+		if editing_dash:
+			view.pitch = deg_to_rad(-12.0)      # look down at the dash a little
+			view._update_cam()
+			_say("Editing the dash from the driver's seat: tap points (or faces) to select, drag them to move. Drag empty space to look around, pinch to zoom. “Closer to me / Farther away” push points toward you or away. Side / Front views still work too.")
+		else:
+			_say("Driver's seat: drag to look around. This is roughly what the first-person view will see.")
 	else:
 		view._update_cam()
+		if editing_dash:
+			_select_view("side")
+			_say("Editing the dashboard. Side view: drag points to match the dash profile; Front view for its width. “Start over from a template…” offers dash shapes now.")
 	view.overlay.queue_redraw()
 
 # ---------------------------------------------------------------- interior
@@ -1156,7 +1183,6 @@ func _new_dash(key: String) -> void:
 func _start_edit_dash() -> void:
 	if dash_mesh == null:
 		_new_dash("truck")
-	_driver_view(false)
 	_save_mesh()
 	body_mesh = mesh
 	mesh = dash_mesh
@@ -1165,8 +1191,7 @@ func _start_edit_dash() -> void:
 	view.mesh = dash_mesh
 	dash_bar.visible = true
 	_set_mode("shape", true)
-	_select_view("side")
-	_say("Editing the dashboard. Side view: drag points to match the dash profile; Front view for its width. “Start over from a template…” offers dash shapes now.")
+	_driver_view(true)
 
 func _end_edit_dash(to_interior: bool = true) -> void:
 	if not editing_dash:
@@ -1181,6 +1206,7 @@ func _end_edit_dash(to_interior: bool = true) -> void:
 	view.dash = dash_mesh
 	view.clear_selection()
 	dash_bar.visible = false
+	depth_row.visible = false
 	# gauges re-seat on the reshaped dash
 	for g in project.interior.get("gauges", []):
 		var z := InteriorBuilder.dash_z_at(dash_mesh, g["x"], g["y"])

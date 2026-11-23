@@ -175,8 +175,10 @@ later under the dimensions panel (*Apply tires*).
   side-to-side.
 - *Dashboard*: start from a template (90s truck, curved, sports cockpit),
   sized to the cab in front of the seat, then *Edit the dash shape*: every
-  Shape tool works on it (it mirrors like the body; the body shows as a
-  ghost). Load a dash photo taken from the driver's seat, drag / pinch it
+  Shape tool works on it (it mirrors like the body). Editing opens in the
+  driver's seat: tap points or faces, drag to move them, drag empty space to
+  look around, pinch to zoom, *Closer to me / Farther away* for depth. Side /
+  Front / Top still work, with the body as a ghost. Load a dash photo taken from the driver's seat, drag / pinch it
   until the blue outline sits on the dash; faces looking at the driver take
   the photo, the rest are black trim. Each half samples its own side of the
   photo, so the gauge cluster stays on the driver's side.
