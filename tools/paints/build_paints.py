@@ -44,9 +44,19 @@ KNOWN = {  # name (lower) -> rgb, for well-known factory colors
     "competition orange": (0.92, 0.4, 0.05), "triple yellow pearl": (0.96, 0.82, 0.1),
     "inferno orange metallic": (0.85, 0.35, 0.05), "voodoo blue": (0.1, 0.3, 0.6),
     "lead foot gray": (0.35, 0.36, 0.37), "abyss gray": (0.25, 0.27, 0.3),
+    "iridescent pearl tricoat": (0.92, 0.91, 0.88), "rapid blue": (0.0, 0.42, 0.78), "accelerate yellow": (0.95, 0.85, 0.05),
+    "sebring orange tintcoat": (0.85, 0.35, 0.05), "elkhart lake blue metallic": (0.08, 0.2, 0.45),
+    "zeus bronze metallic": (0.4, 0.3, 0.2), "long beach red metallic tintcoat": (0.45, 0.04, 0.08),
+    "ceramic matrix gray metallic": (0.55, 0.57, 0.58), "shock": (0.85, 0.95, 0.1),
+    "red hot": (0.78, 0.06, 0.06), "riverside blue metallic": (0.1, 0.3, 0.6),
+    "northsky blue metallic": (0.12, 0.2, 0.35), "cajun red tintcoat": (0.5, 0.06, 0.08),
+    "rally green metallic": (0.12, 0.3, 0.2), "kinetic blue metallic": (0.1, 0.35, 0.65),
+    "pepperdust metallic": (0.45, 0.4, 0.36), "oakwood metallic": (0.4, 0.33, 0.27),
     "yellow": (0.95, 0.8, 0.1), "white": (0.93, 0.93, 0.92), "black": (0.035, 0.035, 0.04),
 }
 BASES = [  # first match wins (longest / most specific first)
+    ("havana", (0.3, 0.2, 0.13)), ("graywood", (0.4, 0.38, 0.35)), ("auburn", (0.45, 0.15, 0.1)),
+    ("ash", (0.3, 0.31, 0.32)), ("dune", (0.7, 0.62, 0.48)), ("siren", (0.62, 0.07, 0.07)), ("velvet", (0.1, 0.12, 0.3)),
     ("steel", (0.46, 0.48, 0.5)), ("aluminum", (0.7, 0.71, 0.72)), ("titanium", (0.55, 0.55, 0.53)),
     ("granite", (0.24, 0.25, 0.27)), ("magnetic", (0.3, 0.31, 0.33)), ("glacier", (0.92, 0.93, 0.93)),
     ("champagne", (0.75, 0.68, 0.55)), ("desert", (0.68, 0.6, 0.47)), ("fawn", (0.62, 0.53, 0.4)),
@@ -142,6 +152,15 @@ def main():
             e["models"] |= {m.strip() for m in models.split(",") if m.strip()}
             if src not in e["sources"]:
                 e["sources"].append(src)
+    # A line with no code (e.g. from a press release) joins the coded entry of
+    # the same make and name when there is exactly one.
+    for key in [k for k in paints if k[2] == ""]:
+        coded = [k for k in paints if k[0] == key[0] and k[1] == key[1] and k[2]]
+        if len(coded) == 1:
+            e, t = paints.pop(key), paints[coded[0]]
+            t["years"] |= e["years"]
+            t["models"] |= e["models"]
+            t["sources"] += [x for x in e["sources"] if x not in t["sources"]]
     by_make = {}
     for (make, _, _), e in paints.items():
         fin = finish_of(e["name"])

@@ -29,6 +29,9 @@ for the 1990s–2000s, then 2015+ for all major makes.
 - Batch 3: more model years (2005 Tahoe, 2010 Camaro, 2015 Mustang, 1994 and
   2006 Civic, 2008 Lancer) and 2015+ trucks and SUVs (F-Series, Ram, Tacoma,
   4Runner, Frontier, CR-V, Outback, Camry, WRX). Database total: 460 colors.
-- 2019+ GM model pages on the source site list GM's internal paint names and
-  colors pooled from other models, so they're left out until a GM source
-  (order guide or press release) can be checked.
+- 2019+ GM model pages on the touch-up site list GM's internal paint names and
+  colors pooled from other models, so they are not used.
+- Batch 4: Chevrolet 2019–2022 (Corvette C8, Camaro, Silverado, Tahoe /
+  Suburban, Colorado) from Chevrolet press releases and GM Authority color
+  guides, with GM RPO / touch-up codes where the source gives them. Lines
+  without a code join the coded entry of the same name. Total: 496 colors.
