@@ -164,6 +164,18 @@ later under the dimensions panel (*Apply tires*).
 - The mirrored half samples its own side of the front, rear and top photos
   and a mirror of the side photo. Roof and hood look best with a top photo.
 - Export will bake the used photo areas into one game-sized texture.
+- **Recolor photo paint**: *Pick the paint color* (tap the paint on a Side /
+  Front / Rear / Top photo) and every photo pixel close to it, by hue angle
+  plus a softer saturation term so shaded and sunlit paint match, becomes
+  paint the paint shop can recolor, keeping the photo's light and shade;
+  badges, chrome, rubber, lights and glass keep their real color. White /
+  black / silver paint (no hue) matches on brightness instead (expect more
+  touch-ups). *How close counts as paint* sets the tolerance; *Show what's
+  paint* tints the match; *Preview in the color above* uses Preview color.
+  *Touch up* per photo: brush Not paint / Paint / Auto (erase), pinch to
+  zoom. Stored as `paint_key` in project.json and `<view>_paintmask.png`;
+  the maths is in `PaintKey` and `photo_recolor.gdshader` (export will turn
+  it into the game's paint mask).
 
 **Windows + hollow interior** (Paint panel)
 - *Cut a window*: in Side, Front, Rear or Top, tap around a window on the
@@ -219,7 +231,7 @@ Next: specs and test targets, export to
 `data/cars/` + `assets/cars/`.
 
 Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
-zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`, `interior_test.gd` and
+zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`, `interior_test.gd`, `paint_test.gd` and
 `res://scripts/tests/modeler_test.gd`.
 Screenshots: `godot res://scenes/porter.tscn -- --shots`.
 

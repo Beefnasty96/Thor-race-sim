@@ -66,6 +66,15 @@ var inside_load_btn: Button
 var inside_paint := ""
 var inside_paint_btns := {}
 var inside_fill := false
+# recolouring photo paint
+var pick_paint_btn: Button
+var key_swatch: ColorRect
+var key_label: Label
+var recolor_btn: Button
+var match_btn: Button
+var mask_editor: PaintMaskEditor
+var mask_tabs := {}
+var brush_btns := {}
 var depth_row: Control                # closer / farther (driver's-seat editing)
 var steer_labels := {}
 
@@ -153,6 +162,7 @@ func _build() -> void:
 		_refresh_info())
 	view.edge_tapped.connect(_on_edge_tapped)
 	view.face_tapped.connect(_on_face_painted)
+	view.paint_pick_tap.connect(_on_paint_pick)
 	view.add_point_tap.connect(_on_add_point_tap)
 	hint = UIKit.label("", 24, UIKit.WARN)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -599,6 +609,15 @@ func _set_mode(m: String, on: bool) -> void:
 		_say("Pick a part on the right, then tap faces to paint them." if painting else "")
 	if m != "interior":
 		_stop_inside_paint()
+	if m != "paint" and pick_paint_btn and pick_paint_btn.button_pressed:
+		_toggle_pick_paint(false)
+	if m == "paint" and mask_editor:
+		var cur := "side"
+		for t in mask_tabs:
+			if mask_tabs[t].button_pressed:
+				cur = t
+		_pick_mask_view(cur)
+		_refresh_key_ui()
 
 func _paint_colors() -> Dictionary:
 	var c := {}
@@ -691,9 +710,10 @@ func _build_paint_panel() -> Control:
 	v.add_child(UIKit.label("PHOTO TEXTURES", 24, UIKit.ACCENT))
 	v.add_child(_grow(PorterUI.button("Photos on all body paint", func(): _photos_on(["paint", "second"]))))
 	v.add_child(_grow(PorterUI.button("Photos on everything (then cut windows)", func(): _photos_on(["paint", "second", "glass", "headlight", "taillight", "chrome", "trim", "grille"]))))
-	var ptip := UIKit.label("Each face takes the photo that looks straight at it, lined up from your Photos step. Match the shape to the photos first for the cleanest result. Photo faces keep the photo's color, so the paint shop won't recolor them.", 20, UIKit.DIM)
+	var ptip := UIKit.label("Each face takes the photo that looks straight at it, lined up from your Photos step. Match the shape to the photos first for the cleanest result. Pick the paint color below so the paint shop can recolor photo faces too.", 20, UIKit.DIM)
 	ptip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(ptip)
+	_build_recolor_section(v)
 	v.add_child(HSeparator.new())
 	v.add_child(UIKit.label("PREVIEW COLOR", 24, UIKit.ACCENT))
 	var paints := _factory_paints()
@@ -736,6 +756,8 @@ func _set_preview_paint(pd: Dictionary) -> void:
 	view.paint_colors = _paint_colors()
 	for k in ["paint", "second"]:
 		region_btns[k][1].color = view.paint_colors[k]
+	var pc: Array = pd["color"]
+	view.recolor_color = Color(pc[0], pc[1], pc[2])
 	view.rebuild_body()
 
 func _pick_region(k: String, on: bool) -> void:
@@ -1583,3 +1605,139 @@ func _stretch_rows(v: VBoxContainer, pv: DashPhotoView) -> void:
 		var vv: Dictionary = project.views[pv.view_name]
 		pv.stretch(1.0 / float(vv.get("sx", 1.0)), 1.0 / float(vv.get("sy", 1.0))))))
 	v.add_child(r)
+
+# ---------------------------------------------------------------- recolouring photo paint
+
+func _build_recolor_section(v: VBoxContainer) -> void:
+	v.add_child(HSeparator.new())
+	v.add_child(UIKit.label("RECOLOR PHOTO PAINT", 24, UIKit.ACCENT))
+	var kr := HBoxContainer.new()
+	key_swatch = ColorRect.new()
+	key_swatch.custom_minimum_size = Vector2(56, 56)
+	kr.add_child(key_swatch)
+	key_label = UIKit.label("", 20, UIKit.DIM)
+	key_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	key_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	kr.add_child(key_label)
+	v.add_child(kr)
+	pick_paint_btn = _grow(PorterUI.toggle("Pick the paint color (tap the paint on a photo)", false, func(on): _toggle_pick_paint(on)))
+	v.add_child(pick_paint_btn)
+	_stepper(v, "tol", "How close counts as paint", func(): _set_tolerance(-0.02), func(): _set_tolerance(0.02))
+	var r := HBoxContainer.new()
+	recolor_btn = _grow(PorterUI.toggle("Preview in the color above", false, func(on):
+		view.recolor_on = on
+		if on:
+			view.show_paint_match = false
+			match_btn.set_pressed_no_signal(false)
+		view.rebuild_body()))
+	match_btn = _grow(PorterUI.toggle("Show what's paint", false, func(on):
+		view.show_paint_match = on
+		if on:
+			view.recolor_on = false
+			recolor_btn.set_pressed_no_signal(false)
+		view.rebuild_body()))
+	r.add_child(recolor_btn)
+	r.add_child(match_btn)
+	v.add_child(r)
+	v.add_child(UIKit.label("Touch up (stickers, stripes, misses):", 22, Color.WHITE))
+	var tr := HBoxContainer.new()
+	for k in PorterProject.VIEWS:
+		var key: String = k
+		mask_tabs[key] = _grow(PorterUI.toggle(PorterProject.VIEW_LABELS[key], key == "side", func(on): _pick_mask_view(key) if on else mask_tabs[key].set_pressed_no_signal(true)))
+		mask_tabs[key].custom_minimum_size.x = 0
+		tr.add_child(mask_tabs[key])
+	v.add_child(tr)
+	mask_editor = PaintMaskEditor.new()
+	mask_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mask_editor.mask_changed.connect(func():
+		view.paint_mask_changed(mask_editor.view_name)
+		view.rebuild_body())
+	v.add_child(mask_editor)
+	var br := HBoxContainer.new()
+	for spec in [[0.0, "Not paint"], [1.0, "Paint"], [0.5, "Auto (erase)"]]:
+		var val: float = spec[0]
+		brush_btns[val] = _grow(PorterUI.toggle(spec[1], val == 0.0, func(on): _pick_brush(val, on)))
+		br.add_child(brush_btns[val])
+	v.add_child(br)
+	_stepper(v, "brush", "Brush size", func(): _brush_size(1.0 / 1.25), func(): _brush_size(1.25))
+	v.add_child(_grow(PorterUI.button("Clear touch-ups on this photo", func(): mask_editor.clear())))
+	_tip(v, "Tap the car's paint once on a Side / Front / Rear / Top photo. Everything close to that color becomes paint the game can recolor, keeping the photo's reflections and shading; badges, chrome, rubber and lights keep their real color. Check it with “Show what's paint”, paint stickers with “Not paint”, then try colors from Preview color below. Evenly lit (overcast) photos work best.")
+	_refresh_key_ui()
+
+func _refresh_key_ui() -> void:
+	if key_swatch == null:
+		return
+	var has := project.has_paint_key()
+	key_swatch.color = project.paint_key_color() if has else Color(0.15, 0.15, 0.17)
+	if not has:
+		key_label.text = "No paint color picked yet."
+	elif PaintKey.is_grey(project.paint_key_color()):
+		key_label.text = "Paint picked. It's white / black / silver, so matching leans on brightness: expect more touch-ups."
+	else:
+		key_label.text = "Paint picked. Pixels this hue (light or shaded) get recolored."
+	if steer_labels.has("tol"):
+		steer_labels["tol"].text = "%d%%" % int(round(project.paint_tolerance() * 100.0))
+	if steer_labels.has("brush") and mask_editor:
+		steer_labels["brush"].text = "%d px" % int(mask_editor.brush_px)
+	if mask_editor:
+		mask_editor.refresh_key()
+
+func _toggle_pick_paint(on: bool) -> void:
+	pick_paint_btn.set_pressed_no_signal(on)
+	if on:
+		_driver_view(false)
+		view.tool = "pick_paint"
+		if not (view.view in PorterProject.VIEWS):
+			_select_view("side")
+		_say("Tap a clean, evenly lit spot of the paint on the photo (not a reflection or shadow).")
+	else:
+		if view.tool == "pick_paint":
+			view.tool = "paint"
+
+func _on_paint_pick(s: Vector2) -> void:
+	var pv: String = view.view
+	if not (pv in PorterProject.VIEWS):
+		_say("Switch to Side, Front, Rear or Top to tap the photo.")
+		return
+	var img: Image = view._photo(pv)["img"]
+	if img == null:
+		_say("This view has no photo.")
+		return
+	var world := view.cam.project_position(s, 5.0)
+	var sz := Vector2(img.get_width(), img.get_height())
+	var px := project.frame_to_image(pv, PhotoTexturer.world_to_frame(project, pv, world), sz)
+	if px.x < 0 or px.y < 0 or px.x >= sz.x or px.y >= sz.y:
+		_say("That's off the photo. Tap on the car's paint.")
+		return
+	project.set_paint_key(PaintKey.sample(img, Vector2i(px), 4))
+	project.save()
+	_toggle_pick_paint(false)
+	view.show_paint_match = true
+	view.recolor_on = false
+	match_btn.set_pressed_no_signal(true)
+	recolor_btn.set_pressed_no_signal(false)
+	view.rebuild_body()
+	_refresh_key_ui()
+	_pick_mask_view(pv)
+	_say("Paint color picked. Blue shows what will be recolored; adjust “How close counts as paint”, touch up below, then try “Preview in the color above”.")
+
+func _set_tolerance(d: float) -> void:
+	project.paint_key["tolerance"] = clampf(snappedf(project.paint_tolerance() + d, 0.01), 0.06, 0.6)
+	project.save()
+	_refresh_key_ui()
+	view.rebuild_body()
+
+func _pick_mask_view(k: String) -> void:
+	for t in mask_tabs:
+		mask_tabs[t].set_pressed_no_signal(t == k)
+	mask_editor.setup(project, k)
+
+func _pick_brush(val: float, on: bool) -> void:
+	for t in brush_btns:
+		brush_btns[t].set_pressed_no_signal(t == val)
+	mask_editor.brush_value = val
+	mask_editor.queue_redraw()
+
+func _brush_size(k: float) -> void:
+	mask_editor.brush_px = clampf(mask_editor.brush_px * k, 8.0, 200.0)
+	_refresh_key_ui()

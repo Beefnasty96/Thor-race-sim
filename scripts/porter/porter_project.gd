@@ -47,6 +47,10 @@ var tires := {"front": "", "rear": "", "front_psi": 0.0, "rear_psi": 0.0}
 var wheels := {"front": {}, "rear": {}, "rear_same": true}
 var units := "imperial"           # imperial | metric (display only; storage is meters)
 var paint := {}                   # preview paint: {"color": [r,g,b], "lower": [r,g,b]}
+## Recolouring photo-textured paint: the car's paint colour sampled from a
+## photo ([] = not picked yet) and how close a pixel must be to count as
+## paint. Touch-up masks are <view>_paintmask.png next to the photos.
+var paint_key := {"color": [], "tolerance": 0.22}
 ## Per view: file, cx, cy (photo center in frame meters), mpp (meters per pixel),
 ## sx, sy (extra stretch of the photo's width / height, 1 = none: makes up for
 ## a photo taken a little off-square), rot (radians), flip (mirror
@@ -322,7 +326,7 @@ func to_dict() -> Dictionary:
 	return {"format": 1, "id": id, "name": name, "source_car": source_car,
 		"units": units, "dims": dims, "views": views, "paint": paint,
 		"source_db": source_db, "db_row": db_row, "tires": tires, "wheels": wheels,
-		"interior": interior}
+		"interior": interior, "paint_key": paint_key}
 
 func save() -> bool:
 	DirAccess.make_dir_recursive_absolute(dir())
@@ -346,6 +350,9 @@ static func load_project(project_id: String) -> PorterProject:
 	p.source_car = d.get("source_car", "")
 	p.units = d.get("units", "imperial")
 	p.paint = d.get("paint", {})
+	var pk: Dictionary = d.get("paint_key", {})
+	for k in pk:
+		p.paint_key[k] = pk[k]
 	p.source_db = d.get("source_db", "")
 	p.db_row = d.get("db_row", {})
 	p.tires = d.get("tires", p.tires)
@@ -417,6 +424,7 @@ func import_image(view: String, img: Image) -> String:
 	if img.save_png(dir() + file) != OK:
 		return "Couldn't save the photo."
 	views[view]["file"] = file
+	clear_paint_mask(view)                  # touch-ups belonged to the old photo
 	fit_to_frame(view, Vector2(img.get_width(), img.get_height()))
 	save()
 	return ""
@@ -452,6 +460,39 @@ func load_mesh() -> HalfMesh:
 		return null
 	var d = JSON.parse_string(FileAccess.get_file_as_string(dir() + "body.json"))
 	return HalfMesh.from_dict(d) if d is Dictionary else null
+
+# ---------------------------------------------------------------- recolouring photo paint
+
+func has_paint_key() -> bool:
+	return (paint_key.get("color", []) as Array).size() == 3
+
+func paint_key_color() -> Color:
+	var c: Array = paint_key.get("color", [])
+	return Color(c[0], c[1], c[2]) if c.size() == 3 else Color(0.6, 0.05, 0.05)
+
+func set_paint_key(c: Color) -> void:
+	paint_key["color"] = [snappedf(c.r, 0.001), snappedf(c.g, 0.001), snappedf(c.b, 0.001)]
+
+func paint_tolerance() -> float:
+	return float(paint_key.get("tolerance", PaintKey.DEFAULT_TOLERANCE))
+
+func load_paint_mask(view: String) -> Image:
+	var f := dir() + view + "_paintmask.png"
+	if not FileAccess.file_exists(f):
+		return null
+	var img := Image.load_from_file(ProjectSettings.globalize_path(f))
+	if img and img.get_format() != Image.FORMAT_L8:
+		img.convert(Image.FORMAT_L8)
+	return img
+
+func save_paint_mask(view: String, img: Image) -> void:
+	DirAccess.make_dir_recursive_absolute(dir())
+	img.save_png(dir() + view + "_paintmask.png")
+
+func clear_paint_mask(view: String) -> void:
+	var f := dir() + view + "_paintmask.png"
+	if FileAccess.file_exists(f):
+		DirAccess.remove_absolute(f)
 
 # ---------------------------------------------------------------- interior
 
