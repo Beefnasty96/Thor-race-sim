@@ -39,6 +39,11 @@ KNOWN = {  # name (lower) -> rgb, for well-known factory colors
     "redline": (0.75, 0.05, 0.06), "kalapana black": (0.035, 0.035, 0.04),
     "sinamon stick metallic": (0.55, 0.25, 0.12), "green go": (0.15, 0.55, 0.2),
     "gold rush pearl": (0.85, 0.6, 0.12), "frost bite pearl": (0.05, 0.25, 0.55),
+    "blizzard pearl tricoat": (0.93, 0.93, 0.9), "wind chill pearl tricoat": (0.93, 0.93, 0.91),
+    "avalanche": (0.55, 0.57, 0.58), "guard metallic": (0.3, 0.35, 0.3), "tungsten metallic": (0.45, 0.45, 0.44),
+    "competition orange": (0.92, 0.4, 0.05), "triple yellow pearl": (0.96, 0.82, 0.1),
+    "inferno orange metallic": (0.85, 0.35, 0.05), "voodoo blue": (0.1, 0.3, 0.6),
+    "lead foot gray": (0.35, 0.36, 0.37), "abyss gray": (0.25, 0.27, 0.3),
     "yellow": (0.95, 0.8, 0.1), "white": (0.93, 0.93, 0.92), "black": (0.035, 0.035, 0.04),
 }
 BASES = [  # first match wins (longest / most specific first)

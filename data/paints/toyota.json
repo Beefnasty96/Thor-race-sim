@@ -181,9 +181,11 @@
    "years": [
     1995,
     1997,
-    2001
+    2001,
+    2020
    ],
    "models": [
+    "4Runner",
     "Camry",
     "Supra",
     "Tacoma"
@@ -199,7 +201,10 @@
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Toyota/1997-Toyota-Camry.html",
     "https://www.paintscratch.com/touch_up_paint/Toyota/2001-Toyota-Tacoma.html",
-    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html"
+    "https://www.paintscratch.com/touch_up_paint/Toyota/1995-Toyota-Supra.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
    ]
   },
   {
@@ -647,9 +652,11 @@
    "name": "Silver Metallic",
    "codes": "1D6",
    "years": [
-    2005
+    2005,
+    2020
    ],
    "models": [
+    "Tacoma",
     "Tundra"
    ],
    "finish": "metallic",
@@ -661,7 +668,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html"
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2005-Toyota-Tundra.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html"
    ]
   },
   {
@@ -707,6 +715,188 @@
    ]
   },
   {
+   "name": "Attitude Black Pearl",
+   "codes": "218",
+   "years": [
+    2020
+   ],
+   "models": [
+    "4Runner",
+    "Camry",
+    "Tacoma"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Barcelona Red Mica Metallic",
+   "codes": "3R3",
+   "years": [
+    2020
+   ],
+   "models": [
+    "4Runner",
+    "Tacoma"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html"
+   ]
+  },
+  {
+   "name": "Blizzard Pearl Tricoat",
+   "codes": "070",
+   "years": [
+    2020
+   ],
+   "models": [
+    "4Runner",
+    "Camry",
+    "Tacoma"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.93,
+    0.93,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Blue Streak Metallic",
+   "codes": "8T7",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Bright Red Tricoat",
+   "codes": "3U5",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.693,
+    0.033,
+    0.033
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Cement Gray Metallic",
+   "codes": "1H5",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Magnetic Gray Metallic",
+   "codes": "1G3",
+   "years": [
+    2020
+   ],
+   "models": [
+    "4Runner",
+    "Camry",
+    "Tacoma"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.3,
+    0.31,
+    0.33
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html",
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Nautical Blue Metallic",
+   "codes": "8S6",
+   "years": [
+    2020
+   ],
+   "models": [
+    "4Runner"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html"
+   ]
+  },
+  {
    "name": "Nitro Yellow",
    "codes": "D06",
    "years": [
@@ -749,6 +939,48 @@
    ]
   },
   {
+   "name": "Predawn Grey Mica",
+   "codes": "1H1",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Red Pearl",
+   "codes": "3T3",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
    "name": "Renaissance Red",
    "codes": "D05",
    "years": [
@@ -770,6 +1002,48 @@
    ]
   },
   {
+   "name": "Silver Metallic",
+   "codes": "1F7",
+   "years": [
+    2020
+   ],
+   "models": [
+    "4Runner"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "1J9",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
    "name": "Turbulence Gray Metallic",
    "codes": "D03",
    "years": [
@@ -788,6 +1062,48 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html"
+   ]
+  },
+  {
+   "name": "Voodoo Blue",
+   "codes": "8T6",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Tacoma"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.1,
+    0.3,
+    0.6
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html"
+   ]
+  },
+  {
+   "name": "Wind Chill Pearl Tricoat",
+   "codes": "089",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Camry"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.93,
+    0.93,
+    0.91
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
    ]
   },
   {

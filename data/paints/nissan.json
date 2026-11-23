@@ -37,7 +37,8 @@
     "300ZX",
     "350Z",
     "370Z",
-    "Altima"
+    "Altima",
+    "Frontier"
    ],
    "finish": "solid",
    "metallic": 0.05,
@@ -52,7 +53,8 @@
     "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html",
     "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html",
     "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html",
-    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
    ]
   },
   {
@@ -677,7 +679,8 @@
     2020
    ],
    "models": [
-    "370Z"
+    "370Z",
+    "Frontier"
    ],
    "finish": "pearl",
    "metallic": 0.45,
@@ -688,7 +691,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
    ]
   },
   {
@@ -734,13 +738,35 @@
    ]
   },
   {
+   "name": "Forged Copper",
+   "codes": "CAU",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Frontier"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.5,
+    0.27,
+    0.15
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
+   ]
+  },
+  {
    "name": "Gray Metallic",
    "codes": "KAD",
    "years": [
     2020
    ],
    "models": [
-    "370Z"
+    "370Z",
+    "Frontier"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -751,7 +777,29 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
+   ]
+  },
+  {
+   "name": "Medium Blue Metallic",
+   "codes": "RBG",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Frontier"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.111,
+    0.212,
+    0.442
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
    ]
   },
   {
@@ -776,13 +824,35 @@
    ]
   },
   {
+   "name": "Red Pearl",
+   "codes": "NAH",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Frontier"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
+   ]
+  },
+  {
    "name": "Silver Metallic",
    "codes": "K23",
    "years": [
     2020
    ],
    "models": [
-    "370Z"
+    "370Z",
+    "Frontier"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -793,7 +863,29 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
+   ]
+  },
+  {
+   "name": "White",
+   "codes": "QAK",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Frontier"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.93,
+    0.92
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
    ]
   },
   {
@@ -803,7 +895,8 @@
     2020
    ],
    "models": [
-    "370Z"
+    "370Z",
+    "Frontier"
    ],
    "finish": "tricoat",
    "metallic": 0.5,
@@ -814,7 +907,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html"
    ]
   },
   {

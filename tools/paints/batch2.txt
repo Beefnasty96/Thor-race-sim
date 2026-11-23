@@ -229,10 +229,7 @@ Toyota|Renaissance Red|D05|2020|Supra|https://www.paintscratch.com/touch_up_pain
 Toyota|Nocturnal Pearl|D04|2020|Supra|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Supra.html
 Chevrolet|Black|WA8555/GBA|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
 Chevrolet|White|WA8624/GAZ|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
-Chevrolet|Switchblade Silver Pearl|WA636R/GAN|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
-Chevrolet|Glory Red Pearl|WA434B/GPJ|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
 Chevrolet|Satin Steel Metallic|WA464C/G9K|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
-Chevrolet|Abalone White Tricoat|G1W/GE8/WA486B|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
 Chevrolet|Crush|WA413C/G16|2019|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html
 Ford|Oxford White|YZ|2020|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html
 Ford|Black|UM|2020|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html

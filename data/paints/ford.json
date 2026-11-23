@@ -27,7 +27,8 @@
    "codes": "UA/M6373",
    "years": [
     1997,
-    1999
+    1999,
+    2015
    ],
    "models": [
     "Mustang",
@@ -43,7 +44,8 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Black-Ebony-Clearcoat-UA-M6373.html",
-    "https://www.paintscratch.com/touch_up_paint/Ford/1997-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/1997-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
    ]
   },
   {
@@ -285,9 +287,14 @@
    "codes": "YZ/M6466",
    "years": [
     1999,
+    2015,
     2020
    ],
    "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
     "Mustang",
     "all"
    ],
@@ -301,7 +308,9 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Oxford-White-Clearcoat-YZ-M6466.html",
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   },
   {
@@ -537,6 +546,259 @@
    ]
   },
   {
+   "name": "Avalanche",
+   "codes": "DR",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.55,
+    0.57,
+    0.58
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Competition Orange",
+   "codes": "CY",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.4,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Deep Impact Blue Metallic",
+   "codes": "J4",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.078,
+    0.15,
+    0.312
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Guard Metallic",
+   "codes": "HN",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.3,
+    0.35,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Ingot Silver Metallic",
+   "codes": "UX",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Kona Blue Metallic",
+   "codes": "L6",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Magnetic Metallic",
+   "codes": "J7",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.3,
+    0.31,
+    0.33
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Race Red",
+   "codes": "PQ/M7236",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Ruby Red Tricoat",
+   "codes": "RR",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.5,
+    0.05,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Triple Yellow Pearl",
+   "codes": "H3",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.96,
+    0.82,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
+   "name": "Wimbledon White",
+   "codes": "N4",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html"
+   ]
+  },
+  {
    "name": "Absolute Black Pearl",
    "codes": "G1",
    "years": [
@@ -558,12 +820,40 @@
    ]
   },
   {
+   "name": "Abyss Gray",
+   "codes": "ME",
+   "years": [
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.25,
+    0.27,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
    "name": "Black",
    "codes": "UM",
    "years": [
     2020
    ],
    "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
     "Mustang"
    ],
    "finish": "solid",
@@ -575,7 +865,56 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Blue Diamond Metallic",
+   "codes": "FT",
+   "years": [
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Blue Jeans Metallic",
+   "codes": "N1",
+   "years": [
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   },
   {
@@ -627,6 +966,10 @@
     2020
    ],
    "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
     "Mustang"
    ],
    "finish": "metallic",
@@ -638,28 +981,32 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   },
   {
-   "name": "Kona Blue Metallic",
-   "codes": "L6",
+   "name": "Lead Foot Gray",
+   "codes": "JX/M7394",
    "years": [
     2020
    ],
    "models": [
-    "Mustang"
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
    ],
-   "finish": "metallic",
-   "metallic": 0.6,
+   "finish": "solid",
+   "metallic": 0.05,
    "rgb": [
-    0.13,
-    0.25,
-    0.52
+    0.35,
+    0.36,
+    0.37
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   },
   {
@@ -669,6 +1016,10 @@
     2020
    ],
    "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
     "Mustang"
    ],
    "finish": "tricoat",
@@ -680,41 +1031,24 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   },
   {
-   "name": "Magnetic Metallic",
-   "codes": "J7",
+   "name": "Magma Red Metallic",
+   "codes": "E2",
    "years": [
     2020
    ],
    "models": [
-    "Mustang"
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
    ],
    "finish": "metallic",
    "metallic": 0.6,
-   "rgb": [
-    0.3,
-    0.31,
-    0.33
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
-   ]
-  },
-  {
-   "name": "Race Red",
-   "codes": "PQ/M7236",
-   "years": [
-    2020
-   ],
-   "models": [
-    "Mustang"
-   ],
-   "finish": "solid",
-   "metallic": 0.05,
    "rgb": [
     0.62,
     0.07,
@@ -722,7 +1056,55 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Pristine White Tricoat",
+   "codes": "AZ",
+   "years": [
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+   ]
+  },
+  {
+   "name": "Silver Spruce Metallic",
+   "codes": "BN",
+   "years": [
+    2020
+   ],
+   "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   },
   {
@@ -753,6 +1135,10 @@
     2020
    ],
    "models": [
+    "F-150",
+    "F-250",
+    "F-350",
+    "F-Series",
     "Mustang"
    ],
    "finish": "solid",
@@ -764,7 +1150,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
    ]
   }
  ]
