@@ -183,12 +183,26 @@ later under the dimensions panel (*Apply tires*).
   the photo, the rest are black trim. Each half samples its own side of the
   photo, so the gauge cluster stays on the driver's side.
 - *Gauges*: pick Speedo / Tach / Fuel / Temp / Oil / Volts and tap on the dash
-  photo; size them and set full scale (mph, rpm). They land on the dash face
+  photo; size them and set full scale (mph, rpm). *Hide steering wheel*
+  clears the view of the whole dash (also in the dash-editing banner). They land on the dash face
   and get live needles in the game.
 - *Steering wheel*: a round template with the steering-wheel photo on it.
   Fit the orange circle to the rim, then *Draw a hole* around each gap
   between the spokes; the holes are cut right through (walls on every cut
   edge). Diameter, rim thickness, tilt and position are adjustable.
+- *Stretch*: every photo (the four reference photos and the dash / door /
+  pillar / ceiling photos) can be stretched wider / narrower / taller /
+  shorter on its own axes, 0.5x–2x, to make up for a shot taken a little off
+  square (*Pinch stretches* in the interior fit views; *Reset stretch*).
+  Stored as `sx` / `sy` per view; two-point align keeps it.
+- *Inside panels*: the inside of the hollow shell can be painted per panel
+  (grey cloth, dark plastic, tan, carpet) or take the door / A-pillar /
+  ceiling photos. Pick a choice and tap panels from the driver's seat (Fill
+  connected for areas), or *Auto*: ceiling, doors, the panels beside the
+  windshield and a carpet floor in one tap. Each photo has a fit view (drag /
+  pinch onto the blue outline, Flip, Rotate 90°). Both doors and both pillars
+  share their photo. The inside paint rides along in each face's region as
+  `outer|inner` (e.g. `paint|photo:door`), so cuts and extrudes keep it.
 - Saved as `dash.json`, `steering_wheel.png` and `interior` in project.json;
   `PorterProject.interior_model_info()` is what export writes into the
   game's `model_info.json` (driver_eye, steering_wheel_pivot,

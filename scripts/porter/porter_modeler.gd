@@ -57,6 +57,15 @@ var hole_btn: Button
 var hole_row: Control
 var seat_btn: Button
 var dash_seat_btn: Button             # edit the dash from the driver's seat
+var wheel_btns: Array = []            # "Hide steering wheel" toggles (kept in sync)
+# inside panels (doors, pillars, ceiling)
+var inside_view := "door"
+var inside_tabs := {}
+var inside_photo_view: DashPhotoView
+var inside_load_btn: Button
+var inside_paint := ""
+var inside_paint_btns := {}
+var inside_fill := false
 var depth_row: Control                # closer / farther (driver's-seat editing)
 var steer_labels := {}
 
@@ -185,6 +194,7 @@ func _build_panel() -> Control:
 	dash_bar.add_child(db_tip)
 	dash_seat_btn = _grow(PorterUI.toggle("Edit from the driver's seat", true, func(on): _driver_view(on)))
 	dash_bar.add_child(dash_seat_btn)
+	dash_bar.add_child(_wheel_toggle())
 	dash_bar.add_child(_grow(PorterUI.button("Done editing the dash ▶ Interior", _end_edit_dash)))
 	dash_bar.visible = false
 	v.add_child(dash_bar)
@@ -584,6 +594,8 @@ func _set_mode(m: String, on: bool) -> void:
 		_open_interior()
 	else:
 		_say("Pick a part on the right, then tap faces to paint them." if painting else "")
+	if m != "interior":
+		_stop_inside_paint()
 
 func _paint_colors() -> Dictionary:
 	var c := {}
@@ -765,6 +777,9 @@ func _photos_on(parts: Array) -> void:
 	_say("Photos applied to %d faces. Tap faces with another part to change them, or Undo." % ids.size())
 
 func _on_face_painted(fi: int) -> void:
+	if interior_panel.visible and inside_paint != "":
+		_paint_inside(fi)
+		return
 	var targets: Array = mesh.connected_same_region(fi) if fill else [fi]
 	var val := _paint_value()
 	if mesh.region_of(fi) == val and targets.size() == 1:
@@ -1039,6 +1054,7 @@ func _build_interior_panel() -> Control:
 			["−", func(): dash_view.nudge_size(1.0 / 1.01)], ["+", func(): dash_view.nudge_size(1.01)]]:
 		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
 	v.add_child(g)
+	_stretch_rows(v, dash_view)
 	var r1 := HBoxContainer.new()
 	r1.add_child(_grow(PorterUI.button("Fit photo to the dash", func():
 		var img := project.load_photo("dash")
@@ -1058,6 +1074,7 @@ func _build_interior_panel() -> Control:
 		gauge_btns[k] = _grow(PorterUI.toggle(InteriorBuilder.GAUGE_TYPES[k]["label"], false, func(on): _pick_gauge_type(k, on)))
 		gg.add_child(gauge_btns[k])
 	v.add_child(gg)
+	v.add_child(_wheel_toggle())
 	gauge_info = UIKit.label("", 20, UIKit.DIM)
 	gauge_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(gauge_info)
@@ -1108,11 +1125,25 @@ func _build_interior_panel() -> Control:
 	_stepper(v, "s_tilt", "Tilt", func(): _steer_set("tilt_deg", -2.0), func(): _steer_set("tilt_deg", 2.0))
 	_stepper(v, "s_y", "Height", func(): _steer_move(Vector3(0, -0.01, 0)), func(): _steer_move(Vector3(0, 0.01, 0)))
 	_stepper(v, "s_z", "Toward driver / dash", func(): _steer_move(Vector3(0, 0, 0.01)), func(): _steer_move(Vector3(0, 0, -0.01)))
+	_build_inside_section(v)
 	_tip(v, "The steering wheel is a round template with your photo on it. Fit the orange circle to the rim, then draw around each gap between the spokes: those holes are cut right through, so you see the gauges through them from the driver's seat. In the game it turns with the car's real steering lock.")
 	return panel
 
+func _wheel_toggle() -> Button:
+	var b := _grow(PorterUI.toggle("Hide steering wheel", not view.show_steering if view else false, func(on): _hide_wheel(on)))
+	wheel_btns.append(b)
+	return b
+
+func _hide_wheel(on: bool) -> void:
+	view.show_steering = not on
+	for b in wheel_btns:
+		b.set_pressed_no_signal(on)
+	view.refresh_cabin()
+	_say("Steering wheel hidden: the whole dash is visible for placing gauges. Turn it back on to check the view through the wheel." if on else "Steering wheel shown.")
+
 func _open_interior() -> void:
 	dash_view.setup(project, dash_mesh)
+	inside_photo_view.setup(project, dash_mesh, inside_view, mesh)
 	steer_view.setup(project)
 	_refresh_interior_labels()
 	_driver_view(true)
@@ -1144,7 +1175,7 @@ func _refresh_interior_labels() -> void:
 		steer_labels["g_size"].text = "—"
 		steer_labels["g_max"].text = "—"
 	var holes: int = (s["holes"] as Array).size()
-	gauge_info.text = "%d gauges on the dash. Pick a type, then tap on the dash photo where it goes. Tap a gauge to select it.  ·  Steering wheel: %d holes cut." % [gs.size(), holes]
+	gauge_info.text = "%d gauges on the dash. Line up (and stretch) the dash photo first, then pick a type and tap where it goes. Tap a gauge to select it.  ·  Steering wheel: %d holes cut." % [gs.size(), holes]
 
 func _interior_changed() -> void:
 	project.save()
@@ -1362,6 +1393,15 @@ func on_photo_loaded(view_name: String) -> void:
 		else:
 			_dash_photo_faces()
 			_say("Dash photo loaded and fitted. Drag / pinch it so the blue outline sits on the dash, then place the gauges.")
+	elif view_name in HalfMesh.INNER_PHOTOS:
+		view.photo_changed(view_name)
+		var img2 := project.load_photo(view_name)
+		if img2:
+			DashPhotoView.fit_to_outline(project, view_name, DashPhotoView.panel_outline(project, mesh, view_name), img2.get_width())
+		project.save()
+		_pick_inside_view(view_name)
+		view.rebuild_body()
+		_say("%s photo loaded. Paint it on: pick “%s photo” under Paint the inside and tap panels from the driver's seat (or Auto). Then drag / pinch it onto the blue outline." % [PorterProject.VIEW_LABELS[view_name], PorterProject.VIEW_LABELS[view_name]])
 	elif view_name == "steering":
 		project.steering()["crop"] = {}
 		steer_view.setup(project)
@@ -1370,3 +1410,139 @@ func on_photo_loaded(view_name: String) -> void:
 		view.steering_picture_changed()
 		_say("Steering photo loaded. Fit the orange circle to the wheel's rim, then draw the holes between the spokes.")
 	_interior_changed()
+
+# ---- inside panels: doors, pillars, ceiling
+
+func _build_inside_section(v: VBoxContainer) -> void:
+	_section(v, "INSIDE PANELS (doors, pillars, ceiling)")
+	var tabs_row := HBoxContainer.new()
+	for k in HalfMesh.INNER_PHOTOS:
+		var key: String = k
+		inside_tabs[key] = _grow(PorterUI.toggle(PorterProject.VIEW_LABELS[key], key == inside_view, func(on): _pick_inside_view(key) if on else inside_tabs[key].set_pressed_no_signal(true)))
+		tabs_row.add_child(inside_tabs[key])
+	v.add_child(tabs_row)
+	inside_load_btn = _grow(PorterUI.button("", func(): photo_requested.emit(inside_view)))
+	v.add_child(inside_load_btn)
+	inside_photo_view = DashPhotoView.new()
+	inside_photo_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inside_photo_view.fit_changed.connect(func(final):
+		if final:
+			project.save()
+			view.rebuild_body())
+	v.add_child(inside_photo_view)
+	var g := GridContainer.new()
+	g.columns = 6
+	for spec in [["◀", func(): inside_photo_view.nudge_move(-1, 0)], ["▶", func(): inside_photo_view.nudge_move(1, 0)],
+			["▲", func(): inside_photo_view.nudge_move(0, -1)], ["▼", func(): inside_photo_view.nudge_move(0, 1)],
+			["−", func(): inside_photo_view.nudge_size(1.0 / 1.01)], ["+", func(): inside_photo_view.nudge_size(1.01)]]:
+		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
+	v.add_child(g)
+	var r := HBoxContainer.new()
+	_stretch_rows(v, inside_photo_view)
+	r.add_child(_grow(PorterUI.button("Flip", func(): inside_photo_view.flip())))
+	r.add_child(_grow(PorterUI.button("Rotate 90°", func(): inside_photo_view.rotate_90())))
+	r.add_child(_grow(PorterUI.button("Fit to outline", func():
+		var img := project.load_photo(inside_view)
+		if img:
+			DashPhotoView.fit_to_outline(project, inside_view, DashPhotoView.panel_outline(project, mesh, inside_view), img.get_width())
+			project.save()
+			inside_photo_view.queue_redraw()
+			view.rebuild_body())))
+	v.add_child(r)
+	v.add_child(UIKit.label("Paint the inside (tap panels from the driver's seat)", 22, Color.WHITE))
+	var pg := GridContainer.new()
+	pg.columns = 3
+	var choices := []
+	for k in HalfMesh.INNER_PHOTOS:
+		choices.append(["photo:" + k, PorterProject.VIEW_LABELS[k] + " photo"])
+	for k in ["lining", "dark", "tan", "carpet"]:
+		choices.append([k, HalfMesh.INNER_REGIONS[k]["label"]])
+	for c in choices:
+		var val: String = c[0]
+		inside_paint_btns[val] = _grow(PorterUI.toggle(c[1], false, func(on): _pick_inside_paint(val, on)))
+		pg.add_child(inside_paint_btns[val])
+	v.add_child(pg)
+	var r2 := HBoxContainer.new()
+	r2.add_child(_grow(PorterUI.toggle("Fill connected", false, func(on): inside_fill = on)))
+	r2.add_child(_grow(PorterUI.button("Auto (photos where loaded)", _auto_inside)))
+	r2.add_child(_grow(PorterUI.button("Done", _stop_inside_paint, 120)))
+	v.add_child(r2)
+	_tip(v, "Take the door photo from the passenger seat looking straight at the driver's door, the A-pillar from the driver's seat, and the ceiling with the phone overhead, top toward the windshield. Both doors and both pillars use the same photo (mirrored). Paint with “… photo”, then drag / pinch the photo onto the blue outline; Flip / Rotate if it's turned.")
+	_pick_inside_view(inside_view)
+
+func _pick_inside_view(k: String) -> void:
+	inside_view = k
+	for t in inside_tabs:
+		inside_tabs[t].set_pressed_no_signal(t == k)
+	inside_load_btn.text = "Load %s photo…" % PorterProject.VIEW_LABELS[k].to_lower()
+	inside_photo_view.setup(project, dash_mesh, k, mesh)
+
+func _pick_inside_paint(val: String, on: bool) -> void:
+	for t in inside_paint_btns:
+		inside_paint_btns[t].set_pressed_no_signal(on and t == val)
+	inside_paint = val if on else ""
+	if on:
+		_stop_placing()
+		view.tool = "paint"
+		if not view.driver_view:
+			_driver_view(true)
+		if val.begins_with("photo:"):
+			var pv := val.get_slice(":", 1)
+			_pick_inside_view(pv)
+			if project.load_photo(pv) == null:
+				_say("Load the %s photo first (button above), then tap panels." % PorterProject.VIEW_LABELS[pv].to_lower())
+				return
+		_say("Tap panels inside the car to paint them %s. Drag empty space to look around." % (inside_paint_btns[val].text.to_lower()))
+	else:
+		view.tool = "interior"
+
+func _stop_inside_paint() -> void:
+	inside_paint = ""
+	for t in inside_paint_btns:
+		inside_paint_btns[t].set_pressed_no_signal(false)
+	if view.tool == "paint" and interior_panel.visible:
+		view.tool = "interior"
+
+func _paint_inside(fi: int) -> void:
+	if HalfMesh.region_base(mesh.regions[fi]) == "glass":
+		_say("That's glass (a window): tap the panel around it.")
+		return
+	var targets: Array = mesh.connected_same_region(fi, true) if inside_fill else [fi]
+	if mesh.inner_region_of(fi) == inside_paint and targets.size() == 1:
+		return
+	mesh.push_undo()
+	mesh.set_inner_region(targets, inside_paint)
+	view.rebuild_body()
+	inside_photo_view.queue_redraw()
+	_queue_save()
+
+func _auto_inside() -> void:
+	var has := {}
+	for k in HalfMesh.INNER_PHOTOS:
+		has[k] = project.load_photo(k) != null
+	mesh.push_undo()
+	var n := InteriorBuilder.auto_inside(mesh, has)
+	view.rebuild_body()
+	inside_photo_view.queue_redraw()
+	_queue_save()
+	_say("Inside painted: %d panels (ceiling, doors, pillars, carpet floor). Tap panels with a choice above to fix any, or Undo in Shape." % n)
+
+## Stretch controls under a photo fit view: wider / narrower / taller /
+## shorter buttons, a pinch-to-stretch toggle and a reset.
+func _stretch_rows(v: VBoxContainer, pv: DashPhotoView) -> void:
+	var g := GridContainer.new()
+	g.columns = 4
+	for spec in [["↔ wider", 1.01, 1.0], ["↔ narrower", 1.0 / 1.01, 1.0], ["↕ taller", 1.0, 1.01], ["↕ shorter", 1.0, 1.0 / 1.01]]:
+		var kx: float = spec[1]
+		var ky: float = spec[2]
+		g.add_child(_grow(PorterUI.button(spec[0], func(): pv.stretch(kx, ky), 80)))
+	v.add_child(g)
+	var r := HBoxContainer.new()
+	var tb := _grow(PorterUI.toggle("Pinch stretches", false, func(on):
+		pv.stretching = on
+		pv.queue_redraw()))
+	r.add_child(tb)
+	r.add_child(_grow(PorterUI.button("Reset stretch", func():
+		var vv: Dictionary = project.views[pv.view_name]
+		pv.stretch(1.0 / float(vv.get("sx", 1.0)), 1.0 / float(vv.get("sy", 1.0))))))
+	v.add_child(r)

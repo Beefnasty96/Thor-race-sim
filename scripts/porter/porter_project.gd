@@ -17,8 +17,15 @@ const VIEWS := ["side", "front", "rear", "top"]
 ##              like the rear view (screen right = car's right), fitted to the
 ##              dash in the Interior screen
 ##   steering : the steering wheel face-on; cut out with a crop circle
-const INTERIOR_VIEWS := ["dash", "steering"]
-const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top", "dash": "Dashboard", "steering": "Steering wheel"}
+##   door     : inside of the driver's door, face-on from the cabin; frame =
+##              (-z, y) (forward to the right); both doors use it
+##   pillar   : the driver's A-pillar from the seat; frame = (-|x|, y); both
+##              pillars use it
+##   ceiling  : headliner, phone overhead with its top toward the windshield;
+##              frame = (-x, -z)
+const INTERIOR_VIEWS := ["dash", "steering", "door", "pillar", "ceiling"]
+const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top", "dash": "Dashboard",
+	"steering": "Steering wheel", "door": "Inside door", "pillar": "A-pillar", "ceiling": "Ceiling"}
 const IMAGE_MAX_PX := 2048        # photos are downscaled to this on import (phone memory)
 
 var id := ""
@@ -41,7 +48,9 @@ var wheels := {"front": {}, "rear": {}, "rear_same": true}
 var units := "imperial"           # imperial | metric (display only; storage is meters)
 var paint := {}                   # preview paint: {"color": [r,g,b], "lower": [r,g,b]}
 ## Per view: file, cx, cy (photo center in frame meters), mpp (meters per pixel),
-## rot (radians), flip (mirror horizontally), opacity.
+## sx, sy (extra stretch of the photo's width / height, 1 = none: makes up for
+## a photo taken a little off-square), rot (radians), flip (mirror
+## horizontally), opacity.
 var views := {}
 ## Interior for the first-person view (all metres in the game's coordinates):
 ##   driver_eye : [x, y, z] the driver's eye ([] = default from the body size)
@@ -61,7 +70,11 @@ func _init() -> void:
 		views[v] = _blank_view()
 
 static func _blank_view() -> Dictionary:
-	return {"file": "", "cx": 0.0, "cy": 0.0, "mpp": 0.001, "rot": 0.0, "flip": false, "opacity": 0.85}
+	return {"file": "", "cx": 0.0, "cy": 0.0, "mpp": 0.001, "sx": 1.0, "sy": 1.0, "rot": 0.0, "flip": false, "opacity": 0.85}
+
+## Photo-local scale: metres per pixel along the photo's width and height.
+static func view_scale(v: Dictionary) -> Vector2:
+	return Vector2(float(v.get("sx", 1.0)), float(v.get("sy", 1.0))) * float(v["mpp"])
 
 # ---------------------------------------------------------------- dimensions
 
@@ -207,13 +220,13 @@ func align_targets(view: String) -> Array:
 ## Photo pixel → frame meters, with the view's current transform.
 func image_to_frame(view: String, px: Vector2, img_size: Vector2) -> Vector2:
 	var v: Dictionary = views[view]
-	var local := _local(px, img_size, v["flip"]) * float(v["mpp"])
+	var local := _local(px, img_size, v["flip"]) * view_scale(v)
 	return Vector2(v["cx"], v["cy"]) + local.rotated(v["rot"])
 
 ## Frame meters → photo pixel (inverse of image_to_frame).
 func frame_to_image(view: String, p: Vector2, img_size: Vector2) -> Vector2:
 	var v: Dictionary = views[view]
-	var local := (p - Vector2(v["cx"], v["cy"])).rotated(-float(v["rot"])) / float(v["mpp"])
+	var local := (p - Vector2(v["cx"], v["cy"])).rotated(-float(v["rot"])) / view_scale(v)
 	var x := local.x * (-1.0 if v["flip"] else 1.0)
 	return Vector2(x + img_size.x * 0.5, img_size.y * 0.5 - local.y)
 
@@ -230,8 +243,10 @@ func align_two_points(view: String, a_px: Vector2, b_px: Vector2, img_size: Vect
 	var ta: Vector2 = tg[0]["pos"]
 	var tb: Vector2 = tg[1]["pos"]
 	var v: Dictionary = views[view]
-	var la := _local(a_px, img_size, v["flip"])
-	var lb := _local(b_px, img_size, v["flip"])
+	# keep any stretch: solve in stretched photo space
+	var st := Vector2(float(v.get("sx", 1.0)), float(v.get("sy", 1.0)))
+	var la := _local(a_px, img_size, v["flip"]) * st
+	var lb := _local(b_px, img_size, v["flip"]) * st
 	var d_img := lb - la
 	var d_frame := tb - ta
 	if d_img.length() < 4.0:
@@ -247,11 +262,27 @@ func align_two_points(view: String, a_px: Vector2, b_px: Vector2, img_size: Vect
 	changed.emit()
 	return true
 
+## Stretch the photo along its own width (kx) and height (ky), keeping the
+## frame point `pivot` where it is. Limited to 0.5x..2x of unstretched.
+func stretch_about(view: String, pivot: Vector2, kx: float, ky: float) -> void:
+	var v: Dictionary = views[view]
+	var rot := float(v["rot"])
+	var old := view_scale(v)
+	var lp := (pivot - Vector2(v["cx"], v["cy"])).rotated(-rot) / old
+	v["sx"] = clampf(float(v.get("sx", 1.0)) * kx, 0.5, 2.0)
+	v["sy"] = clampf(float(v.get("sy", 1.0)) * ky, 0.5, 2.0)
+	var c := pivot - (lp * view_scale(v)).rotated(rot)
+	v["cx"] = c.x
+	v["cy"] = c.y
+	changed.emit()
+
 ## Rough starting fit: scale the photo so its width spans the frame, centerd.
 func fit_to_frame(view: String, img_size: Vector2) -> void:
 	var r := frame_rect(view)
 	var v: Dictionary = views[view]
 	v["mpp"] = r.size.x / maxf(img_size.x, 1.0) * 1.1
+	v["sx"] = 1.0
+	v["sy"] = 1.0
 	v["rot"] = 0.0
 	var c := r.get_center()
 	v["cx"] = c.x
@@ -554,7 +585,7 @@ func wheel_auto_crop(rear_axle: bool) -> Dictionary:
 	var r := tire_radius(rear_axle)
 	var x := rear_axle_x() if rear_axle else front_axle_x()
 	var c := frame_to_image("side", Vector2(x, r), sz)
-	return {"cx": c.x, "cy": c.y, "r": r / float(views["side"]["mpp"])}
+	return {"cx": c.x, "cy": c.y, "r": r / view_scale(views["side"]).y}
 
 func wheel_crop(rear_axle: bool) -> Dictionary:
 	var key := "rear" if rear_axle and not wheels.get("rear_same", true) else "front"

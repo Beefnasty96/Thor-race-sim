@@ -68,6 +68,28 @@ static func fake_dash_photo() -> Image:
 					img.set_pixel(x, y, Color(0.9, 0.9, 0.92))
 	return img
 
+## Inside of the driver's door, seen from the passenger seat (forward = right).
+static func fake_door_photo() -> Image:
+	var img := Image.create(1400, 800, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.42, 0.33, 0.24))                                          # tan door card
+	img.fill_rect(Rect2i(0, 0, 1400, 230), Color(0.62, 0.68, 0.74))            # window
+	img.fill_rect(Rect2i(0, 230, 1400, 30), Color(0.15, 0.13, 0.12))           # sill
+	img.fill_rect(Rect2i(150, 420, 900, 60), Color(0.3, 0.23, 0.17))           # armrest
+	img.fill_rect(Rect2i(1050, 330, 140, 50), Color(0.75, 0.75, 0.78))         # handle
+	for y in range(560, 740):
+		for x in range(250, 430):
+			if Vector2(x - 340, y - 650).length() < 85:
+				img.set_pixel(x, y, Color(0.08, 0.08, 0.08))                    # speaker
+	return img
+
+## Headliner from below: grey cloth, dome light in the middle.
+static func fake_ceiling_photo() -> Image:
+	var img := Image.create(1000, 1400, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.68, 0.67, 0.64))
+	img.fill_rect(Rect2i(420, 640, 160, 120), Color(0.95, 0.93, 0.8))         # dome light
+	img.fill_rect(Rect2i(0, 0, 1000, 60), Color(0.2, 0.2, 0.22))              # front edge
+	return img
+
 ## A three-spoke steering wheel, face-on.
 static func fake_steering_photo() -> Image:
 	var img := Image.create(800, 800, false, Image.FORMAT_RGBA8)
@@ -328,16 +350,52 @@ func _process(delta: float) -> void:
 			print("INTERIOR TEST: gauges %d (on dash %s), holes %d, msg: %s" % [gs.size(), str(gs.map(func(g): return g["on_dash"])), pj.steering()["holes"].size(), mdi2.hint.text])
 		28:
 			_shot("porter_22_driver_seat")
+			app.modeler._hide_wheel(true)
+			app.modeler.dash_view.stretch(1.08, 0.94)
+			print("STRETCH TEST: dash sx %.3f sy %.3f" % [app.project.views["dash"]["sx"], app.project.views["dash"]["sy"]])
 			var sc: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc.scroll_vertical = int(app.modeler.dash_view.position.y) - 40
 		29:
 			_shot("porter_23_dash_photo_gauges")
+			var has_wheel := false
+			for c in app.modeler.view.cabin.get_children():
+				if c.name == "SteeringWheel" and not c.is_queued_for_deletion():
+					has_wheel = true
+			print("WHEEL TOGGLE: wheel shown while hidden = %s" % str(has_wheel))
+			app.modeler._hide_wheel(false)
 			var sc2: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc2.scroll_vertical = int(app.modeler.steer_view.position.y) - 60
 		30:
 			_shot("porter_24_steering_holes")
-			app.modeler._start_edit_dash()
+			# inside panels: door + ceiling photos, Auto paint, look toward the driver's door
+			var mdp: PorterModeler = app.modeler
+			app.project.import_image("door", fake_door_photo())
+			mdp.on_photo_loaded("door")
+			app.project.import_image("ceiling", fake_ceiling_photo())
+			mdp.on_photo_loaded("ceiling")
+			mdp._auto_inside()
+			mdp._hide_wheel(true)
+			mdp.view.yaw = deg_to_rad(-140.0 + 70.0)
+			mdp.view.pitch = deg_to_rad(10.0)
+			mdp.view._update_cam()
+			var cnt := {}
+			for fi in mdp.mesh.faces.size():
+				var ir := mdp.mesh.inner_region_of(fi)
+				cnt[ir] = cnt.get(ir, 0) + 1
+			print("INSIDE TEST: ", cnt, " surfaces ", mdp.view.interior_mi.mesh.get_surface_count() if mdp.view.interior_mi.mesh else 0)
 		31:
+			_shot("porter_24b_inside_door")
+			var mdp2: PorterModeler = app.modeler
+			mdp2.view.yaw = deg_to_rad(-140.0 + 30.0)
+			mdp2.view.pitch = deg_to_rad(70.0)
+			mdp2.view._update_cam()
+			var sc3: ScrollContainer = mdp2.interior_panel.get_child(0)
+			sc3.scroll_vertical = int(mdp2.inside_photo_view.position.y) - 120
+		32:
+			_shot("porter_24c_inside_ceiling_panel")
+			app.modeler._hide_wheel(false)
+			app.modeler._start_edit_dash()
+		33:
 			_shot("porter_25_edit_dash")
 			# from the driver's seat: tap the top-rear corner of the dash at the door, drag it up
 			var mde: PorterModeler = app.modeler
@@ -361,7 +419,7 @@ func _process(delta: float) -> void:
 			var up := InputEventScreenTouch.new(); up.index = 0; up.position = sp + Vector2(0, -72); up.pressed = false
 			mv._gui_input(up)
 			print("SEAT EDIT: cabin editing %s, selected %d, moved %.3f m up, %.3f m sideways" % [str(mv.cabin_editing()), mv.sel_verts.size(), mv.mesh.verts[best].y - before.y, absf(mv.mesh.verts[best].x - before.x)])
-		32:
+		34:
 			_shot("porter_25b_edit_dash_seat_moved")
 			app.modeler._end_edit_dash()
 			app.modeler._set_mode("shape", true)
@@ -370,24 +428,24 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p2.dir() + f)
 			DirAccess.remove_absolute(p2.dir())
 			app.show_finder()
-		33:
+		35:
 			var fd: CarFinder = app.screen.get_child(0)
 			fd._pick_year(1999)
 			fd._pick_make("Chevrolet")
 			fd.search.text = "tahoe 4dr"
 			fd._fill_models()
-		34:
+		36:
 			var fd2: CarFinder = app.screen.get_child(0)
 			var r: Dictionary = VehicleDB.models(1999, "Chevrolet", "tahoe k1500 4dr")[0]
 			fd2._pick_model(r)
 			fd2.tire_form.front_size.text = "P245/75R16"
 			fd2.tire_form.front_psi.text = "35"
 			fd2.tire_form._update()
-		35:
+		37:
 			_shot("porter_18_car_finder")
 			var fd3: CarFinder = app.screen.get_child(0)
 			fd3.create_btn.pressed.emit()
-		36:
+		38:
 			_shot("porter_19_from_database")
 			print("DB PROJECT: %s  L %.3f  WB %.3f  overhang %.3f  tires %s/%s @ %d psi, radius %.3f" % [app.project.name, app.project.dims["length_m"], app.project.dims["wheelbase_m"], app.project.dims["front_overhang_m"], app.project.tires["front"], app.project.tires["rear"], app.project.tires["front_psi"], app.project.dims["tire_radius_m"]])
 			var p3: PorterProject = app.project
@@ -395,14 +453,14 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p3.dir() + f)
 			DirAccess.remove_absolute(p3.dir())
 			app.show_tire_step("My new car", {}, func(_p): pass)
-		37:
+		39:
 			_shot("porter_20_tire_step_empty")
 			var form: TireForm = app.screen.find_children("*", "TireForm", true, false)[0]
 			form.front_size.text = "245/40ZR18"
 			form.rear_size.text = "285/35zr18"
 			form.front_psi.text = "36"
 			form._update()
-		38:
+		40:
 			_shot("porter_21_tire_step_staggered")
 			get_tree().quit()
 	step += 1

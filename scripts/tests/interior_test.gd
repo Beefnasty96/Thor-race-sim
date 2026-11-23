@@ -148,6 +148,92 @@ func _initialize() -> void:
 	var tex := p.make_steering_texture()
 	_check(tex != null and tex.get_width() == PorterProject.STEERING_TEX_PX and tex.get_pixel(256, 256).g > 0.7, "steering picture is cut from the photo")
 
+	# --- stretching a photo to fix a slightly off-square shot
+	var sv: Dictionary = p.views["dash"]
+	var piv := Vector2(-0.3, float(sv["cy"]))
+	var piv_px := p.frame_to_image("dash", piv, Vector2(1200, 600))
+	var far_px := p.frame_to_image("dash", piv + Vector2(0.5, 0.1), Vector2(1200, 600))
+	p.stretch_about("dash", piv, 1.1, 0.9)
+	_check(p.frame_to_image("dash", piv, Vector2(1200, 600)).distance_to(piv_px) < 1e-3, "stretching keeps the pivot point where it was")
+	var far2 := p.frame_to_image("dash", piv + Vector2(0.5, 0.1), Vector2(1200, 600))
+	_check(absf((far2.x - piv_px.x) - (far_px.x - piv_px.x) / 1.1) < 0.01 and absf((far2.y - piv_px.y) - (far_px.y - piv_px.y) / 0.9) < 0.01, "photo 10% wider and 10% shorter: points land that much closer / further in the photo")
+	var rt := p.image_to_frame("dash", p.frame_to_image("dash", Vector2(0.2, 0.9), Vector2(1200, 600)), Vector2(1200, 600))
+	_check(rt.distance_to(Vector2(0.2, 0.9)) < 1e-6, "stretched photo maps back and forth exactly")
+	p.views["dash"]["rot"] = 0.3
+	p.views["dash"]["flip"] = true
+	var rt2 := p.image_to_frame("dash", p.frame_to_image("dash", Vector2(0.2, 0.9), Vector2(1200, 600)), Vector2(1200, 600))
+	_check(rt2.distance_to(Vector2(0.2, 0.9)) < 1e-6, "…also rotated and flipped")
+	p.stretch_about("dash", piv, 5.0, 0.01)
+	_check(float(p.views["dash"]["sx"]) == 2.0 and float(p.views["dash"]["sy"]) == 0.5, "stretch is limited to 0.5x..2x")
+	var side_p := PorterProject.new()
+	side_p.fill_from_car(def, "4door")
+	side_p.views["side"]["sx"] = 1.2
+	var ok_align := side_p.align_two_points("side", Vector2(400, 560), Vector2(1250, 560), Vector2(1600, 700))
+	var ta: Vector2 = side_p.align_targets("side")[0]["pos"]
+	_check(ok_align and side_p.image_to_frame("side", Vector2(400, 560), Vector2(1600, 700)).distance_to(ta) < 1e-6 and float(side_p.views["side"]["sx"]) == 1.2, "two-point align keeps the stretch and still lands both points")
+	DashPhotoView.fit_to_dash(p, dash, 1200)
+
+	# --- inside panels (paint on the inside of the shell)
+	var body := HalfMesh.from_template("suv", p.dims)
+	var fi0 := 0
+	for fi in body.faces.size():
+		if body.regions[fi] == "paint" and body.face_normal(body.faces[fi]).x < -0.6:
+			fi0 = fi
+			break
+	_check(body.inner_region_of(fi0) == "dark", "inside paint defaults to dark plastic")
+	body.set_inner_region([fi0], "photo:door")
+	_check(body.region_of(fi0) == "paint" and body.inner_region_of(fi0) == "photo:door" and body.regions[fi0] == "paint|photo:door", "inside paint is kept next to the outside paint")
+	body.set_region([fi0], "photo:side")
+	_check(body.region_of(fi0) == "photo:side" and body.inner_region_of(fi0) == "photo:door", "repainting the outside keeps the inside")
+	_check(HalfMesh.region_base(body.regions[fi0]) == "photo" and HalfMesh.inner_base(body.regions[fi0]) == "photo", "region parts read back")
+	_check(HalfMesh.region_valid("paint|photo:ceiling") and HalfMesh.region_valid("glass|tan") and not HalfMesh.region_valid("paint|photo:side") and not HalfMesh.region_valid("paint|chrome"), "inside regions validate")
+	var loaded := HalfMesh.from_dict(body.to_dict())
+	_check(loaded.regions[fi0] == "photo:side|photo:door", "inside paint saves and loads")
+	# a window cut through a panel keeps the panel's inside paint on the pieces around it
+	var before_n := body.faces.size()
+	var zc := body.face_center(body.faces[fi0])
+	var win := PackedVector2Array()
+	for q in [Vector2(-0.12, -0.08), Vector2(0.12, -0.08), Vector2(0.12, 0.08), Vector2(-0.12, 0.08)]:
+		win.append(HalfMesh.view_to2d("side", zc) + q)
+	var msg := body.cut_window("side", win)
+	var kept := 0
+	for fi in body.faces.size():
+		if body.inner_region_of(fi) == "photo:door" and HalfMesh.region_base(body.regions[fi]) != "glass":
+			kept += 1
+	_check(msg == "" and body.faces.size() > before_n and kept >= 2, "window cut: the panel's pieces keep the door photo inside (%d)" % kept)
+	_check(body.connected_same_region(fi0, true).size() >= 1, "fill can follow the inside paint")
+	# projections of the inside photos
+	_check(PhotoTexturer.world_to_frame(p, "door", Vector3(-0.9, 1.0, -0.5)) == Vector2(0.5, 1.0), "door photo: forward is to the right")
+	_check(PhotoTexturer.world_to_frame(p, "pillar", Vector3(0.7, 1.4, -1.0)) == PhotoTexturer.world_to_frame(p, "pillar", Vector3(-0.7, 1.4, -1.0)), "both A-pillars use the same photo")
+	_check(PhotoTexturer.world_to_frame(p, "ceiling", Vector3(-0.4, 1.8, -0.6)) == Vector2(0.4, 0.6), "ceiling photo: top toward the windshield")
+	# build with photos
+	var dimg := Image.create(800, 500, false, Image.FORMAT_RGBA8)
+	dimg.fill(Color(0.6, 0.3, 0.2))
+	_check(p.import_image("door", dimg) == "", "door photo imports")
+	DashPhotoView.fit_to_outline(p, "door", DashPhotoView.panel_outline(p, body, "door"), 800)
+	_check(absf(float(p.views["door"]["mpp"]) * 800.0 - 1.2) < 1e-6, "door photo starts fitted to the front door (1.2 m), not the whole side")
+	var built_in := PhotoTexturer.build_inside(body, p, {}, {"door": p.load_photo("door")})
+	_check((built_in[1] as Array) == ["door"] and (built_in[0] as ArrayMesh).get_surface_count() == 2, "inside builds a colour surface and a door-photo surface")
+	var tv: PackedVector3Array = (built_in[0] as ArrayMesh).surface_get_arrays(1)[Mesh.ARRAY_VERTEX]
+	var tn: PackedVector3Array = (built_in[0] as ArrayMesh).surface_get_arrays(1)[Mesh.ARRAY_NORMAL]
+	var faces_in := true
+	for t in range(0, tv.size(), 3):
+		var ctr := (tv[t] + tv[t + 1] + tv[t + 2]) / 3.0
+		if tn[t].dot(Vector3(-ctr.x, 0, 0)) <= 0.0:
+			faces_in = false
+	_check(faces_in and tv.size() > 0, "door photo faces point into the cabin on both sides")
+	var plain_in := body.build_interior(0.02)
+	_check(plain_in.get_surface_count() == 1, "plain inside still builds (one colour per face)")
+	# auto
+	var body2 := HalfMesh.from_template("suv", p.dims)
+	var n_auto := InteriorBuilder.auto_inside(body2, {"door": true, "ceiling": false, "pillar": true})
+	var got := {}
+	for fi in body2.faces.size():
+		got[body2.inner_region_of(fi)] = got.get(body2.inner_region_of(fi), 0) + 1
+	_check(n_auto > 0 and got.get("photo:door", 0) > 0 and got.get("lining", 0) > 0 and got.get("carpet", 0) > 0, "auto: door photo on the sides, grey cloth roof without a ceiling photo, carpet floor %s" % str(got))
+	_check(got.get("photo:pillar", 0) > 0, "auto: the panels beside the windshield get the pillar photo")
+	_check(DashPhotoView.panel_outline(p, body2, "door").size() > 0, "the door photo editor has an outline to fit to")
+
 	# --- what export hands the game
 	p.interior["gauges"] = [g, InteriorBuilder.make_gauge("speedo", -0.2, float(fr["y_top"]) - 0.12, dash), g_off]
 	var mi := p.interior_model_info()

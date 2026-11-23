@@ -268,3 +268,61 @@ static func face_area(holes: Array, sides: int = 24) -> float:
 static func steering_transform(center: Vector3, tilt_deg: float, steer_angle: float = 0.0) -> Transform3D:
 	var b := Basis(Vector3.RIGHT, deg_to_rad(-tilt_deg)) * Basis(Vector3.BACK, -steer_angle)
 	return Transform3D(b, center)
+
+# ---------------------------------------------------------------- inside panels
+
+## Body faces an interior photo suits (used for the outline before anything
+## is painted, and by Auto): door = side panels, ceiling = roof, pillar =
+## panels next to the windshield that aren't roof.
+static func suits_inner_photo(m: HalfMesh, view: String) -> Array:
+	var out := []
+	var glass_front := {}
+	if view == "pillar":
+		for fi in m.faces.size():
+			if HalfMesh.region_base(m.regions[fi]) == "glass" and m.face_normal(m.faces[fi]).z < -0.4:
+				var f: PackedInt32Array = m.faces[fi]
+				for k in f.size():
+					glass_front[HalfMesh.edge_key(f[k], f[(k + 1) % f.size()])] = true
+	for fi in m.faces.size():
+		if HalfMesh.region_base(m.regions[fi]) == "glass":
+			continue
+		var f: PackedInt32Array = m.faces[fi]
+		var n := m.face_normal(f)
+		match view:
+			"door":
+				if n.x < -0.6:
+					out.append(fi)
+			"ceiling":
+				if n.y > 0.6:
+					out.append(fi)
+			"pillar":
+				if n.y > 0.8:
+					continue
+				for k in f.size():
+					if glass_front.has(HalfMesh.edge_key(f[k], f[(k + 1) % f.size()])):
+						out.append(fi)
+						break
+	return out
+
+## One-tap inside paint: ceiling / doors / pillars take their photos where
+## loaded (else grey cloth / dark plastic), the floor is carpet. Returns the
+## number of faces painted.
+static func auto_inside(m: HalfMesh, has_photo: Dictionary) -> int:
+	var n_done := 0
+	var assign := {}
+	for fi in m.faces.size():
+		if HalfMesh.region_base(m.regions[fi]) == "glass":
+			continue
+		var n := m.face_normal(m.faces[fi])
+		if n.y < -0.6:
+			assign[fi] = "carpet"
+		elif n.y > 0.6:
+			assign[fi] = "photo:ceiling" if has_photo.get("ceiling", false) else "lining"
+	for fi in suits_inner_photo(m, "door"):
+		assign[fi] = "photo:door" if has_photo.get("door", false) else "dark"
+	for fi in suits_inner_photo(m, "pillar"):
+		assign[fi] = "photo:pillar" if has_photo.get("pillar", false) else "lining"
+	for fi in assign:
+		m.set_inner_region([fi], assign[fi])
+		n_done += 1
+	return n_done
