@@ -301,9 +301,15 @@
    "name": "Black",
    "codes": "41/WA8555",
    "years": [
-    1999
+    1999,
+    2005,
+    2010
    ],
    "models": [
+    "Camaro",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "all"
    ],
    "finish": "solid",
@@ -315,7 +321,9 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
    ]
   },
   {
@@ -718,10 +726,16 @@
    "name": "White",
    "codes": "50/WA8624",
    "years": [
-    1999
+    1999,
+    2005,
+    2010
    ],
    "models": [
+    "Camaro",
     "SUVs",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "trucks"
    ],
    "finish": "solid",
@@ -733,7 +747,9 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
    ]
   },
   {
@@ -1015,10 +1031,14 @@
    "name": "Cashmere Metallic",
    "codes": "15/WA929L",
    "years": [
-    2004
+    2004,
+    2005
    ],
    "models": [
     "SUVs",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "trucks"
    ],
    "finish": "metallic",
@@ -1030,7 +1050,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
    ]
   },
   {
@@ -1058,10 +1079,14 @@
    "name": "Dark Ming Blue Metallic",
    "codes": "25/WA722J",
    "years": [
-    2004
+    2004,
+    2005
    ],
    "models": [
     "SUVs",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "trucks"
    ],
    "finish": "metallic",
@@ -1073,16 +1098,21 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
    ]
   },
   {
    "name": "Dark Spiral Gray Metallic",
    "codes": "62/WA805K",
    "years": [
-    2004
+    2004,
+    2005
    ],
    "models": [
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "trucks"
    ],
    "finish": "metallic",
@@ -1094,17 +1124,22 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
    ]
   },
   {
    "name": "Fine Silver Birch Metallic",
    "codes": "59/WA926L",
    "years": [
-    2004
+    2004,
+    2005
    ],
    "models": [
     "SUVs",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "trucks"
    ],
    "finish": "metallic",
@@ -1116,17 +1151,22 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
    ]
   },
   {
    "name": "Sport Red Metallic",
    "codes": "63/WA817K",
    "years": [
-    2004
+    2004,
+    2005
    ],
    "models": [
     "SUVs",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
     "trucks"
    ],
    "finish": "metallic",
@@ -1138,7 +1178,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
    ]
   },
   {
@@ -1184,6 +1225,56 @@
    ]
   },
   {
+   "name": "Bermuda Blue Metallic",
+   "codes": "26/WA214M",
+   "years": [
+    2005
+   ],
+   "models": [
+    "Silverado",
+    "Suburban",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Graystone Metallic",
+   "codes": "16/WA213M",
+   "years": [
+    2005,
+    2008
+   ],
+   "models": [
+    "SUVs",
+    "Silverado",
+    "Suburban",
+    "Tahoe",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.45,
+    0.45,
+    0.43
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
    "name": "Gold Mist Metallic",
    "codes": "51/WA316N",
    "years": [
@@ -1199,28 +1290,6 @@
     0.68,
     0.56,
     0.32
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
-   ]
-  },
-  {
-   "name": "Graystone Metallic",
-   "codes": "16/WA213M",
-   "years": [
-    2008
-   ],
-   "models": [
-    "SUVs",
-    "trucks"
-   ],
-   "finish": "metallic",
-   "metallic": 0.6,
-   "rgb": [
-    0.45,
-    0.45,
-    0.43
    ],
    "rgb_estimated": true,
    "sources": [
@@ -1252,9 +1321,11 @@
    "name": "Red Jewel",
    "codes": "80/WA301N",
    "years": [
-    2008
+    2008,
+    2010
    ],
    "models": [
+    "Camaro",
     "SUVs",
     "trucks"
    ],
@@ -1267,7 +1338,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html",
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
    ]
   },
   {
@@ -1337,24 +1409,171 @@
    ]
   },
   {
-   "name": "Abalone White Tricoat",
-   "codes": "G1W/GE8/WA486B",
+   "name": "Aqua Blue Metallic",
+   "codes": "61/WA638R",
    "years": [
-    2019
+    2010
    ],
    "models": [
     "Camaro"
    ],
-   "finish": "tricoat",
-   "metallic": 0.5,
+   "finish": "metallic",
+   "metallic": 0.6,
    "rgb": [
-    0.92,
-    0.92,
-    0.9
+    0.13,
+    0.25,
+    0.52
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Blade Silver Metallic",
+   "codes": "17U/WA636R",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Cyber Gray Metallic",
+   "codes": "57U/WA637R",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Imperial Blue Metallic",
+   "codes": "37U/WA403P",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Inferno Orange Metallic",
+   "codes": "28/WA502Q",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.85,
+    0.35,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Red",
+   "codes": "74/WA9260",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Synergy Green Metallic",
+   "codes": "WA708S/GHS",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Yellow",
+   "codes": "34/WA9414",
+   "years": [
+    2010
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.8,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html"
    ]
   },
   {
@@ -1400,27 +1619,6 @@
    ]
   },
   {
-   "name": "Glory Red Pearl",
-   "codes": "WA434B/GPJ",
-   "years": [
-    2019
-   ],
-   "models": [
-    "Camaro"
-   ],
-   "finish": "pearl",
-   "metallic": 0.45,
-   "rgb": [
-    0.62,
-    0.07,
-    0.07
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
-   ]
-  },
-  {
    "name": "Satin Steel Metallic",
    "codes": "WA464C/G9K",
    "years": [
@@ -1435,27 +1633,6 @@
     0.46,
     0.48,
     0.5
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Chevrolet/2019-Chevrolet-Camaro.html"
-   ]
-  },
-  {
-   "name": "Switchblade Silver Pearl",
-   "codes": "WA636R/GAN",
-   "years": [
-    2019
-   ],
-   "models": [
-    "Camaro"
-   ],
-   "finish": "pearl",
-   "metallic": 0.45,
-   "rgb": [
-    0.66,
-    0.67,
-    0.69
    ],
    "rgb_estimated": true,
    "sources": [

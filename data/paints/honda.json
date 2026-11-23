@@ -2,6 +2,347 @@
  "make": "Honda",
  "paints": [
   {
+   "name": "Aztec Green Pearl",
+   "codes": "BG-29P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Camellia Red Pearl",
+   "codes": "R-86P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Captiva Blue Pearl",
+   "codes": "B-62P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Champion White",
+   "codes": "NH0",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.95,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Fiesta Green Pearl",
+   "codes": "GY-15P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Frost White",
+   "codes": "NH-538",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Granada Black Metallic",
+   "codes": "NH-503P",
+   "years": [
+    1994,
+    1997
+   ],
+   "models": [
+    "Civic",
+    "Prelude"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Green Pearl",
+   "codes": "BG-31P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Harvard Blue Pearl",
+   "codes": "B-63P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Horizon Gray Metallic",
+   "codes": "RP-21M",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Lausanne Green Pearl",
+   "codes": "G-71P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Medium Gray",
+   "codes": "NH-575M",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.357,
+    0.365,
+    0.383
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Milano Red",
+   "codes": "R-81",
+   "years": [
+    1994,
+    1999
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Phantom Gray Pearl",
+   "codes": "NH-561P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Torino Red Pearl",
+   "codes": "R-72P",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Vogue Silver Metallic",
+   "codes": "NH-550M",
+   "years": [
+    1994
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html"
+   ]
+  },
+  {
    "name": "Cypress Green Pearl",
    "codes": "G-82P",
    "years": [
@@ -64,27 +405,6 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html",
-    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
-   ]
-  },
-  {
-   "name": "Granada Black Metallic",
-   "codes": "NH-503P",
-   "years": [
-    1997
-   ],
-   "models": [
-    "Prelude"
-   ],
-   "finish": "metallic",
-   "metallic": 0.6,
-   "rgb": [
-    0.035,
-    0.035,
-    0.04
-   ],
-   "rgb_estimated": true,
-   "sources": [
     "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
    ]
   },
@@ -160,7 +480,8 @@
    "years": [
     1997,
     1999,
-    2003
+    2003,
+    2006
    ],
    "models": [
     "Accord",
@@ -178,7 +499,8 @@
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html",
     "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html",
-    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/1997-Honda-Prelude.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
    ]
   },
   {
@@ -409,27 +731,6 @@
     0.675,
     0.675,
     0.675
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/1999-Honda-Civic.html"
-   ]
-  },
-  {
-   "name": "Milano Red",
-   "codes": "R-81",
-   "years": [
-    1999
-   ],
-   "models": [
-    "Civic"
-   ],
-   "finish": "solid",
-   "metallic": 0.05,
-   "rgb": [
-    0.62,
-    0.07,
-    0.07
    ],
    "rgb_estimated": true,
    "sources": [
@@ -737,10 +1038,12 @@
    "name": "Nighthawk Black Pearl",
    "codes": "B-92P",
    "years": [
-    2003
+    2003,
+    2006
    ],
    "models": [
-    "Accord"
+    "Accord",
+    "Civic"
    ],
    "finish": "pearl",
    "metallic": 0.45,
@@ -751,7 +1054,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
    ]
   },
   {
@@ -836,6 +1140,155 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Honda/2003-Honda-Accord.html"
+   ]
+  },
+  {
+   "name": "Alabaster Silver Metallic",
+   "codes": "NH-700M",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Fiji Blue Pearl",
+   "codes": "B-529P",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Galaxy Gray Metallic",
+   "codes": "NH-701M",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Opal Silver Blue Metallic",
+   "codes": "BG-51M",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Rallye Red",
+   "codes": "R-513",
+   "years": [
+    2006,
+    2020
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Royal Blue Pearl",
+   "codes": "B-536P",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
+   ]
+  },
+  {
+   "name": "Tango Red Pearl Metallic",
+   "codes": "R-525P",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Civic"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html"
    ]
   },
   {
@@ -929,6 +1382,7 @@
     2020
    ],
    "models": [
+    "CR-V",
     "Civic"
    ],
    "finish": "pearl",
@@ -940,7 +1394,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   },
   {
@@ -950,6 +1405,7 @@
     2020
    ],
    "models": [
+    "CR-V",
     "Civic"
    ],
    "finish": "metallic",
@@ -961,7 +1417,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   },
   {
@@ -971,6 +1428,7 @@
     2020
    ],
    "models": [
+    "CR-V",
     "Civic"
    ],
    "finish": "metallic",
@@ -982,7 +1440,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   },
   {
@@ -992,6 +1451,7 @@
     2020
    ],
    "models": [
+    "CR-V",
     "Civic"
    ],
    "finish": "pearl",
@@ -1003,7 +1463,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   },
   {
@@ -1013,6 +1474,7 @@
     2020
    ],
    "models": [
+    "CR-V",
     "Civic"
    ],
    "finish": "tricoat",
@@ -1024,7 +1486,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   },
   {
@@ -1049,16 +1512,16 @@
    ]
   },
   {
-   "name": "Rallye Red",
-   "codes": "R-513",
+   "name": "Radiant Red Metallic",
+   "codes": "R-569M",
    "years": [
     2020
    ],
    "models": [
-    "Civic"
+    "CR-V"
    ],
-   "finish": "solid",
-   "metallic": 0.05,
+   "finish": "metallic",
+   "metallic": 0.6,
    "rgb": [
     0.62,
     0.07,
@@ -1066,7 +1529,7 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   },
   {
@@ -1076,6 +1539,7 @@
     2020
    ],
    "models": [
+    "CR-V",
     "Civic"
    ],
    "finish": "solid",
@@ -1087,7 +1551,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html"
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-Civic.html",
+    "https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html"
    ]
   }
  ]

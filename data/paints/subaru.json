@@ -632,6 +632,239 @@
    ]
   },
   {
+   "name": "Crystal Black Silica Pearl",
+   "codes": "D4S",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "Outback",
+    "STI",
+    "WRX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Crystal White Tricoat",
+   "codes": "K1X",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "Outback",
+    "STI",
+    "WRX"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Dark Gray Metallic",
+   "codes": "61K",
+   "years": [
+    2015
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.231,
+    0.237,
+    0.248
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Ice Silver Metallic",
+   "codes": "G1U",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "Outback",
+    "STI",
+    "WRX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Lapis Blue Metallic",
+   "codes": "K3X",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "Outback",
+    "STI",
+    "WRX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html"
+   ]
+  },
+  {
+   "name": "Tungsten Metallic",
+   "codes": "K7U",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Outback"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.45,
+    0.45,
+    0.44
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html"
+   ]
+  },
+  {
+   "name": "Twilight Blue",
+   "codes": "H1Q",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Outback"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html"
+   ]
+  },
+  {
+   "name": "Venetian Red Pearl",
+   "codes": "H2Q",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Outback"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html"
+   ]
+  },
+  {
+   "name": "Wilderness Green Metallic",
+   "codes": "K4X",
+   "years": [
+    2015
+   ],
+   "models": [
+    "Outback"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html"
+   ]
+  },
+  {
+   "name": "World Rally Blue 2 Tricoat",
+   "codes": "K7X",
+   "years": [
+    2015,
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.1,
+    0.25,
+    0.62
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html",
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html"
+   ]
+  },
+  {
    "name": "Ceramic White",
    "codes": "M6Y",
    "years": [
@@ -669,94 +902,6 @@
     0.42,
     0.43,
     0.45
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
-   ]
-  },
-  {
-   "name": "Crystal Black Silica Pearl",
-   "codes": "D4S",
-   "years": [
-    2020
-   ],
-   "models": [
-    "STI",
-    "WRX"
-   ],
-   "finish": "pearl",
-   "metallic": 0.45,
-   "rgb": [
-    0.035,
-    0.035,
-    0.04
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
-   ]
-  },
-  {
-   "name": "Crystal White Tricoat",
-   "codes": "K1X",
-   "years": [
-    2020
-   ],
-   "models": [
-    "STI",
-    "WRX"
-   ],
-   "finish": "tricoat",
-   "metallic": 0.5,
-   "rgb": [
-    0.92,
-    0.92,
-    0.9
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
-   ]
-  },
-  {
-   "name": "Ice Silver Metallic",
-   "codes": "G1U",
-   "years": [
-    2020
-   ],
-   "models": [
-    "STI",
-    "WRX"
-   ],
-   "finish": "metallic",
-   "metallic": 0.6,
-   "rgb": [
-    0.66,
-    0.67,
-    0.69
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
-   ]
-  },
-  {
-   "name": "Lapis Blue Metallic",
-   "codes": "K3X",
-   "years": [
-    2020
-   ],
-   "models": [
-    "STI",
-    "WRX"
-   ],
-   "finish": "metallic",
-   "metallic": 0.6,
-   "rgb": [
-    0.13,
-    0.25,
-    0.52
    ],
    "rgb_estimated": true,
    "sources": [
@@ -823,28 +968,6 @@
     0.62,
     0.07,
     0.07
-   ],
-   "rgb_estimated": true,
-   "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
-   ]
-  },
-  {
-   "name": "World Rally Blue 2 Tricoat",
-   "codes": "K7X",
-   "years": [
-    2020
-   ],
-   "models": [
-    "STI",
-    "WRX"
-   ],
-   "finish": "tricoat",
-   "metallic": 0.5,
-   "rgb": [
-    0.1,
-    0.25,
-    0.62
    ],
    "rgb_estimated": true,
    "sources": [

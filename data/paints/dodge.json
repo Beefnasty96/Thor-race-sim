@@ -188,7 +188,9 @@
     "Challenger",
     "Pick-up",
     "Pickup",
-    "Ram"
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
    ],
    "finish": "solid",
    "metallic": 0.05,
@@ -200,7 +202,8 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html",
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   },
   {
@@ -256,12 +259,15 @@
    "codes": "R4/PR4",
    "years": [
     2002,
-    2003
+    2003,
+    2020
    ],
    "models": [
     "Pick-up",
     "Pickup",
     "Ram",
+    "Ram 1500",
+    "Ram 2500",
     "all"
    ],
    "finish": "solid",
@@ -274,7 +280,8 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Flame-Red-Clearcoat-R4-PR4.html",
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   },
   {
@@ -420,13 +427,41 @@
    ]
   },
   {
+   "name": "Blue Streak Pearl",
+   "codes": "CL/KCL",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
+   ]
+  },
+  {
    "name": "Ceramic Gray",
    "codes": "DN/PDN",
    "years": [
     2020
    ],
    "models": [
-    "Challenger"
+    "Challenger",
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
    ],
    "finish": "solid",
    "metallic": 0.05,
@@ -437,7 +472,32 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
+   ]
+  },
+  {
+   "name": "Diamond Black Crystal Pearl",
+   "codes": "XJ/PXJ",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   },
   {
@@ -510,7 +570,11 @@
     2020
    ],
    "models": [
-    "Challenger"
+    "Challenger",
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -521,7 +585,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   },
   {
@@ -543,6 +608,30 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Hydro Blue Pearl",
+   "codes": "BJ/MBJ",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.05,
+    0.36,
+    0.62
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   },
   {
@@ -573,7 +662,11 @@
     2020
    ],
    "models": [
-    "Challenger"
+    "Challenger",
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -584,7 +677,32 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html",
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
+   ]
+  },
+  {
+   "name": "Patriot Blue Pearl",
+   "codes": "PX/RPX",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   },
   {
@@ -648,6 +766,30 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html"
+   ]
+  },
+  {
+   "name": "Walnut Brown Metallic",
+   "codes": "UW/RUW",
+   "years": [
+    2020
+   ],
+   "models": [
+    "Pickup",
+    "Ram",
+    "Ram 1500",
+    "Ram 2500"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.35,
+    0.22,
+    0.13
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
    ]
   }
  ]

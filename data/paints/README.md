@@ -25,4 +25,10 @@ for the 1990s–2000s, then 2015+ for all major makes.
 - Batch 1: GM / Ford / Dodge 1990s–2000s (111 colors).
 - Batch 2: Toyota, Honda, Nissan, Mazda, Subaru, Mitsubishi 1990s–2000s;
   more Ford, Dodge and Jeep; first 2019–2020 colors (Supra, Camaro, Mustang,
-  Civic, WRX, 370Z, Challenger, Wrangler). Database total: 386 colors, 12 makes.
+  Civic, WRX, 370Z, Challenger, Wrangler). Database total after batch 2: 386 colors.
+- Batch 3: more model years (2005 Tahoe, 2010 Camaro, 2015 Mustang, 1994 and
+  2006 Civic, 2008 Lancer) and 2015+ trucks and SUVs (F-Series, Ram, Tacoma,
+  4Runner, Frontier, CR-V, Outback, Camry, WRX). Database total: 460 colors.
+- 2019+ GM model pages on the source site list GM's internal paint names and
+  colors pooled from other models, so they're left out until a GM source
+  (order guide or press release) can be checked.

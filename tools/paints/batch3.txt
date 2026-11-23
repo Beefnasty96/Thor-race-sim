@@ -1,0 +1,146 @@
+# Batch 3: more model years + 2015+ trucks and SUVs
+# make | name | codes | years | models | source
+Chevrolet|White|50/WA8624|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Black|41/WA8555|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Fine Silver Birch Metallic|59/WA926L|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Graystone Metallic|16/WA213M|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Dark Spiral Gray Metallic|62/WA805K|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Bermuda Blue Metallic|26/WA214M|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Dark Ming Blue Metallic|25/WA722J|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Sport Red Metallic|63/WA817K|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|Cashmere Metallic|15/WA929L|2005|Tahoe,Suburban,Silverado|https://www.paintscratch.com/touch_up_paint/Chevrolet/2005-Chevrolet-Tahoe.html
+Chevrolet|White|50/WA8624|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Black|41/WA8555|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Imperial Blue Metallic|37U/WA403P|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Cyber Gray Metallic|57U/WA637R|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Red Jewel|80/WA301N|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Inferno Orange Metallic|28/WA502Q|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Synergy Green Metallic|WA708S/GHS|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Blade Silver Metallic|17U/WA636R|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Yellow|34/WA9414|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Aqua Blue Metallic|61/WA638R|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Chevrolet|Red|74/WA9260|2010|Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/2010-Chevrolet-Camaro.html
+Ford|Oxford White|YZ|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Ruby Red Tricoat|RR|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Deep Impact Blue Metallic|J4|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Ingot Silver Metallic|UX|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Avalanche|DR|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Magnetic Metallic|J7|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Race Red|PQ/M7236|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Kona Blue Metallic|L6|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Black Ebony|UA/UD|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Guard Metallic|HN|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Wimbledon White|N4|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Competition Orange|CY|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Triple Yellow Pearl|H3|2015|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html
+Ford|Oxford White|YZ|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Ingot Silver Metallic|UX|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Black|UM|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Iconic Silver Metallic|JS|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Magnetic Metallic|J7|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Blue Jeans Metallic|N1|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Velocity Blue|E7|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Race Red|PQ/M7236|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Pristine White Tricoat|AZ|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Lucid Red Pearl Tricoat|D4|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Lead Foot Gray|JX/M7394|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Abyss Gray|ME|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Blue Diamond Metallic|FT|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Magma Red Metallic|E2|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Ford|Silver Spruce Metallic|BN|2020|F-150,F-250,F-350,F-Series|https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html
+Dodge|Diamond Black Crystal Pearl|XJ/PXJ|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Maximum Steel Metallic|AR/KAR|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Blue Streak Pearl|CL/KCL|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Bright White|W7/GW7|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Flame Red|R4/PR4|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Hydro Blue Pearl|BJ/MBJ|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Patriot Blue Pearl|PX/RPX|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Granite Crystal Metallic|AU/LAU|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Walnut Brown Metallic|UW/RUW|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Dodge|Ceramic Gray|DN/PDN|2020|Ram,Ram 1500,Ram 2500,Pickup|https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html
+Toyota|Super White 2|040|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Blizzard Pearl Tricoat|070|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Magnetic Gray Metallic|1G3|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Attitude Black Pearl|218|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Silver Metallic|1D6|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Barcelona Red Mica Metallic|3R3|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Cement Gray Metallic|1H5|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Voodoo Blue|8T6|2020|Tacoma|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html
+Toyota|Super White 2|040|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Blizzard Pearl Tricoat|070|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Magnetic Gray Metallic|1G3|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Attitude Black Pearl|218|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Barcelona Red Mica Metallic|3R3|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Silver Metallic|1F7|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Nautical Blue Metallic|8S6|2020|4Runner|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html
+Toyota|Wind Chill Pearl Tricoat|089|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Blizzard Pearl Tricoat|070|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Super White 2|040|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Magnetic Gray Metallic|1G3|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Attitude Black Pearl|218|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Predawn Grey Mica|1H1|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Silver Metallic|1J9|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Red Pearl|3T3|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Bright Red Tricoat|3U5|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Toyota|Blue Streak Metallic|8T7|2020|Camry|https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html
+Honda|Milano Red|R-81|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Harvard Blue Pearl|B-63P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Aztec Green Pearl|BG-29P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Green Pearl|BG-31P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Fiesta Green Pearl|GY-15P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Granada Black Metallic|NH-503P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Frost White|NH-538|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Captiva Blue Pearl|B-62P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Lausanne Green Pearl|G-71P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Vogue Silver Metallic|NH-550M|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Phantom Gray Pearl|NH-561P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Medium Gray|NH-575M|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Champion White|NH0|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Torino Red Pearl|R-72P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Camellia Red Pearl|R-86P|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Horizon Gray Metallic|RP-21M|1994|Civic|https://www.paintscratch.com/touch_up_paint/Honda/1994-Honda-Civic.html
+Honda|Alabaster Silver Metallic|NH-700M|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Taffeta White|NH-578|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Royal Blue Pearl|B-536P|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Rallye Red|R-513|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Nighthawk Black Pearl|B-92P|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Galaxy Gray Metallic|NH-701M|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Tango Red Pearl Metallic|R-525P|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Fiji Blue Pearl|B-529P|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Opal Silver Blue Metallic|BG-51M|2006|Civic|https://www.paintscratch.com/touch_up_paint/Honda/2006-Honda-Civic.html
+Honda|Platinum White Tricoat|NH-883P|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Honda|Crystal Black Pearl|NH-731P|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Honda|Lunar Silver Metallic|NH-830M|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Honda|Sonic Gray|NH-877P|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Honda|Obsidian Blue Pearl|B-588P|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Honda|Modern Steel Metallic|NH-797M|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Honda|Radiant Red Metallic|R-569M|2020|CR-V|https://www.paintscratch.com/touch_up_paint/Honda/2020-Honda-CR-V.html
+Subaru|Crystal White Tricoat|K1X|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Venetian Red Pearl|H2Q|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Ice Silver Metallic|G1U|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Tungsten Metallic|K7U|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Lapis Blue Metallic|K3X|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Twilight Blue|H1Q|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Crystal Black Silica Pearl|D4S|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Wilderness Green Metallic|K4X|2015|Outback|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-Outback.html
+Subaru|Crystal White Tricoat|K1X|2015|WRX,STI|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html
+Subaru|Dark Gray Metallic|61K|2015|WRX,STI|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html
+Subaru|Ice Silver Metallic|G1U|2015|WRX,STI|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html
+Subaru|World Rally Blue 2 Tricoat|K7X|2015|WRX,STI|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html
+Subaru|Crystal Black Silica Pearl|D4S|2015|WRX,STI|https://www.paintscratch.com/touch_up_paint/Subaru/2015-Subaru-WRX.html
+Nissan|White Pearl Tricoat|QAB|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Gray Metallic|KAD|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Black|KH3|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|White|QAK|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Silver Metallic|K23|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Medium Blue Metallic|RBG|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Red Pearl|NAH|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Black Pearl|G41|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Nissan|Forged Copper|CAU|2020|Frontier|https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-Frontier.html
+Mitsubishi|Rally Red Metallic|P26|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html
+Mitsubishi|Innsbruck White|W37|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html
+Mitsubishi|Labrador Black Pearl|X42|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html
+Mitsubishi|Cool Silver Metallic|A31|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html
+Mitsubishi|Octane Blue Pearl|D06|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html
+Mitsubishi|Lightning Blue|D02|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html
+Mitsubishi|Desert Sand Pearl|S18|2008|Lancer,Evolution,Evo|https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html

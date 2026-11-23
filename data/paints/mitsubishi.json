@@ -173,9 +173,12 @@
    "name": "Cool Silver Metallic",
    "codes": "A31",
    "years": [
-    2005
+    2005,
+    2008
    ],
    "models": [
+    "Evo",
+    "Evolution",
     "Lancer"
    ],
    "finish": "metallic",
@@ -187,7 +190,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html",
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
    ]
   },
   {
@@ -236,9 +240,12 @@
    "name": "Innsbruck White",
    "codes": "W37",
    "years": [
-    2005
+    2005,
+    2008
    ],
    "models": [
+    "Evo",
+    "Evolution",
     "Lancer"
    ],
    "finish": "solid",
@@ -250,7 +257,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html",
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
    ]
   },
   {
@@ -278,9 +286,12 @@
    "name": "Labrador Black Pearl",
    "codes": "X42",
    "years": [
-    2005
+    2005,
+    2008
    ],
    "models": [
+    "Evo",
+    "Evolution",
     "Lancer"
    ],
    "finish": "pearl",
@@ -292,7 +303,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html",
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
    ]
   },
   {
@@ -419,6 +431,98 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2005-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Desert Sand Pearl",
+   "codes": "S18",
+   "years": [
+    2008
+   ],
+   "models": [
+    "Evo",
+    "Evolution",
+    "Lancer"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.68,
+    0.6,
+    0.47
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Lightning Blue",
+   "codes": "D02",
+   "years": [
+    2008
+   ],
+   "models": [
+    "Evo",
+    "Evolution",
+    "Lancer"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Octane Blue Pearl",
+   "codes": "D06",
+   "years": [
+    2008
+   ],
+   "models": [
+    "Evo",
+    "Evolution",
+    "Lancer"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
+   ]
+  },
+  {
+   "name": "Rally Red Metallic",
+   "codes": "P26",
+   "years": [
+    2008
+   ],
+   "models": [
+    "Evo",
+    "Evolution",
+    "Lancer"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Mitsubishi/2008-Mitsubishi-Lancer.html"
    ]
   }
  ]
