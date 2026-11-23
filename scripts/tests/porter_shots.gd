@@ -351,6 +351,8 @@ func _process(delta: float) -> void:
 		28:
 			_shot("porter_22_driver_seat")
 			app.modeler._hide_wheel(true)
+			app.modeler.dash_view.stretch(1.08, 0.94)
+			print("STRETCH TEST: dash sx %.3f sy %.3f" % [app.project.views["dash"]["sx"], app.project.views["dash"]["sy"]])
 			var sc: ScrollContainer = app.modeler.interior_panel.get_child(0)
 			sc.scroll_vertical = int(app.modeler.dash_view.position.y) - 40
 		29:

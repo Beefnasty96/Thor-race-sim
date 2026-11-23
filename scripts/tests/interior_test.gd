@@ -148,6 +148,31 @@ func _initialize() -> void:
 	var tex := p.make_steering_texture()
 	_check(tex != null and tex.get_width() == PorterProject.STEERING_TEX_PX and tex.get_pixel(256, 256).g > 0.7, "steering picture is cut from the photo")
 
+	# --- stretching a photo to fix a slightly off-square shot
+	var sv: Dictionary = p.views["dash"]
+	var piv := Vector2(-0.3, float(sv["cy"]))
+	var piv_px := p.frame_to_image("dash", piv, Vector2(1200, 600))
+	var far_px := p.frame_to_image("dash", piv + Vector2(0.5, 0.1), Vector2(1200, 600))
+	p.stretch_about("dash", piv, 1.1, 0.9)
+	_check(p.frame_to_image("dash", piv, Vector2(1200, 600)).distance_to(piv_px) < 1e-3, "stretching keeps the pivot point where it was")
+	var far2 := p.frame_to_image("dash", piv + Vector2(0.5, 0.1), Vector2(1200, 600))
+	_check(absf((far2.x - piv_px.x) - (far_px.x - piv_px.x) / 1.1) < 0.01 and absf((far2.y - piv_px.y) - (far_px.y - piv_px.y) / 0.9) < 0.01, "photo 10% wider and 10% shorter: points land that much closer / further in the photo")
+	var rt := p.image_to_frame("dash", p.frame_to_image("dash", Vector2(0.2, 0.9), Vector2(1200, 600)), Vector2(1200, 600))
+	_check(rt.distance_to(Vector2(0.2, 0.9)) < 1e-6, "stretched photo maps back and forth exactly")
+	p.views["dash"]["rot"] = 0.3
+	p.views["dash"]["flip"] = true
+	var rt2 := p.image_to_frame("dash", p.frame_to_image("dash", Vector2(0.2, 0.9), Vector2(1200, 600)), Vector2(1200, 600))
+	_check(rt2.distance_to(Vector2(0.2, 0.9)) < 1e-6, "…also rotated and flipped")
+	p.stretch_about("dash", piv, 5.0, 0.01)
+	_check(float(p.views["dash"]["sx"]) == 2.0 and float(p.views["dash"]["sy"]) == 0.5, "stretch is limited to 0.5x..2x")
+	var side_p := PorterProject.new()
+	side_p.fill_from_car(def, "4door")
+	side_p.views["side"]["sx"] = 1.2
+	var ok_align := side_p.align_two_points("side", Vector2(400, 560), Vector2(1250, 560), Vector2(1600, 700))
+	var ta: Vector2 = side_p.align_targets("side")[0]["pos"]
+	_check(ok_align and side_p.image_to_frame("side", Vector2(400, 560), Vector2(1600, 700)).distance_to(ta) < 1e-6 and float(side_p.views["side"]["sx"]) == 1.2, "two-point align keeps the stretch and still lands both points")
+	DashPhotoView.fit_to_dash(p, dash, 1200)
+
 	# --- inside panels (paint on the inside of the shell)
 	var body := HalfMesh.from_template("suv", p.dims)
 	var fi0 := 0

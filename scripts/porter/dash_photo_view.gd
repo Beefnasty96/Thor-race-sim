@@ -16,6 +16,7 @@ var view_name := "dash"
 var texture: Texture2D
 var img_size := Vector2.ONE
 var placing := false                 # taps place / pick gauges instead of dragging
+var stretching := false              # two-finger pinch stretches along its own direction
 var selected := -1
 var _touches := {}
 var _start := {}
@@ -80,6 +81,8 @@ static func fit_to_outline(p: PorterProject, view: String, edges: Array, img_w: 
 	var v: Dictionary = p.views[view]
 	v["flip"] = false
 	v["rot"] = 0.0
+	v["sx"] = 1.0
+	v["sy"] = 1.0
 	if lo.x == INF:
 		return
 	v["mpp"] = (hi.x - lo.x) / maxf(img_w, 1.0)
@@ -127,7 +130,7 @@ func _draw() -> void:
 		draw_string(font, c + Vector2(-r, -r - 6), InteriorBuilder.GAUGE_TYPES[g["type"]]["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, col)
 		if not g.get("on_dash", true):
 			draw_string(font, c + Vector2(-r, r + 18), "off the dash", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, UIKit.WARN)
-	var tip := "Tap where the gauge goes (or tap a gauge to pick it)" if placing else ("Drag / pinch the photo so the blue dash outline sits on the dash" if view_name == "dash" else "Drag / pinch so the blue panel outline sits on the %s in the photo" % PorterProject.VIEW_LABELS[view_name].to_lower())
+	var tip := "Tap where the gauge goes (or tap a gauge to pick it)" if placing else "Stretch: pinch sideways or up-down to stretch the outline that way (drag still moves)" if stretching else ("Drag / pinch the photo so the blue dash outline sits on the dash" if view_name == "dash" else "Drag / pinch so the blue panel outline sits on the %s in the photo" % PorterProject.VIEW_LABELS[view_name].to_lower())
 	draw_string(font, Vector2(14, 28), tip, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1, 1, 1, 0.85))
 
 func _gauge_at(s: Vector2) -> int:
@@ -177,8 +180,19 @@ func _gui_input(e: InputEvent) -> void:
 			v["cy"] = c.y
 		elif keys.size() >= 2 and st.has(keys[0]) and st.has(keys[1]):
 			_moved = true
-			var k: float = (_touches[keys[1]] - _touches[keys[0]]).length() / maxf((st[keys[1]] - st[keys[0]]).length(), 1.0)
-			v["mpp"] = clampf(float(v0["mpp"]) / k, 1e-5, 1.0)
+			if stretching:
+				# fingers apart sideways = outline wider on the photo (photo squeezed), etc.
+				var d0: Vector2 = (st[keys[1]] - st[keys[0]]).abs()
+				var d1: Vector2 = (_touches[keys[1]] - _touches[keys[0]]).abs()
+				var kx := d1.x / d0.x if d0.x > 60.0 else 1.0
+				var ky := d1.y / d0.y if d0.y > 60.0 else 1.0
+				for key in v0:
+					v[key] = v0[key]
+				var mid: Vector2 = (st[keys[0]] + st[keys[1]]) * 0.5
+				project.stretch_about(view_name, project.image_to_frame(view_name, _screen_to_px(mid), img_size), 1.0 / kx, 1.0 / ky)
+			else:
+				var k: float = (_touches[keys[1]] - _touches[keys[0]]).length() / maxf((st[keys[1]] - st[keys[0]]).length(), 1.0)
+				v["mpp"] = clampf(float(v0["mpp"]) / k, 1e-5, 1.0)
 		queue_redraw()
 		fit_changed.emit(false)
 		accept_event()
@@ -190,7 +204,7 @@ func _gui_input(e: InputEvent) -> void:
 
 ## A photo-pixel offset as a frame offset, with the view's scale, rotation, flip.
 static func _px_delta_to_frame(d: Vector2, v: Dictionary) -> Vector2:
-	var local := Vector2(-d.x if v["flip"] else d.x, -d.y) * float(v["mpp"])
+	var local := Vector2(-d.x if v["flip"] else d.x, -d.y) * PorterProject.view_scale(v)
 	return local.rotated(float(v["rot"]))
 
 ## k > 1 makes the outline bigger on the photo.
@@ -204,6 +218,21 @@ func nudge_move(dx: float, dy: float) -> void:
 	var c := Vector2(v["cx"], v["cy"]) - _px_delta_to_frame(Vector2(dx, dy) * 3.0 / _k(), v)
 	v["cx"] = c.x
 	v["cy"] = c.y
+	queue_redraw()
+	fit_changed.emit(true)
+
+## Stretch the photo under the outline (kx / ky > 1 = photo wider / taller),
+## about the outline's middle.
+func stretch(kx: float, ky: float) -> void:
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	for e in outline():
+		for q in e:
+			lo = lo.min(q)
+			hi = hi.max(q)
+	var v: Dictionary = project.views[view_name]
+	var pivot := (lo + hi) * 0.5 if lo.x != INF else Vector2(v["cx"], v["cy"])
+	project.stretch_about(view_name, pivot, kx, ky)
 	queue_redraw()
 	fit_changed.emit(true)
 

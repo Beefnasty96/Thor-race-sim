@@ -303,6 +303,12 @@ func nudge_move(dx_px: float, dy_px: float) -> void:
 func nudge_scale(k: float) -> void:
 	_scale_photo_about(frame_to_screen(project.frame_rect(view).get_center()), k)
 
+## Stretch the photo along its width (kx) / height (ky) about the frame's middle.
+func nudge_stretch(kx: float, ky: float) -> void:
+	project.stretch_about(view, project.frame_rect(view).get_center(), kx, ky)
+	transform_changed.emit()
+	queue_redraw()
+
 func nudge_rotate(deg: float) -> void:
 	var v: Dictionary = project.views[view]
 	var pivot := project.frame_rect(view).get_center()

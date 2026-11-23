@@ -1054,6 +1054,7 @@ func _build_interior_panel() -> Control:
 			["−", func(): dash_view.nudge_size(1.0 / 1.01)], ["+", func(): dash_view.nudge_size(1.01)]]:
 		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
 	v.add_child(g)
+	_stretch_rows(v, dash_view)
 	var r1 := HBoxContainer.new()
 	r1.add_child(_grow(PorterUI.button("Fit photo to the dash", func():
 		var img := project.load_photo("dash")
@@ -1174,7 +1175,7 @@ func _refresh_interior_labels() -> void:
 		steer_labels["g_size"].text = "—"
 		steer_labels["g_max"].text = "—"
 	var holes: int = (s["holes"] as Array).size()
-	gauge_info.text = "%d gauges on the dash. Pick a type, then tap on the dash photo where it goes. Tap a gauge to select it.  ·  Steering wheel: %d holes cut." % [gs.size(), holes]
+	gauge_info.text = "%d gauges on the dash. Line up (and stretch) the dash photo first, then pick a type and tap where it goes. Tap a gauge to select it.  ·  Steering wheel: %d holes cut." % [gs.size(), holes]
 
 func _interior_changed() -> void:
 	project.save()
@@ -1437,6 +1438,7 @@ func _build_inside_section(v: VBoxContainer) -> void:
 		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
 	v.add_child(g)
 	var r := HBoxContainer.new()
+	_stretch_rows(v, inside_photo_view)
 	r.add_child(_grow(PorterUI.button("Flip", func(): inside_photo_view.flip())))
 	r.add_child(_grow(PorterUI.button("Rotate 90°", func(): inside_photo_view.rotate_90())))
 	r.add_child(_grow(PorterUI.button("Fit to outline", func():
@@ -1524,3 +1526,23 @@ func _auto_inside() -> void:
 	inside_photo_view.queue_redraw()
 	_queue_save()
 	_say("Inside painted: %d panels (ceiling, doors, pillars, carpet floor). Tap panels with a choice above to fix any, or Undo in Shape." % n)
+
+## Stretch controls under a photo fit view: wider / narrower / taller /
+## shorter buttons, a pinch-to-stretch toggle and a reset.
+func _stretch_rows(v: VBoxContainer, pv: DashPhotoView) -> void:
+	var g := GridContainer.new()
+	g.columns = 4
+	for spec in [["↔ wider", 1.01, 1.0], ["↔ narrower", 1.0 / 1.01, 1.0], ["↕ taller", 1.0, 1.01], ["↕ shorter", 1.0, 1.0 / 1.01]]:
+		var kx: float = spec[1]
+		var ky: float = spec[2]
+		g.add_child(_grow(PorterUI.button(spec[0], func(): pv.stretch(kx, ky), 80)))
+	v.add_child(g)
+	var r := HBoxContainer.new()
+	var tb := _grow(PorterUI.toggle("Pinch stretches", false, func(on):
+		pv.stretching = on
+		pv.queue_redraw()))
+	r.add_child(tb)
+	r.add_child(_grow(PorterUI.button("Reset stretch", func():
+		var vv: Dictionary = project.views[pv.view_name]
+		pv.stretch(1.0 / float(vv.get("sx", 1.0)), 1.0 / float(vv.get("sy", 1.0))))))
+	v.add_child(r)

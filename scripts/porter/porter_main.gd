@@ -373,6 +373,18 @@ func _build_side_panel() -> Control:
 			["⟲", func(): canvas.nudge_rotate(0.2)], ["⟳", func(): canvas.nudge_rotate(-0.2)]]:
 		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 110)))
 	v.add_child(g)
+	v.add_child(UIKit.label("Stretch the photo (fixes a slightly off-square shot):", 22, UIKit.DIM))
+	var g2 := GridContainer.new()
+	g2.columns = 4
+	for spec in [["↔ wider", func(): canvas.nudge_stretch(1.005, 1.0)], ["↔ narrower", func(): canvas.nudge_stretch(1.0 / 1.005, 1.0)],
+			["↕ taller", func(): canvas.nudge_stretch(1.0, 1.005)], ["↕ shorter", func(): canvas.nudge_stretch(1.0, 1.0 / 1.005)]]:
+		g2.add_child(_grow(PorterUI.button(spec[0], spec[1], 110)))
+	v.add_child(g2)
+	v.add_child(_grow(PorterUI.button("Reset stretch", func():
+		var vv: Dictionary = project.views[current_view]
+		project.stretch_about(current_view, project.frame_rect(current_view).get_center(), 1.0 / float(vv.get("sx", 1.0)), 1.0 / float(vv.get("sy", 1.0)))
+		canvas.queue_redraw()
+		_queue_save())))
 	var oh := HBoxContainer.new()
 	oh.add_child(UIKit.label("Opacity", 22, UIKit.DIM))
 	opacity_slider = HSlider.new()

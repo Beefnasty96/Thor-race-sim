@@ -190,6 +190,11 @@ later under the dimensions panel (*Apply tires*).
   Fit the orange circle to the rim, then *Draw a hole* around each gap
   between the spokes; the holes are cut right through (walls on every cut
   edge). Diameter, rim thickness, tilt and position are adjustable.
+- *Stretch*: every photo (the four reference photos and the dash / door /
+  pillar / ceiling photos) can be stretched wider / narrower / taller /
+  shorter on its own axes, 0.5x–2x, to make up for a shot taken a little off
+  square (*Pinch stretches* in the interior fit views; *Reset stretch*).
+  Stored as `sx` / `sy` per view; two-point align keeps it.
 - *Inside panels*: the inside of the hollow shell can be painted per panel
   (grey cloth, dark plastic, tan, carpet) or take the door / A-pillar /
   ceiling photos. Pick a choice and tap panels from the driver's seat (Fill
