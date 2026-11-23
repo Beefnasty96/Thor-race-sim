@@ -37,6 +37,9 @@ var wheel_axle_btns := {}
 var rear_same_btn: Button
 var arch_btn: Button
 var arch_row: Control
+var window_btn: Button
+var window_row: Control
+var driver_btn: Button
 
 func setup(p: PorterProject) -> void:
 	project = p
@@ -87,9 +90,9 @@ func _build() -> void:
 	hb.add_child(mode_btns["paint"])
 	hb.add_child(mode_btns["wheels"])
 	hb.add_child(VSeparator.new())
-	for v in [["side", "Side"], ["front", "Front"], ["top", "Top"], ["3d", "3D"]]:
+	for v in [["side", "Side"], ["front", "Front"], ["rear", "Rear"], ["top", "Top"], ["3d", "3D"]]:
 		var key: String = v[0]
-		var b := PorterUI.button(v[1], func(): _select_view(key), 130)
+		var b := PorterUI.button(v[1], func(): _select_view(key), 112)
 		tabs[key] = b
 		hb.add_child(b)
 
@@ -237,6 +240,9 @@ func _grow(c: Control) -> Control:
 func _select_view(v: String) -> void:
 	if v != "side":
 		_end_draw_arch()
+	if v != "3d" and driver_btn and driver_btn.button_pressed:
+		driver_btn.set_pressed_no_signal(false)
+		view.driver_view = false
 	view.set_view(v)
 	for k in tabs:
 		tabs[k].add_theme_color_override("font_color", Color.WHITE if k == v else UIKit.DIM)
@@ -484,6 +490,8 @@ func _set_mode(m: String, on: bool) -> void:
 		return
 	_end_add_point()
 	_end_draw_arch()
+	if window_btn and window_btn.button_pressed:
+		_toggle_cut_window(false)
 	for k in mode_btns:
 		mode_btns[k].set_pressed_no_signal(k == m)
 	shape_panel.visible = m == "shape"
@@ -498,7 +506,7 @@ func _set_mode(m: String, on: bool) -> void:
 	if m == "wheels":
 		_select_view("3d")
 		_pick_wheel_axle(false)
-		_say("The wheel picture is cut from your side photo around each wheel. Drag the photo to center it, pinch to size the orange circle to the tire's edge.")
+		_say("The wheel picture is cut from your side photo around each wheel. Drag the photo to center it, pinch to size the orange circle to the tire's edge. Only the rim inside the blue circle is kept: the game builds the tire so it can squash, flex and go flat.")
 	else:
 		_say("Pick a part on the right, then tap faces to paint them." if painting else "")
 
@@ -567,9 +575,32 @@ func _build_paint_panel() -> Control:
 	v.add_child(r4)
 
 	v.add_child(HSeparator.new())
+	v.add_child(UIKit.label("WINDOWS + INTERIOR", 24, UIKit.ACCENT))
+	window_btn = _grow(PorterUI.toggle("Cut a window", false, func(on): _toggle_cut_window(on)))
+	v.add_child(window_btn)
+	window_row = HBoxContainer.new()
+	window_row.add_child(_grow(PorterUI.button("Finish window", _finish_window)))
+	window_row.add_child(_grow(PorterUI.button("Undo point", func():
+		if not view.window_pts.is_empty():
+			view.window_pts.pop_back()
+			view.overlay.queue_redraw())))
+	window_row.add_child(_grow(PorterUI.button("Cancel", func(): _toggle_cut_window(false))))
+	window_row.visible = false
+	v.add_child(window_row)
+	var ri := HBoxContainer.new()
+	ri.add_child(_grow(PorterUI.toggle("Show interior", true, func(on):
+		view.show_interior = on
+		view.rebuild_body())))
+	driver_btn = _grow(PorterUI.toggle("Driver's seat view", false, func(on): _driver_view(on)))
+	ri.add_child(driver_btn)
+	v.add_child(ri)
+	var wtip := UIKit.label("Cut windows: the panels under your outline are split along it and the piece inside becomes glass (see-through). Delete a glass face in Shape for an open window. The body is a hollow shell with a dark interior, ready for the first-person view.", 20, UIKit.DIM)
+	wtip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(wtip)
+	v.add_child(HSeparator.new())
 	v.add_child(UIKit.label("PHOTO TEXTURES", 24, UIKit.ACCENT))
 	v.add_child(_grow(PorterUI.button("Photos on all body paint", func(): _photos_on(["paint", "second"]))))
-	v.add_child(_grow(PorterUI.button("Photos on everything except glass", func(): _photos_on(["paint", "second", "headlight", "taillight", "chrome", "trim", "grille"]))))
+	v.add_child(_grow(PorterUI.button("Photos on everything (then cut windows)", func(): _photos_on(["paint", "second", "glass", "headlight", "taillight", "chrome", "trim", "grille"]))))
 	var ptip := UIKit.label("Each face takes the photo that looks straight at it, lined up from your Photos step. Match the shape to the photos first for the cleanest result. Photo faces keep the photo's color, so the paint shop won't recolor them.", 20, UIKit.DIM)
 	ptip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(ptip)
@@ -763,7 +794,7 @@ func _build_wheel_panel() -> Control:
 		project.save()
 		_pick_wheel_axle(wheel_rear)
 		_apply_wheel())))
-	var tip := UIKit.label("The wheel model is built from the tire size: a 16-sided drum with this picture on both faces and rubber on the tread. It's kept separate from the body so the game can spin and steer it. Tip: cut wheel arches in Shape so the wheels show.", 20, UIKit.DIM)
+	var tip := UIKit.label("The wheel is just the rim: this picture on a 16-sided disc, sized from the tire size. The game builds the tire around it so it squashes under load, bulges at low PSI, goes flat and rolls over in corners. Wheels stay separate from the body so the game can spin and steer them. Tip: cut wheel arches in Shape so the wheels show.", 20, UIKit.DIM)
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(tip)
 	return panel
@@ -797,3 +828,52 @@ func _apply_wheel() -> void:
 	project.make_wheel_texture(false)
 	project.make_wheel_texture(true)
 	view.refresh_wheels()
+
+# ---------------------------------------------------------------- windows
+
+func _toggle_cut_window(on: bool) -> void:
+	view.window_pts.clear()
+	window_btn.set_pressed_no_signal(on)
+	window_row.visible = on
+	if on:
+		_driver_view(false)
+		view.tool = "draw_window"
+		if view.view == "3d":
+			_select_view("side")
+		_say("Pick the view that shows the window straight on (Side, Front for the windshield, Rear for the back glass, Top for a sunroof) and tap around its outline on the photo.")
+	else:
+		if view.tool == "draw_window":
+			view.tool = "paint"
+		_say("")
+	view.overlay.queue_redraw()
+
+func _finish_window() -> void:
+	if view.view == "3d":
+		_say("Switch to Side, Front, Rear or Top to draw the outline.")
+		return
+	mesh.push_undo()
+	var msg := mesh.cut_window(view.view, PackedVector2Array(view.window_pts))
+	if msg != "":
+		mesh.undo()
+		_say(msg)
+		return
+	view.window_pts.clear()
+	view.rebuild_body()
+	_queue_save()
+	_refresh_info()
+	_say("Window cut. Draw the next one, or check it from the Driver's seat view. Undo takes it back.")
+	view.overlay.queue_redraw()
+
+func _driver_view(on: bool) -> void:
+	driver_btn.set_pressed_no_signal(on)
+	view.driver_view = on
+	if on:
+		if window_btn.button_pressed:
+			_toggle_cut_window(false)
+		view.yaw = deg_to_rad(-140.0)
+		view.pitch = 0.0
+		_select_view("3d")
+		_say("Driver's seat: drag to look around. This is roughly what the first-person view will see.")
+	else:
+		view._update_cam()
+	view.overlay.queue_redraw()

@@ -188,7 +188,7 @@ func edges() -> Array:
 ## Gran Turismo look). Godot treats clockwise triangles as front-facing.
 ## colors: region -> Color overrides (e.g. the chosen body paint); with
 ## plain = true every face is drawn in one neutral grey (shape mode).
-func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
+func build_mesh(colors: Dictionary = {}, plain: bool = false, skip_glass: bool = false) -> ArrayMesh:
 	_fix_regions()
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -198,6 +198,8 @@ func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
 	for fi in faces.size():
 		var f: PackedInt32Array = faces[fi]
 		var reg: String = regions[fi]
+		if skip_glass and region_base(reg) == "glass":
+			continue
 		var base := region_base(reg)
 		var col: Color = Color(0.72, 0.74, 0.78) if plain else colors.get(base, REGIONS[base]["color"])
 		st.set_color(col)
@@ -206,6 +208,99 @@ func build_mesh(colors: Dictionary = {}, plain: bool = false) -> ArrayMesh:
 		for k in range(f.size() - 1, -1, -1):
 			r.append(f[k])
 		_emit_face(st, r, mirrored)
+	return st.commit()
+
+func _mirrored_verts() -> PackedVector3Array:
+	var m := PackedVector3Array()
+	for p in verts:
+		m.append(Vector3(-p.x, p.y, p.z))
+	return m
+
+static func _reversed(f: PackedInt32Array) -> PackedInt32Array:
+	var r := PackedInt32Array()
+	for k in range(f.size() - 1, -1, -1):
+		r.append(f[k])
+	return r
+
+## Glass faces only (both halves), for a see-through material.
+func build_glass() -> ArrayMesh:
+	_fix_regions()
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var mirrored := _mirrored_verts()
+	var any := false
+	for fi in faces.size():
+		if region_base(regions[fi]) != "glass":
+			continue
+		any = true
+		_emit_face(st, faces[fi], verts)
+		_emit_face(st, _reversed(faces[fi]), mirrored)
+	return st.commit() if any else null
+
+## The hollow shell's inside: every non-glass panel copied `thickness`
+## inward and turned to face the cabin, plus rims around window openings
+## (glass or deleted faces) so the panels have visible thickness from the
+## driver's seat. Generated from the body, so it follows every edit.
+func build_interior(thickness: float = 0.02, color: Color = Color(0.16, 0.16, 0.17)) -> ArrayMesh:
+	_fix_regions()
+	# vertex normals from the panels around each point
+	var vn := []
+	vn.resize(verts.size())
+	for i in verts.size():
+		vn[i] = Vector3.ZERO
+	for fi in faces.size():
+		if region_base(regions[fi]) == "glass":
+			continue
+		var n := face_normal(faces[fi])
+		for i in faces[fi]:
+			vn[i] += n
+	var inner := PackedVector3Array()
+	for i in verts.size():
+		var n: Vector3 = vn[i]
+		if is_center(i):
+			n.x = 0.0
+		n = n.normalized() if n.length() > 1e-6 else Vector3.ZERO
+		var q := verts[i] - n * thickness
+		if is_center(i):
+			q.x = 0.0
+		inner.append(q)
+	var inner_m := PackedVector3Array()
+	for q in inner:
+		inner_m.append(Vector3(-q.x, q.y, q.z))
+	var outer_m := _mirrored_verts()
+	# which edges border an opening (a glass face or no face at all)
+	var solid_use := {}
+	var all_use := edge_use()
+	for fi in faces.size():
+		if region_base(regions[fi]) == "glass":
+			continue
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var e := edge_key(f[k], f[(k + 1) % f.size()])
+			solid_use[e] = solid_use.get(e, 0) + 1
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_color(color)
+	for fi in faces.size():
+		if region_base(regions[fi]) == "glass":
+			continue
+		var f: PackedInt32Array = faces[fi]
+		# inside panel faces the cabin: reversed winding
+		_emit_face(st, _reversed(f), inner)
+		_emit_face(st, f, inner_m)
+		for k in f.size():
+			var a := f[k]
+			var b := f[(k + 1) % f.size()]
+			var e := edge_key(a, b)
+			var open: bool = solid_use.get(e, 0) == 1
+			if not open:
+				continue
+			if is_center(a) and is_center(b) and all_use.get(e, 0) == 1:
+				continue          # the centerline seam: the mirror half continues the panel
+			var rim := PackedVector3Array([verts[b], verts[a], inner[a], inner[b]])
+			_emit_face(st, PackedInt32Array([0, 1, 2, 3]), rim)
+			var rim_m := PackedVector3Array([outer_m[a], outer_m[b], inner_m[b], inner_m[a]])
+			_emit_face(st, PackedInt32Array([0, 1, 2, 3]), rim_m)
 	return st.commit()
 
 func _emit_face(st: SurfaceTool, f: PackedInt32Array, vs: PackedVector3Array) -> void:
@@ -607,6 +702,200 @@ func merge_points(ids: Array) -> int:
 	# drop the welded-away points (and any now unused), keep ids stable otherwise
 	remove_unused_verts()
 	return -1
+
+# ---------------------------------------------------------------- windows
+
+## How each drawing view flattens the body: 2D axes and the side the camera
+## looks from (faces must face it to be cut).
+static func view_to2d(view: String, p: Vector3) -> Vector2:
+	match view:
+		"side":
+			return Vector2(p.z, p.y)
+		"front", "rear":
+			return Vector2(p.x, p.y)
+		_:
+			return Vector2(p.z, p.x)
+
+static func view_toward_camera(view: String) -> Vector3:
+	match view:
+		"side":
+			return Vector3(-1, 0, 0)
+		"front":
+			return Vector3(0, 0, -1)
+		"rear":
+			return Vector3(0, 0, 1)
+		_:
+			return Vector3(0, 1, 0)
+
+static func _signed_area(poly: PackedVector2Array) -> float:
+	var a := 0.0
+	for i in poly.size():
+		var p := poly[i]
+		var q := poly[(i + 1) % poly.size()]
+		a += p.x * q.y - q.x * p.y
+	return a * 0.5
+
+## Cut a window: every face facing `view` under the outline (2D, in that
+## view's axes) is split exactly along it; the pieces inside become glass
+## faces, the rest keep their part. The body stays closed (neighbouring
+## faces pick up the new points). Returns "" or a message.
+func cut_window(view: String, window: PackedVector2Array) -> String:
+	_fix_regions()
+	if window.size() < 3 or absf(_signed_area(window)) < 0.002:
+		return "Tap at least 3 corners around the window."
+	var toward := view_toward_camera(view)
+	var targets := []
+	var on_glass := false
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		if face_normal(f).dot(toward) < 0.15:
+			continue
+		var poly := PackedVector2Array()
+		for i in f:
+			poly.append(view_to2d(view, verts[i]))
+		if Geometry2D.intersect_polygons(poly, window).is_empty():
+			continue
+		if region_base(regions[fi]) == "glass":
+			on_glass = true
+		else:
+			targets.append(fi)
+	if targets.is_empty():
+		if on_glass:
+			return "That area is already glass. Paint it with Photo texture (or another part) first, then cut the window you want."
+		return "No body panels face this view under that outline. Draw on the photo where the body is."
+	var before := verts.size()
+	var cache := {}
+	var cut_any := false
+	for fi in targets:
+		var f: PackedInt32Array = faces[fi]
+		var poly := PackedVector2Array()
+		for i in f:
+			poly.append(view_to2d(view, verts[i]))
+		var orient := signf(_signed_area(poly))
+		var inside: Array = Geometry2D.intersect_polygons(poly, window)
+		var outside: Array = Geometry2D.clip_polygons(poly, window)
+		var has_hole := false
+		for piece in outside:
+			if signf(_signed_area(piece)) != orient:
+				has_hole = true
+		if has_hole:
+			# window inside one panel: split the panel through the window first
+			var cx := 0.0
+			for q in window:
+				cx += q.x
+			cx /= window.size()
+			var r := Rect2(poly[0], Vector2.ZERO)
+			for q in poly:
+				r = r.expand(q)
+			r = r.grow(1.0)
+			var lhs := PackedVector2Array([r.position, Vector2(cx, r.position.y), Vector2(cx, r.end.y), Vector2(r.position.x, r.end.y)])
+			var rhs := PackedVector2Array([Vector2(cx, r.position.y), Vector2(r.end.x, r.position.y), r.end, Vector2(cx, r.end.y)])
+			outside = []
+			for half in [lhs, rhs]:
+				for part in Geometry2D.intersect_polygons(poly, half):
+					outside.append_array(Geometry2D.clip_polygons(part, window))
+		var new_faces := []
+		for piece in outside:
+			var ids := _lift_piece(piece, f, view, orient, cache)
+			if ids.size() >= 3:
+				new_faces.append([ids, regions[fi]])
+		for piece in inside:
+			var ids2 := _lift_piece(piece, f, view, orient, cache)
+			if ids2.size() >= 3:
+				new_faces.append([ids2, "glass"])
+		if new_faces.is_empty():
+			continue
+		cut_any = true
+		faces[fi] = new_faces[0][0]
+		regions[fi] = new_faces[0][1]
+		for k in range(1, new_faces.size()):
+			faces.append(new_faces[k][0])
+			regions.append(new_faces[k][1])
+	if not cut_any:
+		return "That outline didn't cut anything."
+	# new points that land on other faces' edges join those faces (no cracks)
+	for v in range(before, verts.size()):
+		_join_edges(v)
+	return ""
+
+## 2D piece of face f -> vertex ids (reusing the face's corners, splitting
+## its edges exactly, or lifting new points onto the face's plane).
+func _lift_piece(piece: PackedVector2Array, f: PackedInt32Array, view: String, orient: float, cache: Dictionary) -> PackedInt32Array:
+	var pts := piece
+	if signf(_signed_area(pts)) != orient:
+		pts = pts.duplicate()
+		pts.reverse()
+	var n := face_normal(f)
+	var c := face_center(f)
+	var out := PackedInt32Array()
+	for q in pts:
+		var id := -1
+		for i in f:
+			if view_to2d(view, verts[i]).distance_to(q) < 2e-4:
+				id = i
+				break
+		if id < 0:
+			var p3 := Vector3.INF
+			for k in f.size():
+				var a := verts[f[k]]
+				var b := verts[f[(k + 1) % f.size()]]
+				var a2 := view_to2d(view, a)
+				var b2 := view_to2d(view, b)
+				var ab := b2 - a2
+				if ab.length_squared() < 1e-10:
+					continue
+				var t := (q - a2).dot(ab) / ab.length_squared()
+				if t > 0.0 and t < 1.0 and (a2 + ab * t).distance_to(q) < 2e-4:
+					p3 = a.lerp(b, t)
+					if is_center(f[k]) and is_center(f[(k + 1) % f.size()]):
+						p3.x = 0.0
+					break
+			if p3 == Vector3.INF:
+				p3 = _on_plane(view, q, n, c)
+			var key := "%d,%d,%d" % [roundi(p3.x * 2000), roundi(p3.y * 2000), roundi(p3.z * 2000)]
+			if cache.has(key):
+				id = cache[key]
+			else:
+				if absf(p3.x) < 0.002:
+					p3.x = 0.0
+				p3.x = minf(p3.x, 0.0)
+				id = verts.size()
+				verts.append(p3)
+				cache[key] = id
+		if out.is_empty() or out[out.size() - 1] != id:
+			out.append(id)
+	if out.size() > 1 and out[0] == out[out.size() - 1]:
+		out.remove_at(out.size() - 1)
+	return out
+
+## Point on the face plane under a 2D view point.
+static func _on_plane(view: String, q: Vector2, n: Vector3, c: Vector3) -> Vector3:
+	match view:
+		"side":    # (z, y) known, solve x
+			return Vector3(c.x - (n.y * (q.y - c.y) + n.z * (q.x - c.z)) / n.x, q.y, q.x)
+		"front", "rear":   # (x, y) known, solve z
+			return Vector3(q.x, q.y, c.z - (n.x * (q.x - c.x) + n.y * (q.y - c.y)) / n.z)
+		_:         # (z, x) known, solve y
+			return Vector3(q.y, c.y - (n.x * (q.y - c.x) + n.z * (q.x - c.z)) / n.y, q.x)
+
+## Insert vertex v into any face edge it lies on (fixes T-junctions).
+func _join_edges(v: int) -> void:
+	var p := verts[v]
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		if f.has(v):
+			continue
+		for k in f.size():
+			var a := verts[f[k]]
+			var b := verts[f[(k + 1) % f.size()]]
+			var ab := b - a
+			if ab.length_squared() < 1e-10:
+				continue
+			var t := (p - a).dot(ab) / ab.length_squared()
+			if t > 0.001 and t < 0.999 and (a + ab * t).distance_to(p) < 0.001:
+				f.insert(k + 1, v)
+				faces[fi] = f
+				break
 
 func delete_faces(face_ids: Array) -> void:
 	var drop := {}

@@ -20,6 +20,8 @@ var relax_lat := 0.55           # m, relaxation length (tall sidewall truck tire
 var relax_long := 0.25
 var radius := 0.367
 var width := 0.235
+var rim_radius := 0.2032        # bead seat (rim diameter / 2)
+var sidewall_h := 0.184         # radius - rim_radius
 var temp_opt := 75.0            # °C, best grip for a 90s all-season
 var temp_window := 60.0
 var crr_base := 0.0105          # rolling resistance coefficient at placard pressure
@@ -58,6 +60,12 @@ const B_FACTOR := 2.077     # tan(pi / (2*C)) for C=1.4 -> peak at s=1
 func setup(def: Dictionary, psi_cold: float, tread_state: float) -> void:
 	radius = def.get("radius_m", radius)
 	width = def.get("width_m", width)
+	# rim size: explicit rim_in, else read it from the size text (P245/75R16 -> 16")
+	var rim_in: float = def.get("rim_in", 0.0)
+	if rim_in <= 0.0:
+		rim_in = float(TireSpec.find_in(str(def.get("size", ""))).get("rim_in", 0.0))
+	rim_radius = rim_in * 0.0254 * 0.5 if rim_in > 0.0 else radius * 0.525
+	sidewall_h = maxf(radius - rim_radius, 0.04)
 	tread_new_mm = def.get("tread_depth_new_mm", tread_new_mm)
 	cold_psi = psi_cold
 	psi = psi_cold
@@ -228,12 +236,30 @@ func vertical_stiffness() -> float:
 func raw_deflection(fz: float) -> float:
 	return maxf(fz, 0.0) / vertical_stiffness()
 
-## Deflection after the sidewall bottoms out on the rim (flat tyre ~8 cm).
+## How far the tread can squash before the sidewall bottoms out on the rim:
+## ~41% of the sidewall height (7.5 cm on a 245/75R16, ~4 cm on a 245/40R18).
+func bottom_out() -> float:
+	return sidewall_h * 0.41
+
+## Deflection after the sidewall bottoms out on the rim (flat tyre sits on it).
 func deflection_for(fz: float) -> float:
 	var d := raw_deflection(fz)
-	if d > 0.075:
-		d = 0.075 + (d - 0.075) * 0.2
-	return minf(d, 0.11)
+	var b := bottom_out()
+	if d > b:
+		d = b + (d - b) * 0.2
+	return minf(d, b * 1.45)
+
+## Sideways stiffness of the carcass at the contact patch (N/m): how far the
+## tread is dragged across under cornering force. Softer when under-inflated
+## and with taller sidewalls.
+func lateral_stiffness() -> float:
+	return (90000.0 + 3000.0 * psi) * clampf(0.184 / sidewall_h, 0.6, 2.0)
+
+## Contact-patch sideways shift for the renderer (m, +right), from the last
+## lateral force; capped at 40% of the section width.
+func lateral_shift() -> float:
+	var lim := width * 0.4
+	return clampf(fy / lateral_stiffness(), -lim, lim)
 
 ## Puncture / pinch flat: the tyre deflates over the next second or so.
 func puncture() -> void:

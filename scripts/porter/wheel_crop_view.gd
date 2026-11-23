@@ -1,8 +1,9 @@
 class_name WheelCropView
 extends Control
-## Shows the side photo around one wheel with the crop circle (outer edge of
-## the tire) and the rim circle (from the tire size). Drag to move the
-## circle, pinch / mouse wheel to resize it.
+## Shows the side photo around one wheel with the tire-edge circle (orange,
+## line it up with the tire) and the rim circle inside it (blue, from the tire
+## size): only the rim is cut out; the game renders the tire. Drag to move,
+## pinch / mouse wheel to resize.
 
 signal crop_changed(final: bool)
 
@@ -45,19 +46,15 @@ func _draw() -> void:
 	draw_texture_rect(texture, Rect2(a, b - a), false)
 	var c := size * 0.5
 	var r: float = float(crop["r"]) * _scale()
-	# dim everything outside the circle
-	var ring := PackedVector2Array()
-	for i in 65:
-		var ang := TAU * i / 64.0
-		ring.append(c + Vector2(cos(ang), sin(ang)) * r)
-	draw_polyline(ring, Color(1.0, 0.72, 0.2), 3.0, true)
-	var rim_frac := clampf(float(project.tires.get("rear_rim_in" if rear else "front_rim_in", 0.0)) * 0.0254 * 0.5 / project.tire_radius(rear), 0.0, 0.98)
-	if rim_frac > 0.0:
-		draw_arc(c, r * rim_frac, 0, TAU, 64, Color(0.32, 0.72, 1.0), 2.0, true)
+	var rr := r * project.rim_fraction(rear)
+	# shade the tire band: it is not part of the picture
+	draw_arc(c, (r + rr) * 0.5, 0, TAU, 64, Color(0, 0, 0, 0.45), r - rr, true)
+	draw_arc(c, r, 0, TAU, 64, Color(1.0, 0.72, 0.2), 3.0, true)
+	draw_arc(c, rr, 0, TAU, 64, Color(0.32, 0.72, 1.0), 3.0, true)
 	draw_line(c - Vector2(14, 0), c + Vector2(14, 0), Color(1.0, 0.72, 0.2), 2.0)
 	draw_line(c - Vector2(0, 14), c + Vector2(0, 14), Color(1.0, 0.72, 0.2), 2.0)
 	var f := get_theme_default_font()
-	draw_string(f, Vector2(16, 34), ("REAR" if rear else "FRONT") + " WHEEL  ·  orange = tire edge, blue = rim", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(1, 1, 1, 0.85))
+	draw_string(f, Vector2(16, 34), ("REAR" if rear else "FRONT") +  " WHEEL  ·  line orange up with the tire edge  ·  blue = rim picture", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(1, 1, 1, 0.85))
 
 func _gui_input(e: InputEvent) -> void:
 	if crop.is_empty():

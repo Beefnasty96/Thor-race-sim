@@ -25,6 +25,12 @@ var xray := true
 var lock_axis := 0                    # 0 free, 1 horizontal only, 2 vertical only
 var tool := ""                        # "" | "loop_cut" | "paint" | "add_point" | "draw_arch" | "wheels"
 var arch_pts: Array = []              # side-view points (z, y) of an arch being drawn
+var window_pts: Array = []            # 2D points (view axes) of a window outline being drawn
+signal window_point_added
+var show_interior := true             # hollow shell inside (paint/wheels modes)
+var driver_view := false              # 3D camera in the driver's seat
+var glass_mi: MeshInstance3D
+var interior_mi: MeshInstance3D
 var paint_colors := {}                # region -> Color used for display (body paint etc.)
 var show_paint := false               # colour faces by region (Paint mode)
 var sel_verts := {}                   # id -> true
@@ -110,6 +116,21 @@ func _init() -> void:
 	body_mat.metallic = 0.2
 	body.material_override = body_mat
 	vp.add_child(body)
+	glass_mi = MeshInstance3D.new()
+	var gm := StandardMaterial3D.new()
+	gm.albedo_color = Color(0.05, 0.08, 0.11, 0.35)
+	gm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	gm.cull_mode = BaseMaterial3D.CULL_DISABLED
+	gm.roughness = 0.05
+	gm.metallic = 0.4
+	glass_mi.material_override = gm
+	vp.add_child(glass_mi)
+	interior_mi = MeshInstance3D.new()
+	var im := StandardMaterial3D.new()
+	im.vertex_color_use_as_albedo = true
+	im.roughness = 0.9
+	interior_mi.material_override = im
+	vp.add_child(interior_mi)
 	overlay = Control.new()
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -172,6 +193,8 @@ func rebuild_body() -> void:
 	if _deco_paint != show_paint:
 		_deco_paint = show_paint
 		_rebuild_deco()                 # wheels switch between plain and textured
+	glass_mi.mesh = mesh.build_glass() if show_paint else null
+	interior_mi.mesh = mesh.build_interior() if (show_paint and show_interior) else null
 	if not show_paint:
 		body.material_override = body_mat
 		body.mesh = mesh.build_mesh(paint_colors, true)
@@ -210,7 +233,7 @@ func _rebuild_deco() -> void:
 			var w := MeshInstance3D.new()
 			if tex and show_paint:
 				# textured wheel model (axle along X, picture facing outward)
-				w.mesh = WheelBuilder.build(r, tw)
+				w.mesh = WheelBuilder.build(r, tw, project.rim_radius(ax[2]))
 				var mats := WheelBuilder.materials(tex)
 				w.mesh.surface_set_material(0, mats[0])
 				w.mesh.surface_set_material(1, mats[1])
@@ -259,6 +282,19 @@ func refresh_wheels() -> void:
 	_wheel_cache.clear()
 	_rebuild_deco()
 
+## A 2D point in a drawing view's axes placed in the scene (in front of the body).
+func view2d_to_world(v: String, q: Vector2) -> Vector3:
+	var big := 5.0
+	match v:
+		"side":
+			return Vector3(-big, q.y, q.x)
+		"front":
+			return Vector3(q.x, q.y, -big)
+		"rear":
+			return Vector3(q.x, q.y, big)
+		_:
+			return Vector3(q.y, big, q.x)
+
 func _photo_world(pv: String, p: Vector2) -> Vector3:
 	var d := project.dims
 	var mid: float = project.front_axle_x() + d["wheelbase_m"] * 0.5
@@ -267,6 +303,8 @@ func _photo_world(pv: String, p: Vector2) -> Vector3:
 			return Vector3(d["width_m"] + 1.0, p.y, p.x - mid)         # behind the body, seen from the left
 		"front":
 			return Vector3(-p.x, p.y, d["length_m"] - mid + 1.0)       # behind the body, seen from the front
+		"rear":
+			return Vector3(p.x, p.y, -mid - 1.0)                       # behind the body, seen from the rear
 		_:
 			return Vector3(p.y, -0.05, p.x - mid)                      # under the body, seen from above
 
@@ -299,9 +337,19 @@ func _target() -> Vector3:
 func _update_cam() -> void:
 	if project == null:
 		return
+	if view == "3d" and driver_view:
+		# left-hand drive: driver's eye behind the windshield, left of center
+		var d := project.dims
+		cam.projection = Camera3D.PROJECTION_PERSPECTIVE
+		cam.fov = 75.0
+		cam.near = 0.02
+		cam.position = Vector3(-d["width_m"] * 0.2, d["height_m"] * 0.68, -d["wheelbase_m"] * 0.12)
+		cam.basis = Basis.from_euler(Vector3(pitch * 0.5 - deg_to_rad(5.0), yaw + deg_to_rad(140.0), 0))
+		return
 	if view == "3d":
 		cam.projection = Camera3D.PROJECTION_PERSPECTIVE
 		cam.fov = 40.0
+		cam.near = 0.05
 		var off := Vector3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw)) * dist
 		cam.position = _target() + off
 		cam.look_at(_target(), Vector3.UP)
@@ -316,6 +364,8 @@ func _update_cam() -> void:
 			b = Basis(Vector3(0, 0, 1), Vector3(0, 1, 0), Vector3(-1, 0, 0))
 		"front":   # from ahead: screen right = car's left
 			b = Basis(Vector3(-1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, -1))
+		"rear":    # from behind: screen right = car's right
+			b = Basis(Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1))
 		_:         # from above, front on the left: screen up = car's right
 			b = Basis(Vector3(0, 0, 1), Vector3(1, 0, 0), Vector3(0, 1, 0))
 	cam.basis = b
@@ -526,6 +576,13 @@ func _begin() -> void:
 func _on_tap(s: Vector2) -> void:
 	if tool == "wheels":
 		return
+	if tool == "draw_window":
+		if view == "3d":
+			return
+		window_pts.append(HalfMesh.view_to2d(view, cam.project_position(s, 10.0)))
+		window_point_added.emit()
+		overlay.queue_redraw()
+		return
 	if tool == "draw_arch":
 		if view != "side":
 			return
@@ -613,7 +670,7 @@ func nudge(dir: Vector2, metres: float) -> void:
 # ---------------------------------------------------------------- overlay
 
 func _draw_overlay() -> void:
-	if mesh == null:
+	if mesh == null or (driver_view and view == "3d"):
 		return
 	var o := overlay
 	# selected faces
@@ -643,7 +700,7 @@ func _draw_overlay() -> void:
 		if tool in ["paint", "wheels"]:
 			col = Color(0.85, 0.92, 1.0, 0.45)
 		o.draw_line(project_point(a2), project_point(b2), col, 2.5 if sel else (1.2 if tool in ["paint", "wheels"] else 2.0), true)
-	if pick == Pick.POINTS and tool not in ["paint", "wheels", "draw_arch"]:
+	if pick == Pick.POINTS and tool not in ["paint", "wheels", "draw_arch", "draw_window"]:
 		for i in mesh.verts.size():
 			var p := mesh.verts[i]
 			if cam.is_position_behind(p):
@@ -653,6 +710,17 @@ func _draw_overlay() -> void:
 				o.draw_circle(s, 11.0, C_SEL)
 			else:
 				o.draw_circle(s, 6.5, C_VERT if not mesh.is_center(i) else Color(0.6, 1.0, 0.7))
+	if tool == "draw_window" and view != "3d":
+		var wl := PackedVector2Array()
+		for q in window_pts:
+			wl.append(project_point(view2d_to_world(view, q)))
+		if wl.size() >= 2:
+			var closed := wl.duplicate()
+			closed.append(wl[0])
+			o.draw_polyline(closed, C_SEL, 3.0, true)
+		for q in wl:
+			o.draw_circle(q, 8.0, C_SEL)
+		o.draw_string(get_theme_default_font(), Vector2(20, size.y - 24), "CUT WINDOW: tap around the window's outline (%d corners)" % window_pts.size(), HORIZONTAL_ALIGNMENT_LEFT, -1, 26, C_SEL)
 	if tool == "draw_arch" and view == "side":
 		var line := PackedVector2Array()
 		var x_side: float = -project.dims["width_m"] * 0.5

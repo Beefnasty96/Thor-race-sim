@@ -156,7 +156,7 @@ func _process(delta: float) -> void:
 		14:
 			_shot("porter_12_paint_side")
 			app.modeler._select_view("3d")
-			app.modeler._photos_on(["paint", "second", "grille"])
+			app.modeler._photos_on(["paint", "second", "grille", "glass"])
 			app.modeler.view.yaw = deg_to_rad(-120.0)
 			app.modeler.view._update_cam()
 			app.modeler.view.overlay.queue_redraw()
@@ -167,11 +167,43 @@ func _process(delta: float) -> void:
 			app.modeler.view.overlay.queue_redraw()
 		16:
 			_shot("porter_14_photo_textures_rear")
+			var mdp: PorterModeler = app.modeler
+			mdp._select_view("side")
+			mdp.window_btn.button_pressed = true
+		17:
+			# cut the three side windows of the fake photo by tapping their corners
+			var mdp2: PorterModeler = app.modeler
+			var szw := Vector2(1800, 820)
+			var nwin := 0
+			for rect in [Rect2(600, 175, 300, 140), Rect2(930, 175, 300, 140), Rect2(1260, 175, 320, 140)]:
+				for c in [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]:
+					var f: Vector2 = app.project.image_to_frame("side", c, szw)
+					var mid3: float = app.project.front_axle_x() + app.project.dims["wheelbase_m"] * 0.5
+					_tap(mdp2.view, mdp2.view.project_point(Vector3(-5, f.y, f.x - mid3)))
+				mdp2._finish_window()
+				print("WINDOW TEST msg: ", mdp2.hint.text.left(90))
+				if mdp2.hint.text.begins_with("Window cut"):
+					nwin += 1
+			print("WINDOW TEST: %d windows cut, glass faces %d" % [nwin, mdp2.mesh.regions.count("glass")])
+			mdp2._toggle_cut_window(false)
+			mdp2._select_view("3d")
+			mdp2.view.yaw = deg_to_rad(-110.0)
+			mdp2.view.pitch = deg_to_rad(12.0)
+			mdp2.view._update_cam()
+			mdp2.view.overlay.queue_redraw()
+		18:
+			_shot("porter_14b_windows_outside")
+			app.modeler._driver_view(true)
+			app.modeler.view.yaw = deg_to_rad(-140.0 + 55.0)
+			app.modeler.view._update_cam()
+		19:
+			_shot("porter_14c_driver_seat")
+			app.modeler._driver_view(false)
 			# Add point + Connect, driven by simulated taps in the side view
 			var md: PorterModeler = app.modeler
 			md._set_mode("shape", true)
 			md._select_view("side")
-		17:
+		20:
 			var md2: PorterModeler = app.modeler
 			var mv3: ModelView = md2.view
 			md2.add_btn.button_pressed = true
@@ -189,12 +221,12 @@ func _process(delta: float) -> void:
 			_tap(mv3, mid + Vector2(160, -90))        # another
 			print("ADD TEST: points %d -> %d, selected %d" % [nv, mv3.mesh.verts.size(), mv3.sel_verts.size()])
 			_shot("porter_16_add_points")
-		18:
+		21:
 			var md3: PorterModeler = app.modeler
 			var nf := md3.mesh.faces.size()
 			md3._connect()
 			print("CONNECT TEST: faces %d -> %d, message: %s" % [nf, md3.mesh.faces.size(), md3.hint.text])
-		19:
+		22:
 			_shot("porter_17_connected")
 			var mdw: PorterModeler = app.modeler
 			mdw.mesh.undo()
@@ -206,23 +238,23 @@ func _process(delta: float) -> void:
 			for zy in [Vector2(fz - 0.5, 0.35), Vector2(fz - 0.38, 0.9), Vector2(fz + 0.38, 0.9), Vector2(fz + 0.52, 0.35)]:
 				_tap(mvw, mvw.project_point(Vector3(xs, zy.y, zy.x)))
 			print("ARCH TEST: %d points drawn" % mvw.arch_pts.size())
-		20:
+		23:
 			_shot("porter_17a_drawing_arch")
 			var mdw: PorterModeler = app.modeler
 			mdw._finish_arch()
 			mdw._cut_arches()
 			print("ARCH TEST: ", mdw.hint.text)
 			mdw._select_view("side")
-		21:
+		24:
 			_shot("porter_17b_arches_side")
 			app.modeler._set_mode("wheels", true)
-		22:
+		25:
 			_shot("porter_17c_wheels")
 			app.modeler.view.yaw = deg_to_rad(-75.0)
 			app.modeler.view.pitch = deg_to_rad(8.0)
 			app.modeler.view._update_cam()
 			app.modeler.view.overlay.queue_redraw()
-		23:
+		26:
 			_shot("porter_17d_wheels_low")
 			app.modeler._set_mode("shape", true)
 			var p2: PorterProject = app.project
@@ -230,24 +262,24 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p2.dir() + f)
 			DirAccess.remove_absolute(p2.dir())
 			app.show_finder()
-		24:
+		27:
 			var fd: CarFinder = app.screen.get_child(0)
 			fd._pick_year(1999)
 			fd._pick_make("Chevrolet")
 			fd.search.text = "tahoe 4dr"
 			fd._fill_models()
-		25:
+		28:
 			var fd2: CarFinder = app.screen.get_child(0)
 			var r: Dictionary = VehicleDB.models(1999, "Chevrolet", "tahoe k1500 4dr")[0]
 			fd2._pick_model(r)
 			fd2.tire_form.front_size.text = "P245/75R16"
 			fd2.tire_form.front_psi.text = "35"
 			fd2.tire_form._update()
-		26:
+		29:
 			_shot("porter_18_car_finder")
 			var fd3: CarFinder = app.screen.get_child(0)
 			fd3.create_btn.pressed.emit()
-		27:
+		30:
 			_shot("porter_19_from_database")
 			print("DB PROJECT: %s  L %.3f  WB %.3f  overhang %.3f  tires %s/%s @ %d psi, radius %.3f" % [app.project.name, app.project.dims["length_m"], app.project.dims["wheelbase_m"], app.project.dims["front_overhang_m"], app.project.tires["front"], app.project.tires["rear"], app.project.tires["front_psi"], app.project.dims["tire_radius_m"]])
 			var p3: PorterProject = app.project
@@ -255,14 +287,14 @@ func _process(delta: float) -> void:
 				DirAccess.remove_absolute(p3.dir() + f)
 			DirAccess.remove_absolute(p3.dir())
 			app.show_tire_step("My new car", {}, func(_p): pass)
-		28:
+		31:
 			_shot("porter_20_tire_step_empty")
 			var form: TireForm = app.screen.find_children("*", "TireForm", true, false)[0]
 			form.front_size.text = "245/40ZR18"
 			form.rear_size.text = "285/35zr18"
 			form.front_psi.text = "36"
 			form._update()
-		29:
+		32:
 			_shot("porter_21_tire_step_staggered")
 			get_tree().quit()
 	step += 1

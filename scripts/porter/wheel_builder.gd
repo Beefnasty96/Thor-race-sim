@@ -1,15 +1,21 @@
 class_name WheelBuilder
 extends RefCounted
-## Low-poly wheel + tire built from the tire size, GT1 style: an N-sided
-## drum with the cut-out wheel picture on both faces and dark rubber on the
-## tread. The axle runs along X; the outer face looks toward +X.
-## Surfaces: 0 = faces (photo texture), 1 = tread and shoulders (rubber).
+## Low-poly wheel built from the tire size, GT1 style: the rim is an N-sided
+## disc on each side with the cut-out rim picture, set at the tire's bead.
+## The tire around it is the same TireMesh the game builds (in the game it
+## squashes and flexes with the simulation; this is the preview at rest).
+## The axle runs along X; the outer face looks toward +X.
+## Surfaces: 0 = rim faces (photo texture), 1 = tire (rubber).
 
-const RUBBER := Color(0.07, 0.07, 0.075)
+const RUBBER := TireMesh.RUBBER
 
-static func build(radius: float, width: float, sides: int = 16) -> ArrayMesh:
-	var hw := width * 0.5
+static func build(radius: float, width: float, rim_radius: float = -1.0, sides: int = 16) -> ArrayMesh:
+	if rim_radius <= 0.0:
+		rim_radius = radius * 0.525
+	var hw := width * 0.5 * 0.80          # rim faces sit at the bead
 	var am := ArrayMesh.new()
+	var tire_r := radius
+	radius = rim_radius
 	# --- faces: a disc on each side, UVs map the circular crop
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -35,24 +41,14 @@ static func build(radius: float, width: float, sides: int = 16) -> ArrayMesh:
 				st.set_uv(v[1])
 				st.add_vertex(v[0])
 	st.commit(am)
-	# --- tread band (flat-shaded quads)
+	# --- the tire
 	var tr := SurfaceTool.new()
 	tr.begin(Mesh.PRIMITIVE_TRIANGLES)
-	tr.set_color(RUBBER)
-	for i in sides:
-		var a0 := TAU * i / sides
-		var a1 := TAU * (i + 1) / sides
-		var am_ := (a0 + a1) * 0.5
-		var n := Vector3(0, cos(am_), sin(am_))
-		var q := [Vector3(hw, cos(a0) * radius, sin(a0) * radius), Vector3(hw, cos(a1) * radius, sin(a1) * radius),
-			Vector3(-hw, cos(a1) * radius, sin(a1) * radius), Vector3(-hw, cos(a0) * radius, sin(a0) * radius)]
-		for k in [0, 1, 2, 0, 2, 3]:
-			tr.set_normal(n)
-			tr.add_vertex(q[k])
+	TireMesh.add_to(tr, tire_r, width, rim_radius, sides)
 	tr.commit(am)
 	return am
 
-## Materials for the two surfaces: the wheel picture (or plain dark grey) and rubber.
+## Materials for the two surfaces: the rim picture (or plain grey) and rubber.
 static func materials(tex: Texture2D) -> Array:
 	var face := StandardMaterial3D.new()
 	face.roughness = 0.5

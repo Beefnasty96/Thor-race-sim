@@ -136,24 +136,41 @@ later under the dimensions panel (*Apply tires*).
   straight onto CarModel. Preview in the source car's factory colors.
 
 **Wheels** (*Wheels* switch in the modeler)
-- Each axle gets a separate low-poly wheel model built from the tire size
-  (16-sided drum, picture on both faces, rubber tread), kept apart from the
-  body so the game can spin and steer it.
-- The wheel picture is cut from the aligned side photo around each wheel
-  automatically (orange circle = tire edge, blue = rim from the tire size);
-  drag/pinch or nudge to adjust. The rear can reuse the front picture or get
+- The wheel is the rim only: the picture on a 16-sided disc at the tire's
+  bead, kept apart from the body so the game can spin and steer it.
+- The **game builds the tire** from the size (TireMesh, 224 triangles: bead,
+  bulging sidewall, shoulder, tread) and deforms it every frame from the
+  simulation: the patch flattens with load and pressure, sidewalls bulge,
+  a flat tire sits down on the rim (bottom-out scales with sidewall height,
+  so low profiles bottom out sooner), and cornering force drags the tread
+  sideways. Cars whose wheel model already has a tire (the Tahoe) keep it,
+  with the same squash shader.
+- The rim picture is cut from the aligned side photo around each wheel
+  automatically: line the orange circle up with the tire edge; only the rim
+  inside the blue circle (from the tire size) is kept. Drag/pinch or nudge. The rear can reuse the front picture or get
   its own. Saved as `wheel_front.png` / `wheel_rear.png` in the project.
 
 **Photo textures** (part *Photo texture* in Paint)
 - Faces take their texture from the aligned reference photos: each face
   uses the photo that looks most squarely at it (*Auto*), or a forced one
   (Side / Front / Rear / Top). One-tap *Photos on all body paint* or
-  *Photos on everything except glass*.
+  *Photos on everything (then cut windows)*.
 - The mirrored half samples its own side of the front, rear and top photos
   and a mirror of the side photo. Roof and hood look best with a top photo.
 - Export will bake the used photo areas into one game-sized texture.
 
-Next: wheels and wheel arches, specs and test targets, export to
+**Windows + hollow interior** (Paint panel)
+- *Cut a window*: in Side, Front, Rear or Top, tap around a window on the
+  photo (Finish / Undo point / Cancel). The panels under the outline are
+  really cut along it (new points shared with neighbours, so no cracks) and
+  the piece inside becomes a see-through Glass face. A windshield can cross
+  the centerline. Delete a glass face in Shape for an open window.
+- The body is a hollow shell: an inner surface 2 cm inside the outer one,
+  with rims around every window and opening, dark interior colour. *Show
+  interior* toggles it; *Driver's seat view* puts the camera at the driver's
+  head (drag to look around) as a preview of the first-person mode.
+
+Next: specs and test targets, export to
 `data/cars/` + `assets/cars/`.
 
 Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
