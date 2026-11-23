@@ -122,6 +122,15 @@ func has_tires() -> bool:
 func tire_radius(rear_axle: bool) -> float:
 	return dims.get("tire_radius_rear_m", dims["tire_radius_m"]) if rear_axle else dims["tire_radius_m"]
 
+## Rim (bead seat) radius from the tire size; ~52% of the tire radius if unknown.
+func rim_radius(rear_axle: bool) -> float:
+	var rim_in := float(tires.get("rear_rim_in" if rear_axle else "front_rim_in", 0.0))
+	return rim_in * 0.0254 * 0.5 if rim_in > 0.0 else tire_radius(rear_axle) * 0.525
+
+## Rim radius as a fraction of the tire radius (the blue circle in the crop).
+func rim_fraction(rear_axle: bool) -> float:
+	return clampf(rim_radius(rear_axle) / tire_radius(rear_axle), 0.3, 0.95)
+
 func front_axle_x() -> float:
 	return dims["front_overhang_m"]
 
@@ -416,9 +425,10 @@ func wheel_crop(rear_axle: bool) -> Dictionary:
 		c = wheel_auto_crop(key == "rear")
 	return c
 
-## Cut the wheel picture out of the side photo (square, WHEEL_TEX_PX) and
-## save it as wheel_front.png / wheel_rear.png. Outside the circle is filled
-## with dark rubber so the tire edge stays clean.
+## Cut the rim picture out of the side photo (square, WHEEL_TEX_PX) and save
+## it as wheel_front.png / wheel_rear.png. Only the rim is kept (the blue
+## circle inside the tire edge): the game builds the tire itself so it can
+## squash and flex. Outside the rim is filled with dark rubber.
 func make_wheel_texture(rear_axle: bool) -> Image:
 	var src := load_photo("side")
 	var c := wheel_crop(rear_axle)
@@ -429,7 +439,7 @@ func make_wheel_texture(rear_axle: bool) -> Image:
 	var rubber := WheelBuilder.RUBBER
 	var cx: float = c["cx"]
 	var cy: float = c["cy"]
-	var r: float = c["r"]
+	var r: float = float(c["r"]) * rim_fraction(rear_axle)
 	var flip: bool = views["side"]["flip"]
 	for y in n:
 		for x in n:

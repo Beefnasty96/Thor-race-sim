@@ -36,6 +36,7 @@ var _tire_mats: Array[ShaderMaterial] = []
 var _tire_meshes: Array[MeshInstance3D] = []
 var _tire_scale: Array[float] = []
 var _wheels_sized := false
+var _gen_tire: Array[bool] = []      # wheel model has no tyre: the game builds one
 const TIRE_SHADER := preload("res://assets/shaders/tire_squash.gdshader")
 
 func build(dir: String, paint: Dictionary) -> void:
@@ -46,6 +47,7 @@ func build(dir: String, paint: Dictionary) -> void:
 	_tire_mats.clear()
 	_tire_meshes.clear()
 	_tire_scale.clear()
+	_gen_tire.clear()
 	_wheels_sized = false
 	if FileAccess.file_exists(dir + "/model_info.json"):
 		info = JSON.parse_string(FileAccess.get_file_as_string(dir + "/model_info.json"))
@@ -71,7 +73,7 @@ func build(dir: String, paint: Dictionary) -> void:
 		wn.add_child(inst)
 		add_child(wn)
 		wheel_nodes.append(wn)
-		_setup_tire(inst)
+		_gen_tire.append(not _setup_tire(inst))
 	_build_gauges()
 	_build_suspension()
 	set_paint(paint)
@@ -131,8 +133,9 @@ func _prepare_materials(root: Node) -> void:
 				m.set_surface_override_material(s, g)
 
 ## Swap the tyre surface for the squash shader (one material per wheel so each
-## can deform on its own).
-func _setup_tire(root: Node) -> void:
+## can deform on its own). Returns false when the wheel model has no tyre
+## (rim-only wheels from Car Porter): the tyre is then built from its size.
+func _setup_tire(root: Node) -> bool:
 	for mi in root.find_children("*", "MeshInstance3D", true, false):
 		var m := mi as MeshInstance3D
 		for s in m.mesh.get_surface_count():
@@ -146,7 +149,27 @@ func _setup_tire(root: Node) -> void:
 				m.extra_cull_margin = 0.2
 				_tire_mats.append(sm)
 				_tire_meshes.append(m)
-				return
+				return true
+	_tire_mats.append(null)
+	_tire_meshes.append(null)
+	return false
+
+## Build a tyre from the simulated size around a rim-only wheel.
+func _make_tire(i: int, w) -> void:
+	var mi := MeshInstance3D.new()
+	mi.name = "Tire"
+	mi.mesh = TireMesh.build(w.radius, w.tire.width, w.tire.rim_radius)
+	var sm := ShaderMaterial.new()
+	sm.shader = TIRE_SHADER
+	sm.set_shader_parameter("albedo", TireMesh.RUBBER)
+	sm.set_shader_parameter("radius", w.radius)
+	sm.set_shader_parameter("bead_r", w.tire.rim_radius)
+	sm.set_shader_parameter("bulge", 3.2 * 0.184 / w.tire.sidewall_h)
+	mi.material_override = sm
+	mi.extra_cull_margin = 0.2
+	wheel_nodes[i].add_child(mi)
+	_tire_mats[i] = sm
+	_tire_meshes[i] = mi
 
 func _update_tires() -> void:
 	var n := mini(_tire_mats.size(), car.wheels.size())
@@ -155,6 +178,10 @@ func _update_tires() -> void:
 		steering_lock_rad = car.def["steering"].get("lock_to_lock_turns", 3.0) * PI
 		for i in n:                     # optional tyre sizes: scale the wheel mesh
 			var w0 = car.wheels[i]
+			if i < _gen_tire.size() and _gen_tire[i]:
+				_make_tire(i, w0)       # built at its real size
+				_tire_scale.append(1.0)
+				continue
 			var sc: float = w0.radius / 0.387
 			var wn: Node3D = wheel_nodes[i].get_child(0)
 			var sx: float = signf(wn.scale.x) * (w0.tire.width / 0.245)   # tread width
@@ -163,12 +190,17 @@ func _update_tires() -> void:
 	for i in n:
 		var w = car.wheels[i]
 		var mi := _tire_meshes[i]
+		if mi == null:
+			continue
 		var down_w: Vector3 = -w.hit_normal if w.contact else -car.global_basis.y
 		var down_l := (mi.global_basis.inverse() * down_w).normalized()
 		var sm := _tire_mats[i]
 		sm.set_shader_parameter("down_dir", down_l)
 		var sc: float = _tire_scale[i] if i < _tire_scale.size() else 1.0
 		sm.set_shader_parameter("squash", (w.tire_defl / sc) if w.contact else 0.0)
+		# cornering: the patch is dragged toward the force, along the steered axle
+		var lat_w: Vector3 = wheel_nodes[i].global_basis.x.normalized() * (w.tire.lateral_shift() if w.contact else 0.0)
+		sm.set_shader_parameter("lateral", mi.global_basis.inverse() * lat_w)
 
 func set_paint(paint: Dictionary) -> void:
 	var c: Array = paint.get("color", [0.2, 0.25, 0.45])

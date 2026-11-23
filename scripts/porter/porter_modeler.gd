@@ -506,7 +506,7 @@ func _set_mode(m: String, on: bool) -> void:
 	if m == "wheels":
 		_select_view("3d")
 		_pick_wheel_axle(false)
-		_say("The wheel picture is cut from your side photo around each wheel. Drag the photo to center it, pinch to size the orange circle to the tire's edge.")
+		_say("The wheel picture is cut from your side photo around each wheel. Drag the photo to center it, pinch to size the orange circle to the tire's edge. Only the rim inside the blue circle is kept: the game builds the tire so it can squash, flex and go flat.")
 	else:
 		_say("Pick a part on the right, then tap faces to paint them." if painting else "")
 
@@ -794,7 +794,7 @@ func _build_wheel_panel() -> Control:
 		project.save()
 		_pick_wheel_axle(wheel_rear)
 		_apply_wheel())))
-	var tip := UIKit.label("The wheel model is built from the tire size: a 16-sided drum with this picture on both faces and rubber on the tread. It's kept separate from the body so the game can spin and steer it. Tip: cut wheel arches in Shape so the wheels show.", 20, UIKit.DIM)
+	var tip := UIKit.label("The wheel is just the rim: this picture on a 16-sided disc, sized from the tire size. The game builds the tire around it so it squashes under load, bulges at low PSI, goes flat and rolls over in corners. Wheels stay separate from the body so the game can spin and steer them. Tip: cut wheel arches in Shape so the wheels show.", 20, UIKit.DIM)
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(tip)
 	return panel

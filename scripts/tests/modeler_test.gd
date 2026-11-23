@@ -130,10 +130,10 @@ func _initialize() -> void:
 		if absf(a.z - b.z) > 1.0 and not (m3.is_center(edge.x) and m3.is_center(edge.y)):
 			e = edge          # a long edge running front-to-back (the side of the body)
 			break
-	var tv := m3.verts.size()
+	var tire_v := m3.verts.size()
 	var added := m3.loop_cut(e.x, e.y)
 	_check(added.size() >= 5, "loop cut adds a ring of points (%d)" % added.size())
-	_check(m3.verts.size() == tv + added.size(), "one new point per crossed edge")
+	_check(m3.verts.size() == tire_v + added.size(), "one new point per crossed edge")
 	_check(_closed_and_consistent(m3), "body stays closed after loop cut")
 	var on_center := 0
 	for i in added:
@@ -434,11 +434,62 @@ func _initialize() -> void:
 	_check(plain_tris == (wv.triangle_count() - gm3.surface_get_array_len(0) / 3), "body without glass + glass = whole body")
 
 	# wheel model + picture
-	var wm2 := WheelBuilder.build(0.387, 0.245, 16)
-	_check(wm2.get_surface_count() == 2, "wheel model has a picture surface and a rubber surface")
-	_check(wm2.surface_get_array_len(0) == 16 * 2 * 3 and wm2.surface_get_array_len(1) == 16 * 6, "16-sided wheel: 32 face triangles, 32 tread triangles")
+	var wm2 := WheelBuilder.build(0.387, 0.245, 0.2032, 16)
+	_check(wm2.get_surface_count() == 2, "wheel model has a rim picture surface and a tire surface")
+	_check(wm2.surface_get_array_len(0) == 16 * 2 * 3 and wm2.surface_get_array_len(1) == TireMesh.triangle_count(16) * 3, "16-sided wheel: 32 rim triangles + generated tire")
 	var aabb := wm2.get_aabb()
 	_check(absf(aabb.size.x - 0.245) < 1e-4 and absf(aabb.size.y - 0.774) < 0.002, "wheel is as wide and tall as the tire")
+	var rim_pts: PackedVector3Array = wm2.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var rim_max := 0.0
+	for v in rim_pts:
+		rim_max = maxf(rim_max, Vector2(v.y, v.z).length())
+	_check(absf(rim_max - 0.2032) < 1e-3, "rim picture disc is the rim size (16 in), not the tire")
+	# generated tire: closed ring, outward normals, right size
+	var tm := TireMesh.build(0.387, 0.245, 0.2032)
+	_check(tm.surface_get_material(0).resource_name == "Tire", "generated tire uses the Tire material name the game swaps for the squash shader")
+	var ta: Array = tm.surface_get_arrays(0)
+	var tvs: PackedVector3Array = ta[Mesh.ARRAY_VERTEX]
+	var tns: PackedVector3Array = ta[Mesh.ARRAY_NORMAL]
+	_check(tvs.size() == TireMesh.triangle_count() * 3, "tire is %d triangles (16 sides)" % TireMesh.triangle_count())
+	var bad := 0
+	var r_min := 9.0
+	var r_max := 0.0
+	for t in range(0, tvs.size(), 3):
+		var ctr := (tvs[t] + tvs[t + 1] + tvs[t + 2]) / 3.0
+		var face_n := (tvs[t + 1] - tvs[t]).cross(tvs[t + 2] - tvs[t])
+		if face_n.dot(tns[t]) >= 0.0:
+			bad += 1                       # Godot front faces: cross points away from the viewer
+		var outward := Vector3(ctr.x * 4.0, ctr.y, ctr.z)
+		if tns[t].dot(outward) <= 0.0:
+			bad += 1
+	for v in tvs:
+		var rr := Vector2(v.y, v.z).length()
+		r_min = minf(r_min, rr)
+		r_max = maxf(r_max, rr)
+	_check(bad == 0, "every tire face faces outward and winds as a front face")
+	_check(absf(r_max - 0.387) < 1e-4 and absf(r_min - 0.2032) < 1e-4, "tire runs from the rim bead to the tread")
+	_check(absf(tm.get_aabb().size.x - 0.245) < 1e-4, "tire is the section width")
+	# tire physics that drives the visuals
+	var tt := Tire.new()
+	tt.setup(def["tires"], 35.0, -1.0)
+	_check(absf(tt.rim_radius - 0.2032) < 1e-4, "Tahoe rim read from its size text: 16 in")
+	_check(absf(tt.bottom_out() - 0.075) < 0.002, "Tahoe sidewall bottoms out at ~7.5 cm like before")
+	var tl := Tire.new()
+	tl.setup({"radius_m": 0.3277, "width_m": 0.245, "size": "245/40ZR18"}, 35.0, -1.0)
+	_check(tl.bottom_out() < 0.045, "low-profile tire bottoms out sooner (%.3f m)" % tl.bottom_out())
+	var d35 := tt.deflection_for(5000.0)
+	tt.psi = 15.0
+	var d15 := tt.deflection_for(5000.0)
+	tt.psi = 0.5
+	var d0 := tt.deflection_for(5000.0)
+	_check(d15 > d35 * 1.5 and d0 > d15 and d0 <= tt.bottom_out() * 1.45, "squash grows as pressure drops: %.3f / %.3f / flat %.3f m" % [d35, d15, d0])
+	tt.psi = 35.0
+	tt.fy = 6000.0
+	var sh1 := tt.lateral_shift()
+	tt.fy = -60000.0
+	_check(sh1 > 0.02 and sh1 < 0.06 and is_equal_approx(tt.lateral_shift(), -0.245 * 0.4), "cornering drags the patch %.3f m toward the force, capped" % sh1)
+	var low := TireMesh.profile(0.3277, 0.245, 0.2286)
+	_check(absf(low[0].y - 0.2286) < 1e-4 and absf(low[3].y - 0.3277) < 1e-4, "low-profile 245/40R18 has a short sidewall")
 	var wp := PorterProject.create("wheel test")
 	wp.fill_from_car(def, "4door")
 	var simg := Image.create(1600, 700, false, Image.FORMAT_RGBA8)
@@ -452,6 +503,22 @@ func _initialize() -> void:
 	var tex := wp.make_wheel_texture(false)
 	_check(tex != null and tex.get_width() == PorterProject.WHEEL_TEX_PX, "wheel picture is cut at 256x256")
 	_check(tex.get_pixel(128, 128).g > 0.5 and tex.get_pixel(2, 2).g < 0.2, "inside the circle is photo, outside is rubber")
+	var frac := wp.rim_fraction(false)
+	_check(frac > 0.4 and frac < 0.8, "rim is %.2f of the tire radius" % frac)
+	# the picture is the rim only: its edge is the rim, so the photo scale shrinks to the rim circle
+	var simg2 := Image.create(1600, 700, false, Image.FORMAT_RGBA8)
+	simg2.fill(Color(0.1, 0.1, 0.1))
+	var rim_px: float = wc["r"] * frac
+	for y in 700:
+		for x in 1600:
+			var dd := Vector2(x, y).distance_to(Vector2(400, 560))
+			if dd < rim_px * 0.9:
+				simg2.set_pixel(x, y, Color(0.9, 0.9, 0.9))
+	wp.import_image("side", simg2)
+	wp.align_two_points("side", Vector2(400, 560), Vector2(1250, 560), Vector2(1600, 700))
+	var tex2 := wp.make_wheel_texture(false)
+	_check(tex2.get_pixel(128, 128).r > 0.8 and tex2.get_pixel(128, 128 + 100).r > 0.8, "rim picture fills the texture out to the rim")
+	_check(tex2.get_pixel(128, 128 + 122).r < 0.3, "the tire band is not in the rim picture")
 	_check(FileAccess.file_exists(wp.dir() + "wheel_front.png"), "wheel picture saved in the project")
 	wp.wheels["front"] = {"cx": 420.0, "cy": 560.0, "r": 90.0}
 	wp.save()

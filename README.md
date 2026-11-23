@@ -136,12 +136,18 @@ later under the dimensions panel (*Apply tires*).
   straight onto CarModel. Preview in the source car's factory colors.
 
 **Wheels** (*Wheels* switch in the modeler)
-- Each axle gets a separate low-poly wheel model built from the tire size
-  (16-sided drum, picture on both faces, rubber tread), kept apart from the
-  body so the game can spin and steer it.
-- The wheel picture is cut from the aligned side photo around each wheel
-  automatically (orange circle = tire edge, blue = rim from the tire size);
-  drag/pinch or nudge to adjust. The rear can reuse the front picture or get
+- The wheel is the rim only: the picture on a 16-sided disc at the tire's
+  bead, kept apart from the body so the game can spin and steer it.
+- The **game builds the tire** from the size (TireMesh, 224 triangles: bead,
+  bulging sidewall, shoulder, tread) and deforms it every frame from the
+  simulation: the patch flattens with load and pressure, sidewalls bulge,
+  a flat tire sits down on the rim (bottom-out scales with sidewall height,
+  so low profiles bottom out sooner), and cornering force drags the tread
+  sideways. Cars whose wheel model already has a tire (the Tahoe) keep it,
+  with the same squash shader.
+- The rim picture is cut from the aligned side photo around each wheel
+  automatically: line the orange circle up with the tire edge; only the rim
+  inside the blue circle (from the tire size) is kept. Drag/pinch or nudge. The rear can reuse the front picture or get
   its own. Saved as `wheel_front.png` / `wheel_rear.png` in the project.
 
 **Photo textures** (part *Photo texture* in Paint)

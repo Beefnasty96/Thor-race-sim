@@ -10,6 +10,7 @@ uniform float radius = 0.387;                    // undeformed tyre radius
 uniform float squash = 0.0;                      // m flattened at the contact patch
 uniform float bead_r = 0.21;                     // rim seat: never moves
 uniform float bulge = 3.2;                       // sidewall bulge per m of squash
+uniform vec3 lateral = vec3(0.0);                // contact patch shift vs the rim (cornering), mesh space
 
 void vertex() {
 	vec3 p = VERTEX;
@@ -21,6 +22,9 @@ void vertex() {
 	float near = smoothstep(lim - 0.16, lim, d);
 	float wall = smoothstep(bead_r, bead_r + 0.07, rr);
 	p.x *= 1.0 + bulge * squash * near * wall;
+	// cornering: the patch is dragged sideways, the sidewalls lean after it
+	float patch = smoothstep(lim - 0.20, lim, d);
+	p += lateral * patch * wall;
 	// flatten anything below the ground plane
 	if (d > lim) {
 		p -= dn * (d - lim);

@@ -233,7 +233,7 @@ func _rebuild_deco() -> void:
 			var w := MeshInstance3D.new()
 			if tex and show_paint:
 				# textured wheel model (axle along X, picture facing outward)
-				w.mesh = WheelBuilder.build(r, tw)
+				w.mesh = WheelBuilder.build(r, tw, project.rim_radius(ax[2]))
 				var mats := WheelBuilder.materials(tex)
 				w.mesh.surface_set_material(0, mats[0])
 				w.mesh.surface_set_material(1, mats[1])
