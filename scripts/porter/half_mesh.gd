@@ -28,7 +28,14 @@ const REGIONS := {
 	"trim":      {"label": "Black trim",   "color": Color(0.07, 0.07, 0.075), "material": "Trim"},
 	"grille":    {"label": "Grille",       "color": Color(0.03, 0.03, 0.035), "material": "Grille"},
 	"photo":     {"label": "Photo texture", "color": Color(0.5, 0.5, 0.5), "material": "Photo"},
+	"bed":       {"label": "Bed liner",    "color": Color(0.1, 0.1, 0.11), "material": "Bedliner"},
 }
+
+## Photos for the inside of a pickup bed (outer paint "photo:<name>"), taken
+## standing at the truck: bedfloor overhead, bedside facing one bed wall,
+## bedfront from the tailgate looking at the cab, bedgate from the cab
+## looking back at the tailgate.
+const BED_PHOTOS := ["bedfloor", "bedside", "bedfront", "bedgate"]
 
 ## Paint for the inside of the hollow shell (door cards, pillars, headliner,
 ## floor). "photo:door" / "photo:pillar" / "photo:ceiling" use the interior
@@ -68,7 +75,7 @@ static func region_valid(r: String) -> bool:
 	if not REGIONS.has(b):
 		return false
 	if b == "photo" and o.contains(":"):
-		if not (o.get_slice(":", 1) in ["side", "front", "rear", "top", "dash"]):
+		if not (o.get_slice(":", 1) in ["side", "front", "rear", "top", "dash"] + BED_PHOTOS):
 			return false
 	elif o.contains(":"):
 		return false
@@ -1353,3 +1360,342 @@ func add_wheel_tub(axle_z: float, center_y: float, radius: float, inner_x: float
 		faces.append(w)
 		regions.append("trim")
 	return ""
+
+# ---------------------------------------------------------------- pickup bed
+
+const BED_MIN_FLOOR := 0.06          # floor stays this far above the body's bottom
+
+## True for faces painted as part of the bed's inside (liner or bed photos).
+static func is_bed_region(r: String) -> bool:
+	var o := region_outer(r)
+	if o == "bed":
+		return true
+	return o.begins_with("photo:") and o.get_slice(":", 1) in BED_PHOTOS
+
+func has_bed() -> bool:
+	_fix_regions()
+	for r in regions:
+		if is_bed_region(r):
+			return true
+	return false
+
+## The flat top over a pickup's bed: upward faces in the rear half that are
+## lower than the roof and reach the centerline, plus their upward
+## neighbours. [] when there's none (not a pickup, or already hollowed).
+func find_bed_cover() -> Array:
+	_fix_regions()
+	if has_bed():
+		return []
+	var top := -INF
+	for p in verts:
+		top = maxf(top, p.y)
+	var ok := {}
+	for fi in faces.size():
+		if region_base(regions[fi]) == "glass" or is_bed_region(regions[fi]):
+			continue
+		var f: PackedInt32Array = faces[fi]
+		var c := face_center(f)
+		if c.z <= 0.0 or c.y > top * 0.85 or c.y < top * 0.3:
+			continue
+		if face_normal(f).y < 0.7:
+			continue
+		ok[fi] = true
+	# keep the patch(es) touching the centerline
+	var seeds := []
+	for fi in ok:
+		for i in faces[fi]:
+			if is_center(i):
+				seeds.append(fi)
+				break
+	if seeds.is_empty():
+		return []
+	var by_edge := {}
+	for fi in ok:
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var e := edge_key(f[k], f[(k + 1) % f.size()])
+			if not by_edge.has(e):
+				by_edge[e] = []
+			by_edge[e].append(fi)
+	var seen := {}
+	var stack := seeds.duplicate()
+	while not stack.is_empty():
+		var fi: int = stack.pop_back()
+		if seen.has(fi):
+			continue
+		seen[fi] = true
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			for nb in by_edge[edge_key(f[k], f[(k + 1) % f.size()])]:
+				if not seen.has(nb):
+					stack.append(nb)
+	var out: Array = seen.keys()
+	out.sort()
+	# a bed sits behind a cab: the face across the patch's front edge rises
+	# steeply (a sloped rear window over a trunk lid doesn't count)
+	var z_front := INF
+	var y_cover := -INF
+	for fi in out:
+		for i in faces[fi]:
+			z_front = minf(z_front, verts[i].z)
+			y_cover = maxf(y_cover, verts[i].y)
+	var in_patch := {}
+	for fi in out:
+		in_patch[fi] = true
+	var all_by_edge := {}
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var e := edge_key(f[k], f[(k + 1) % f.size()])
+			if not all_by_edge.has(e):
+				all_by_edge[e] = []
+			all_by_edge[e].append(fi)
+	var cab := false
+	for fi in out:
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var a := f[k]
+			var b := f[(k + 1) % f.size()]
+			if verts[a].z > z_front + 0.03 or verts[b].z > z_front + 0.03:
+				continue
+			for nb in all_by_edge[edge_key(a, b)]:
+				if in_patch.has(nb):
+					continue
+				var hi := -INF
+				for i in faces[nb]:
+					hi = maxf(hi, verts[i].y)
+				if absf(face_normal(faces[nb]).y) < 0.45 and hi > y_cover + 0.2:
+					cab = true
+	return out if cab else []
+
+## Hollow out a pickup's bed: the flat top over the bed is replaced by rails
+## `rail` wide along its edges (the tops of the bed sides, front and
+## tailgate), inner walls straight down `depth` and a floor, painted bed
+## liner. `humps`: [[z_front, z_rear, top_y, inner_x], ...] wheel-well humps
+## rising from the floor between the bed wall and inner_x. Shares every edge
+## with the body (no cracks). Returns "" or a message.
+func hollow_bed(depth: float, rail: float, humps: Array = []) -> String:
+	if has_bed():
+		return "This truck's bed is already hollowed. Undo first to build it again, or change the depth."
+	var cover := find_bed_cover()
+	if cover.is_empty():
+		return "No bed to hollow: this needs a flat top behind the cab, lower than the roof (like the Pickup template)."
+	var in_cover := {}
+	for fi in cover:
+		in_cover[fi] = true
+	# boundary of the cover (edges used once inside it), in face winding
+	var use := {}
+	for fi in cover:
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var e := edge_key(f[k], f[(k + 1) % f.size()])
+			use[e] = use.get(e, 0) + 1
+	var next := {}
+	var has_prev := {}
+	for fi in cover:
+		var f: PackedInt32Array = faces[fi]
+		for k in f.size():
+			var a := f[k]
+			var b := f[(k + 1) % f.size()]
+			if use[edge_key(a, b)] != 1 or (is_center(a) and is_center(b)):
+				continue
+			next[a] = b
+			has_prev[b] = true
+	var start := -1
+	for a in next:
+		if not has_prev.has(a):
+			start = a
+	if start < 0 or not is_center(start):
+		return "The bed top's edge isn't a single run from the centerline round to the centerline. Tidy the points there and try again."
+	var path: Array = [start]
+	while next.has(path[path.size() - 1]) and path.size() <= next.size() + 1:
+		path.append(next[path[path.size() - 1]])
+	if path.size() < 3 or not is_center(path[path.size() - 1]) or path.size() != next.size() + 1:
+		return "The bed top's edge isn't a single run from the centerline round to the centerline. Tidy the points there and try again."
+	var n := path.size()
+	# inward direction of each edge (top view; interior on the left of the winding)
+	var enorm := []
+	for k in n - 1:
+		var d := verts[path[k + 1]] - verts[path[k]]
+		enorm.append(Vector3(d.z, 0.0, -d.x).normalized())
+	var cen := Vector3.ZERO
+	for i in path:
+		cen += verts[i]
+	cen /= n
+	var votes := 0.0
+	for k in n - 1:
+		var mid := (verts[path[k]] + verts[path[k + 1]]) * 0.5
+		votes += (enorm[k] as Vector3).dot(Vector3(cen.x - mid.x, 0, cen.z - mid.z))
+	if votes < 0.0:
+		for k in enorm.size():
+			enorm[k] = -enorm[k]
+	# rail top: inset points; floor height from the lowest rail and body bottom
+	var rail_lo := INF
+	var z_lo := INF
+	var z_hi := -INF
+	for i in path:
+		rail_lo = minf(rail_lo, verts[i].y)
+		z_lo = minf(z_lo, verts[i].z)
+		z_hi = maxf(z_hi, verts[i].z)
+	var bottom := INF
+	for p in verts:
+		if p.z >= z_lo and p.z <= z_hi:
+			bottom = minf(bottom, p.y)
+	var floor_y := maxf(rail_lo - depth, bottom + BED_MIN_FLOOR)
+	if floor_y >= rail_lo - 0.05:
+		return "The body is too shallow under the bed for a floor."
+	var inset := []
+	for k in n:
+		var m: Vector3
+		if k == 0:
+			m = enorm[0]
+		elif k == n - 1:
+			m = enorm[n - 2]
+		else:
+			var n1: Vector3 = enorm[k - 1]
+			var n2: Vector3 = enorm[k]
+			var mm := n1 + n2
+			m = mm.normalized() / maxf(mm.normalized().dot(n1), 0.35) if mm.length() > 1e-4 else n1
+		var q: Vector3 = verts[path[k]] + m * rail
+		if k == 0 or k == n - 1:
+			q.x = 0.0
+		q.x = minf(q.x, 0.0)
+		inset.append(q)
+	_fix_regions()
+	var rail_region: String = region_outer(regions[cover[0]])
+	cover.sort()
+	for k in range(cover.size() - 1, -1, -1):
+		faces.remove_at(cover[k])
+		regions.remove_at(cover[k])
+	var I := []
+	var F := []
+	for k in n:
+		I.append(verts.size())
+		verts.append(inset[k])
+	for k in n:
+		F.append(verts.size())
+		var q: Vector3 = inset[k]
+		verts.append(Vector3(q.x, floor_y, q.z))
+	var wall_x := INF
+	for k in n - 1:
+		var a: int = path[k]
+		var b: int = path[k + 1]
+		var nk: Vector3 = enorm[k]
+		_add_facing(PackedInt32Array([a, b, I[k + 1], I[k]]), Vector3.UP, rail_region)
+		_add_facing(PackedInt32Array([I[k], I[k + 1], F[k + 1], F[k]]), nk, "bed")
+		if absf(nk.x) > 0.7:
+			wall_x = minf(wall_x, minf((inset[k] as Vector3).x, (inset[k + 1] as Vector3).x))
+	var floor_face := PackedInt32Array()
+	for id in F:
+		floor_face.append(id)
+	_add_facing(floor_face, Vector3.UP, "bed")
+	# wheel-well humps
+	if wall_x == INF:
+		wall_x = -0.5
+	var iz_lo := INF
+	var iz_hi := -INF
+	for q in inset:
+		iz_lo = minf(iz_lo, (q as Vector3).z)
+		iz_hi = maxf(iz_hi, (q as Vector3).z)
+	for h in humps:
+		var z0: float = maxf(h[0], iz_lo + 0.01)
+		var z1: float = minf(h[1], iz_hi - 0.01)
+		var ty: float = minf(h[2], rail_lo - 0.03)
+		var ix: float = minf(h[3], -0.05)
+		var wx: float = wall_x - 0.01
+		if z1 - z0 < 0.1 or ty < floor_y + 0.03 or ix <= wx + 0.05:
+			continue
+		var c := [
+			Vector3(wx, floor_y, z0), Vector3(ix, floor_y, z0), Vector3(ix, floor_y, z1), Vector3(wx, floor_y, z1),
+			Vector3(wx, ty, z0), Vector3(ix, ty, z0), Vector3(ix, ty, z1), Vector3(wx, ty, z1)]
+		var ids := []
+		for q in c:
+			ids.append(verts.size())
+			verts.append(q)
+		_add_facing(PackedInt32Array([ids[4], ids[5], ids[6], ids[7]]), Vector3.UP, "bed")
+		_add_facing(PackedInt32Array([ids[1], ids[2], ids[6], ids[5]]), Vector3.RIGHT, "bed")
+		_add_facing(PackedInt32Array([ids[0], ids[1], ids[5], ids[4]]), Vector3.FORWARD, "bed")
+		_add_facing(PackedInt32Array([ids[3], ids[2], ids[6], ids[7]]), Vector3.BACK, "bed")
+	return ""
+
+## Append a face (wound so its normal points along `toward`) with a region.
+func _add_facing(f: PackedInt32Array, toward: Vector3, region: String) -> void:
+	if face_normal(f).dot(toward) < 0.0:
+		f.reverse()
+	faces.append(f)
+	regions.append(region)
+
+## Bed floor height and rail height ([floor_y, rail_y]), or [] with no bed.
+func bed_heights() -> Array:
+	_fix_regions()
+	var lo := INF
+	var hi := -INF
+	for fi in faces.size():
+		if not is_bed_region(regions[fi]):
+			continue
+		for i in faces[fi]:
+			lo = minf(lo, verts[i].y)
+			hi = maxf(hi, verts[i].y)
+	return [] if lo == INF else [lo, hi]
+
+## Move the bed floor so it's `depth` below the rails (kept above the body's
+## bottom). Returns "" or a message.
+func set_bed_depth(depth: float) -> String:
+	var h := bed_heights()
+	if h.is_empty():
+		return "No hollowed bed yet."
+	var ids := {}
+	var bed_v := {}
+	var z_lo := INF
+	var z_hi := -INF
+	for fi in faces.size():
+		if not is_bed_region(regions[fi]):
+			continue
+		for i in faces[fi]:
+			bed_v[i] = true
+			z_lo = minf(z_lo, verts[i].z)
+			z_hi = maxf(z_hi, verts[i].z)
+			if absf(verts[i].y - h[0]) < 0.002:
+				ids[i] = true
+	var bottom := INF
+	for i in verts.size():
+		if not bed_v.has(i) and verts[i].z >= z_lo - 0.2 and verts[i].z <= z_hi + 0.2:
+			bottom = minf(bottom, verts[i].y)
+	var y := minf(maxf(float(h[1]) - depth, bottom + BED_MIN_FLOOR), float(h[1]) - 0.05)
+	for i in ids:
+		verts[i].y = y
+	# wheel-well humps stay above the floor
+	for i in bed_v:
+		if not ids.has(i) and verts[i].y < y + 0.03 and verts[i].y < float(h[1]) - 0.01:
+			verts[i].y = y + 0.03
+	return ""
+
+## Bed faces a bed photo suits, by which way they face (left half: the bed
+## wall faces +X, the front wall +Z, the tailgate's inside -Z).
+func bed_faces_for(view: String) -> Array:
+	var out := []
+	for fi in faces.size():
+		if not is_bed_region(regions[fi]):
+			continue
+		if bed_view_of(face_normal(faces[fi])) == view:
+			out.append(fi)
+	return out
+
+static func bed_view_of(n: Vector3) -> String:
+	if n.y > 0.6:
+		return "bedfloor"
+	if absf(n.x) >= absf(n.z):
+		return "bedside"
+	return "bedfront" if n.z > 0.0 else "bedgate"
+
+## Paint every bed face with the photo that suits it where loaded, else bed
+## liner. Returns the number of faces painted.
+func auto_bed_paint(has_photo: Dictionary) -> int:
+	var n := 0
+	for fi in faces.size():
+		if not is_bed_region(regions[fi]):
+			continue
+		var v := bed_view_of(face_normal(faces[fi]))
+		set_region([fi], ("photo:" + v) if has_photo.get(v, false) else "bed")
+		n += 1
+	return n

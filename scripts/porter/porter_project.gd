@@ -23,9 +23,12 @@ const VIEWS := ["side", "front", "rear", "top"]
 ##              pillars use it
 ##   ceiling  : headliner, phone overhead with its top toward the windshield;
 ##              frame = (-x, -z)
-const INTERIOR_VIEWS := ["dash", "steering", "door", "pillar", "ceiling"]
+##   bedfloor / bedside / bedfront / bedgate : inside a pickup bed (see
+##              HalfMesh.BED_PHOTOS and PhotoTexturer.world_to_frame)
+const INTERIOR_VIEWS := ["dash", "steering", "door", "pillar", "ceiling", "bedfloor", "bedside", "bedfront", "bedgate"]
 const VIEW_LABELS := {"side": "Side", "front": "Front", "rear": "Rear", "top": "Top", "dash": "Dashboard",
-	"steering": "Steering wheel", "door": "Inside door", "pillar": "A-pillar", "ceiling": "Ceiling"}
+	"steering": "Steering wheel", "door": "Inside door", "pillar": "A-pillar", "ceiling": "Ceiling",
+	"bedfloor": "Bed floor", "bedside": "Bed side", "bedfront": "Bed front wall", "bedgate": "Tailgate inside"}
 const IMAGE_MAX_PX := 2048        # photos are downscaled to this on import (phone memory)
 
 var id := ""

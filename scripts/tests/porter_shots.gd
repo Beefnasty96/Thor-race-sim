@@ -91,6 +91,28 @@ static func fake_ceiling_photo() -> Image:
 	return img
 
 ## A three-spoke steering wheel, face-on.
+## Looking down into a bed: ribbed black liner, wheel-well humps.
+static func fake_bed_floor_photo() -> Image:
+	var img := Image.create(900, 1100, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.35, 0.36, 0.38))
+	img.fill_rect(Rect2i(60, 40, 780, 1020), Color(0.09, 0.09, 0.1))
+	for x in range(110, 820, 70):
+		img.fill_rect(Rect2i(x, 40, 22, 1020), Color(0.16, 0.16, 0.17))
+	for side in [60, 700]:
+		img.fill_rect(Rect2i(side, 560, 140, 330), Color(0.13, 0.13, 0.14))
+	return img
+
+## A bed wall from across the bed: liner below a body-colored rail.
+static func fake_bed_side_photo() -> Image:
+	var img := Image.create(1200, 500, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.55, 0.6, 0.65))
+	img.fill_rect(Rect2i(40, 80, 1120, 40), Color(0.15, 0.2, 0.42))
+	img.fill_rect(Rect2i(40, 120, 1120, 330), Color(0.1, 0.1, 0.11))
+	for x in range(80, 1150, 90):
+		img.fill_rect(Rect2i(x - 8, 140, 16, 16), Color(0.25, 0.25, 0.26))
+	img.fill_rect(Rect2i(560, 300, 380, 150), Color(0.14, 0.14, 0.15))
+	return img
+
 static func fake_steering_photo() -> Image:
 	var img := Image.create(800, 800, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0.3, 0.3, 0.32))
@@ -513,5 +535,48 @@ func _process(delta: float) -> void:
 			form._update()
 		43:
 			_shot("porter_21_tire_step_staggered")
+			var pk := PorterProject.create("Screenshot pickup")
+			pk.fill_from_car(Game.cars["chevrolet_tahoe_1999"], "4door")
+			pk.save()
+			app._open(pk)
+			app.show_modeler()
+		44:
+			var mk: PorterModeler = app.modeler
+			if mk._picker:
+				mk._picker.queue_free()
+				mk._picker = null
+			mk.mesh.restore(HalfMesh.from_template("pickup", app.project.dims).snapshot())
+			mk.mesh.template = "pickup"
+			mk._cut_arches()
+			mk._hollow_bed()
+			print("BED: ", mk.hint.text if mk.hint else "")
+			mk._select_view("3d")
+			mk.view.yaw = deg_to_rad(-35.0)
+			mk.view.pitch = deg_to_rad(38.0)
+			mk.view._update_cam()
+			var scb: ScrollContainer = mk.shape_panel.get_child(0) if mk.shape_panel.get_child(0) is ScrollContainer else null
+			if scb:
+				scb.scroll_vertical = 520
+		45:
+			_shot("porter_26_bed_hollowed")
+			var mk2: PorterModeler = app.modeler
+			mk2._set_mode("paint", true)
+			app.project.import_image("bedfloor", fake_bed_floor_photo())
+			mk2.on_photo_loaded("bedfloor")
+			app.project.import_image("bedside", fake_bed_side_photo())
+			mk2.on_photo_loaded("bedside")
+			mk2._pick_bed_view("bedfloor")
+			var scp: ScrollContainer = mk2.paint_panel.get_child(0) if mk2.paint_panel.get_child(0) is ScrollContainer else null
+			if scp:
+				scp.scroll_vertical = int(mk2.bed_photo_view.position.y) - 160
+			mk2.view.yaw = deg_to_rad(-25.0)
+			mk2.view.pitch = deg_to_rad(55.0)
+			mk2.view._update_cam()
+		46:
+			_shot("porter_27_bed_photos")
+			var p4: PorterProject = app.project
+			for f in DirAccess.get_files_at(p4.dir()):
+				DirAccess.remove_absolute(p4.dir() + f)
+			DirAccess.remove_absolute(p4.dir())
 			get_tree().quit()
 	step += 1

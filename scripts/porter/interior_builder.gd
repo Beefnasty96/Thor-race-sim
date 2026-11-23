@@ -343,7 +343,7 @@ static func suits_inner_photo(m: HalfMesh, view: String) -> Array:
 				for k in f.size():
 					glass_front[HalfMesh.edge_key(f[k], f[(k + 1) % f.size()])] = true
 	for fi in m.faces.size():
-		if HalfMesh.region_base(m.regions[fi]) == "glass":
+		if HalfMesh.region_base(m.regions[fi]) == "glass" or HalfMesh.is_bed_region(m.regions[fi]):
 			continue
 		var f: PackedInt32Array = m.faces[fi]
 		var n := m.face_normal(f)
