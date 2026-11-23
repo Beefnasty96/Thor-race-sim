@@ -1,0 +1,363 @@
+{
+ "make": "Ford",
+ "paints": [
+  {
+   "name": "Black Ebony",
+   "codes": "UA/M6373",
+   "years": [
+    1999
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Black-Ebony-Clearcoat-UA-M6373.html"
+   ]
+  },
+  {
+   "name": "Dark Tourmaline Metallic",
+   "codes": "NB/M6797",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.033,
+    0.165,
+    0.176
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Dark-Tourmaline-Metallic-Clearcoat-NB-M6797.html"
+   ]
+  },
+  {
+   "name": "Harvest Gold Metallic",
+   "codes": "B2/M6926",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.68,
+    0.56,
+    0.32
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Vermillion-Clearcoat-F1-M6886.html"
+   ]
+  },
+  {
+   "name": "Light Prairie Tan Metallic",
+   "codes": "BM/M6882",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.779,
+    0.727,
+    0.636
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Light-Prairie-Tan-Metallic-Clearcoat-BM-M6882.html"
+   ]
+  },
+  {
+   "name": "Oxford White",
+   "codes": "YZ/M6466",
+   "years": [
+    1999
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.93,
+    0.91
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Oxford-White-Clearcoat-YZ-M6466.html"
+   ]
+  },
+  {
+   "name": "Royal Blue Metallic",
+   "codes": "LE/M6799",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Royal-Blue-Metallic-Clearcoat-LE-M6799.html"
+   ]
+  },
+  {
+   "name": "Thistle Pearl",
+   "codes": "JS/M6896",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.42,
+    0.32,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Thistle-Pearl-Clearcoat-JS-M6896.html"
+   ]
+  },
+  {
+   "name": "Vermillion",
+   "codes": "F1/M6886",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.75,
+    0.13,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Vermillion-Clearcoat-F1-M6886.html"
+   ]
+  },
+  {
+   "name": "Woodland Green Metallic",
+   "codes": "FV/M6873",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Woodland-Green-Metallic-Clearcoat-FV-M6873.html"
+   ]
+  },
+  {
+   "name": "Colorado Red",
+   "codes": "D3/M7042",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.66,
+    0.08,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Colorado-Red-Clearcoat-D3-M7042.html"
+   ]
+  },
+  {
+   "name": "Electric Green Metallic",
+   "codes": "SW/M6953",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.1,
+    0.55,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Electric-Green-Metallic-Clearcoat-SW-M6953-M6954.html"
+   ]
+  },
+  {
+   "name": "Mineral Gray Pri Metallic",
+   "codes": "TK/M7020",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Mustang",
+    "trucks"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Mineral-Gray-Pri-Metallic-Clearcoat-TK-M7020-M7026.html"
+   ]
+  },
+  {
+   "name": "Zinc Yellow",
+   "codes": "B7/M7000",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.78,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Zinc-Yellow-Clearcoat-B7-M7000-M6999.html"
+   ]
+  },
+  {
+   "name": "Lime Gold Metallic",
+   "codes": "P1",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.66,
+    0.25
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Lime-Gold-Metallic-Clearcoat-P1.html"
+   ]
+  },
+  {
+   "name": "Redfire Pearl Metallic",
+   "codes": "G2",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.6,
+    0.08,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Mineral-Gray-Pri-Metallic-Clearcoat-TK-M7020-M7026.html"
+   ]
+  },
+  {
+   "name": "Screaming Yellow",
+   "codes": "D6/M7109",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.97,
+    0.8,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Screaming-Yellow-Clearcoat-D6-M7109.html"
+   ]
+  },
+  {
+   "name": "Vista Blue Metallic",
+   "codes": "G9/M7147A",
+   "years": [
+    2006
+   ],
+   "models": [
+    "Mustang"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.16,
+    0.36,
+    0.63
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Vista-Blue-Metallic-Clearcoat-G9-M7147A.html"
+   ]
+  }
+ ]
+}

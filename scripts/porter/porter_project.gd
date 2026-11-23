@@ -51,6 +51,9 @@ var paint := {}                   # preview paint: {"color": [r,g,b], "lower": [
 ## photo ([] = not picked yet) and how close a pixel must be to count as
 ## paint. Touch-up masks are <view>_paintmask.png next to the photos.
 var paint_key := {"color": [], "tolerance": 0.22}
+## Paints added from the car's own photos: [{name, code, color: [r,g,b]}]
+## (exact colors for this car; export adds them to the car's paint list).
+var custom_paints: Array = []
 ## Per view: file, cx, cy (photo center in frame meters), mpp (meters per pixel),
 ## sx, sy (extra stretch of the photo's width / height, 1 = none: makes up for
 ## a photo taken a little off-square), rot (radians), flip (mirror
@@ -326,7 +329,7 @@ func to_dict() -> Dictionary:
 	return {"format": 1, "id": id, "name": name, "source_car": source_car,
 		"units": units, "dims": dims, "views": views, "paint": paint,
 		"source_db": source_db, "db_row": db_row, "tires": tires, "wheels": wheels,
-		"interior": interior, "paint_key": paint_key}
+		"interior": interior, "paint_key": paint_key, "custom_paints": custom_paints}
 
 func save() -> bool:
 	DirAccess.make_dir_recursive_absolute(dir())
@@ -350,6 +353,7 @@ static func load_project(project_id: String) -> PorterProject:
 	p.source_car = d.get("source_car", "")
 	p.units = d.get("units", "imperial")
 	p.paint = d.get("paint", {})
+	p.custom_paints = d.get("custom_paints", [])
 	var pk: Dictionary = d.get("paint_key", {})
 	for k in pk:
 		p.paint_key[k] = pk[k]
@@ -460,6 +464,29 @@ func load_mesh() -> HalfMesh:
 		return null
 	var d = JSON.parse_string(FileAccess.get_file_as_string(dir() + "body.json"))
 	return HalfMesh.from_dict(d) if d is Dictionary else null
+
+# ---------------------------------------------------------------- factory paints
+
+## Make, model year and model of the car this project is (from the game car or
+## the production-car database), or {} when it was started blank.
+func car_identity() -> Dictionary:
+	if not db_row.is_empty():
+		return {"make": str(db_row.get("make", "")), "year": int(db_row.get("year", 0)), "model": str(db_row.get("model", ""))}
+	return {}
+
+## Factory colors for this car from the paint database, as preview paints.
+func factory_paints() -> Array:
+	var id := car_identity()
+	if id.is_empty():
+		return []
+	var out := []
+	for p in PaintDB.paints_for(id["make"].capitalize(), id["year"], id["model"]):
+		out.append(PaintDB.to_game_paint(p))
+	return out
+
+func add_custom_paint(name_: String, code: String, c: Color) -> void:
+	custom_paints.append({"name": name_.strip_edges(), "code": code.strip_edges(),
+		"color": [snappedf(c.r, 0.001), snappedf(c.g, 0.001), snappedf(c.b, 0.001)]})
 
 # ---------------------------------------------------------------- recolouring photo paint
 

@@ -235,11 +235,19 @@ later under the dimensions panel (*Apply tires*).
   steering_rake_deg, cluster). The game's cluster entries accept
   `{"pos", "r", "max"}` so each car's gauge size and full scale carry over.
 
+**Factory paints** (`data/paints/`, `PaintDB`): factory color names, paint
+codes and model years by make, researched from period sales material, press
+releases and paint-code references (sources per color; colors estimated from
+the names). The game's garage paint list gets the car's factory colors added;
+Car Porter's Preview color lists them for production-car projects, plus
+*Add a paint from your photo* (tap the paint, type name and code) for exact
+colors. See `data/paints/README.md`.
+
 Next: specs and test targets, export to
 `data/cars/` + `assets/cars/`.
 
 Desktop: `godot res://scenes/porter.tscn` (mouse acts as a finger, wheel
-zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`, `interior_test.gd`, `paint_test.gd` and
+zooms, Q/E rotate). Tests: `godot --headless -s res://scripts/tests/porter_test.gd`, `interior_test.gd`, `paint_test.gd`, `paintdb_test.gd` and
 `res://scripts/tests/modeler_test.gd`.
 Screenshots: `godot res://scenes/porter.tscn -- --shots`.
 

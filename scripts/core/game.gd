@@ -46,6 +46,8 @@ func _load_cars() -> void:
 			var txt := FileAccess.get_file_as_string(CAR_DIR + f)
 			var d = JSON.parse_string(txt)
 			if d is Dictionary:
+				# factory colors from the paint database join the car's own list
+				d["paints"] = PaintDB.merged_game_paints(d.get("paints", []), str(d.get("make", "")), int(d.get("year", 0)), str(d.get("model", "")))
 				cars[d["id"]] = d
 
 func car_def(id: String = "") -> Dictionary:

@@ -1,0 +1,278 @@
+{
+ "make": "Cadillac",
+ "paints": [
+  {
+   "name": "Black",
+   "codes": "41/WA8555",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Cream White",
+   "codes": "45/WA509F",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Dark Classic Green Pri Metallic",
+   "codes": "34/WA647H",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.066,
+    0.182,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Dark Ming Blue Pri Metallic",
+   "codes": "25/WA722J",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.044,
+    0.066,
+    0.165
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Dark Otter Gray Pri Metallic",
+   "codes": "32/WA648H",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.231,
+    0.237,
+    0.248
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Galaxy Silver Metallic",
+   "codes": "12/WA519F",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Light Bronze Mist Metallic",
+   "codes": "54/WA534F",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.643,
+    0.558,
+    0.48
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Medium Red Metallic",
+   "codes": "44/WA408G",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.527,
+    0.06,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.automotivetouchup.com/touch-up-paint/cadillac/2002/all-models"
+   ]
+  },
+  {
+   "name": "Red Pearl Tricoat",
+   "codes": "86/WA379E",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "Shale Beige",
+   "codes": "57/WA213C",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.7,
+    0.63,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.automotivetouchup.com/touch-up-paint/cadillac/2002/all-models"
+   ]
+  },
+  {
+   "name": "Stealth Gray",
+   "codes": "30A/WA183E",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.automotivetouchup.com/touch-up-paint/cadillac/2002/all-models"
+   ]
+  },
+  {
+   "name": "White",
+   "codes": "40/WA8554",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.93,
+    0.92
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  },
+  {
+   "name": "White Diamond Pri Metallic Tri-coat",
+   "codes": "98/WA800J",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html"
+   ]
+  }
+ ]
+}
