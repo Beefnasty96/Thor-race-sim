@@ -1,0 +1,1340 @@
+{
+ "make": "Chevrolet",
+ "paints": [
+  {
+   "name": "Atlantic Blue Metallic",
+   "codes": "30/WA158A",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Beige Metallic",
+   "codes": "57/WA9805",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.63,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Bright Teal Metallic",
+   "codes": "38/WA9794",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.006,
+    0.402,
+    0.402
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Dark Autumnwood Metallic",
+   "codes": "56/WA161A",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.275,
+    0.22,
+    0.165
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/cab(slash)chassis"
+   ]
+  },
+  {
+   "name": "Dark Garnet Red Metallic",
+   "codes": "76/WA9154",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.198,
+    0.028,
+    0.044
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Gunmetal Metallic",
+   "codes": "14/WA8915",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.3,
+    0.31,
+    0.33
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/cab(slash)chassis"
+   ]
+  },
+  {
+   "name": "Khaki",
+   "codes": "52/WA9087",
+   "years": [
+    1995
+   ],
+   "models": [
+    "S-10"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.6,
+    0.55,
+    0.4
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/s10-pickup"
+   ]
+  },
+  {
+   "name": "Light Gray Metallic",
+   "codes": "14/WA9789",
+   "years": [
+    1995
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.623,
+    0.629,
+    0.643
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/s10-pickup"
+   ]
+  },
+  {
+   "name": "Light Quasar Blue Metallic",
+   "codes": "20/WA9790",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.434,
+    0.512,
+    0.688
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Light Stellar Blue Metallic",
+   "codes": "27/WA146B",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.434,
+    0.512,
+    0.688
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/cab(slash)chassis"
+   ]
+  },
+  {
+   "name": "Medium Dark Teal Metallic",
+   "codes": "36/WA9828",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.023,
+    0.178,
+    0.178
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Radar Blue Metallic",
+   "codes": "21/WA9018",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup"
+   ]
+  },
+  {
+   "name": "Tan",
+   "codes": "61/WA8265",
+   "years": [
+    1995
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.66,
+    0.58,
+    0.44
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://automotivetouchup.com/touch-up-paint/chevrolet/1995/s10-pickup"
+   ]
+  },
+  {
+   "name": "Arctic White",
+   "codes": "10/WA9567",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Camaro",
+    "Corvette"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.94,
+    0.94,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+   ]
+  },
+  {
+   "name": "Black",
+   "codes": "41/WA8555",
+   "years": [
+    1999
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Bright Red",
+   "codes": "81/WA8774",
+   "years": [
+    1999
+   ],
+   "models": [
+    "cars",
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.693,
+    0.033,
+    0.033
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+   ]
+  },
+  {
+   "name": "Copper Metallic",
+   "codes": "69/WA381E",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.5,
+    0.27,
+    0.15
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Dark Blue",
+   "codes": "29/WA7349",
+   "years": [
+    1999
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+   ]
+  },
+  {
+   "name": "Dark Cherry Metallic",
+   "codes": "77/WA9800",
+   "years": [
+    1999
+   ],
+   "models": [
+    "cars"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.248,
+    0.022,
+    0.039
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+   ]
+  },
+  {
+   "name": "Dark Green Gray Metallic",
+   "codes": "18/WA9795",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.231,
+    0.237,
+    0.248
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Dark Toreador Metallic",
+   "codes": "51/WA334D",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.231,
+    0.028,
+    0.039
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Emerald Green Metallic",
+   "codes": "43/WA177B",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.05,
+    0.3,
+    0.18
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Indigo Metallic",
+   "codes": "39/WA9792",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.1,
+    0.13,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Light Autumnwood Metallic",
+   "codes": "55/WA228A",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.675,
+    0.61,
+    0.545
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Meadow Green Metallic",
+   "codes": "68/WA566F",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Pewter Metallic",
+   "codes": "11/WA382E",
+   "years": [
+    1999,
+    2000
+   ],
+   "models": [
+    "Camaro",
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.5,
+    0.5,
+    0.48
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html",
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Red Tint Metallic Tricoat",
+   "codes": "86/WA379E",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Cadillac",
+    "trucks"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+   ]
+  },
+  {
+   "name": "Sebring Silver Metallic",
+   "codes": "13/WA9566",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Camaro",
+    "Tahoe"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.71,
+    0.72
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Silvermist Metallic",
+   "codes": "17/WA331D",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Smokey Carmel Metallic",
+   "codes": "65/WA333D",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.55,
+    0.38,
+    0.22
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Storm Gray Metallic",
+   "codes": "14/WA391E",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Torch Red",
+   "codes": "70/WA9075",
+   "years": [
+    1999
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.78,
+    0.05,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html"
+   ]
+  },
+  {
+   "name": "Victory Red",
+   "codes": "74/WA9260",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.078,
+    0.094
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "White",
+   "codes": "50/WA8624",
+   "years": [
+    1999
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.93,
+    0.92
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Blue Metallic",
+   "codes": "20/WA532F",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Bright Blue Metallic",
+   "codes": "23/WA348D",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.096,
+    0.24,
+    0.564
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html"
+   ]
+  },
+  {
+   "name": "Bright Green Metallic",
+   "codes": "31/WA319D",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.101,
+    0.353,
+    0.197
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Hugger Orange",
+   "codes": "99/WA523F",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.93,
+    0.36,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Medium Green Pri Metallic",
+   "codes": "47/WA9539",
+   "years": [
+    2000
+   ],
+   "models": [
+    "cars",
+    "trucks"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.102,
+    0.281,
+    0.17
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html"
+   ]
+  },
+  {
+   "name": "Mystic Teal Metallic",
+   "codes": "79/WA320C",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Camaro"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.05,
+    0.38,
+    0.38
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Navy Blue Metallic",
+   "codes": "28/WA352E",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Camaro",
+    "Corvette"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.07,
+    0.1,
+    0.25
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Polo Green Metallic",
+   "codes": "91/WA9529",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html"
+   ]
+  },
+  {
+   "name": "Red Pearl Tricoat",
+   "codes": "86/WA127B",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "13/WA9021",
+   "years": [
+    2000
+   ],
+   "models": [
+    "cars"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html"
+   ]
+  },
+  {
+   "name": "Yellow",
+   "codes": "79/WA423G",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Corvette"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.8,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html"
+   ]
+  },
+  {
+   "name": "Arc White",
+   "codes": "16/WA152D",
+   "years": [
+    2004
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.automotivetouchup.com/touch-up-paint/chevrolet/2004/truck"
+   ]
+  },
+  {
+   "name": "Arrival Blue Metallic",
+   "codes": "91/WA815K",
+   "years": [
+    2004
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Cashmere Metallic",
+   "codes": "15/WA929L",
+   "years": [
+    2004
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.6,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Metallic",
+   "codes": "47/WA9095",
+   "years": [
+    2004
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Dark Ming Blue Metallic",
+   "codes": "25/WA722J",
+   "years": [
+    2004
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.044,
+    0.066,
+    0.165
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Dark Spiral Gray Metallic",
+   "codes": "62/WA805K",
+   "years": [
+    2004
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.231,
+    0.237,
+    0.248
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Fine Silver Birch Metallic",
+   "codes": "59/WA926L",
+   "years": [
+    2004
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Sport Red Metallic",
+   "codes": "63/WA817K",
+   "years": [
+    2004
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html"
+   ]
+  },
+  {
+   "name": "Wheatland Yellow",
+   "codes": "86/WA253A",
+   "years": [
+    2004
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.75,
+    0.15
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.automotivetouchup.com/touch-up-paint/chevrolet/2004/truck"
+   ]
+  },
+  {
+   "name": "Woodland Green",
+   "codes": "46/WA9015",
+   "years": [
+    2004
+   ],
+   "models": [
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.automotivetouchup.com/touch-up-paint/chevrolet/2004/truck"
+   ]
+  },
+  {
+   "name": "Gold Mist Metallic",
+   "codes": "51/WA316N",
+   "years": [
+    2008
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.68,
+    0.56,
+    0.32
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Graystone Metallic",
+   "codes": "16/WA213M",
+   "years": [
+    2008
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.45,
+    0.45,
+    0.43
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Ink Slate Metallic",
+   "codes": "87/WA503Q",
+   "years": [
+    2008
+   ],
+   "models": [
+    "SUVs"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.15,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Red Jewel",
+   "codes": "80/WA301N",
+   "years": [
+    2008
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Sonoma Jewel Metallic",
+   "codes": "66/WA412P",
+   "years": [
+    2008
+   ],
+   "models": [
+    "SUVs"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.3,
+    0.06,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "Stealth Gray Metallic",
+   "codes": "46/WA928L",
+   "years": [
+    2008
+   ],
+   "models": [
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  },
+  {
+   "name": "White Diamond Pri Metallic Tricoat",
+   "codes": "98/WA800J",
+   "years": [
+    2008
+   ],
+   "models": [
+    "Cadillac",
+    "SUVs",
+    "trucks"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html"
+   ]
+  }
+ ]
+}

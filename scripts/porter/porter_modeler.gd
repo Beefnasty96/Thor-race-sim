@@ -75,6 +75,15 @@ var match_btn: Button
 var mask_editor: PaintMaskEditor
 var mask_tabs := {}
 var brush_btns := {}
+# factory paints
+var preview_grid: GridContainer
+var paint_source_lbl: Label
+var add_paint_btn: Button
+var add_paint_row: Control
+var add_paint_swatch: ColorRect
+var add_paint_name: LineEdit
+var add_paint_code: LineEdit
+var _picked_custom := Color(-1, 0, 0)
 var depth_row: Control                # closer / farther (driver's-seat editing)
 var steer_labels := {}
 
@@ -718,34 +727,57 @@ func _build_paint_panel() -> Control:
 	_build_recolor_section(v)
 	v.add_child(HSeparator.new())
 	v.add_child(UIKit.label("PREVIEW COLOR", 24, UIKit.ACCENT))
-	var paints := _factory_paints()
-	var pg := GridContainer.new()
-	pg.columns = 1
-	for pdef in paints:
-		var pd: Dictionary = pdef
-		var c: Array = pd["color"]
-		var b2 := PorterUI.button("      " + pd["name"], func(): _set_preview_paint(pd))
-		b2.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b2.clip_text = true
-		b2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b2.custom_minimum_size = Vector2(0, 64)
-		var sw2 := ColorRect.new()
-		sw2.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		sw2.position = Vector2(14, 17)
-		sw2.size = Vector2(30, 30)
-		sw2.color = Color(c[0], c[1], c[2])
-		b2.add_child(sw2)
-		pg.add_child(b2)
-	v.add_child(pg)
+	paint_source_lbl = UIKit.label("", 20, UIKit.DIM)
+	paint_source_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(paint_source_lbl)
+	preview_grid = GridContainer.new()
+	preview_grid.columns = 1
+	v.add_child(preview_grid)
+	_fill_preview_paints()
+	add_paint_btn = _grow(PorterUI.toggle("Add a paint from your photo", false, func(on): _toggle_add_paint(on)))
+	v.add_child(add_paint_btn)
+	add_paint_row = VBoxContainer.new()
+	var ar := HBoxContainer.new()
+	add_paint_swatch = ColorRect.new()
+	add_paint_swatch.custom_minimum_size = Vector2(56, 56)
+	ar.add_child(add_paint_swatch)
+	add_paint_name = LineEdit.new()
+	add_paint_name.placeholder_text = "Factory name (e.g. Victory Red)"
+	add_paint_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	add_paint_name.custom_minimum_size.y = 56
+	ar.add_child(add_paint_name)
+	add_paint_row.add_child(ar)
+	var ar2 := HBoxContainer.new()
+	add_paint_code = LineEdit.new()
+	add_paint_code.placeholder_text = "Paint code (optional, e.g. 74 / WA9260)"
+	add_paint_code.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	add_paint_code.custom_minimum_size.y = 56
+	ar2.add_child(add_paint_code)
+	ar2.add_child(PorterUI.button("Save paint", _save_custom_paint, 170))
+	add_paint_row.add_child(ar2)
+	add_paint_row.visible = false
+	v.add_child(add_paint_row)
 	var tip := UIKit.label("Tips: tap a face to paint it with the chosen part. Need a window frame, headlight or stripe where there's no face? Go back to Shape and use Loop cut to add one. Glass, lights and chrome get their own look in the game; body paint and the second color follow the paint shop.", 20, UIKit.DIM)
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(tip)
 	return panel
 
-## Factory colors of the car the dimensions came from, or a neutral set.
+## Factory colors of the car (the game car's list, or the paint database for
+## the production car the project came from), plus paints added from photos,
+## or a neutral set when the car is unknown.
 func _factory_paints() -> Array:
+	var out := []
 	if project.source_car != "" and Game.cars.has(project.source_car):
-		return Game.cars[project.source_car].get("paints", [])
+		out = Game.cars[project.source_car].get("paints", []).duplicate()
+	else:
+		out = project.factory_paints()
+	for cp in project.custom_paints:
+		var lbl: String = cp["name"] if cp["name"] != "" else "My paint"
+		if cp.get("code", "") != "":
+			lbl += " (%s)" % cp["code"]
+		out.append({"name": lbl + "  · from photo", "color": cp["color"], "lower": cp["color"], "metallic": 0.4})
+	if not out.is_empty():
+		return out
 	return [
 		{"name": "White", "color": [0.9, 0.9, 0.88]}, {"name": "Black", "color": [0.03, 0.03, 0.035]},
 		{"name": "Red", "color": [0.6, 0.05, 0.05]}, {"name": "Silver", "color": [0.6, 0.61, 0.62]},
@@ -1718,6 +1750,68 @@ func _toggle_pick_paint(on: bool) -> void:
 		if view.tool == "pick_paint":
 			view.tool = "paint"
 
+func _fill_preview_paints() -> void:
+	for c in preview_grid.get_children():
+		c.queue_free()
+	var paints := _factory_paints()
+	var id := project.car_identity()
+	var db_n := 0
+	var near := false
+	for pdef in paints:
+		if pdef.get("factory_db", false):
+			db_n += 1
+			near = near or pdef.get("near_year", false)
+	if project.source_car != "":
+		paint_source_lbl.text = "Factory colors of the game car%s." % (" (%d from the paint database)" % db_n if db_n > 0 else "")
+	elif not id.is_empty():
+		paint_source_lbl.text = ("%d factory colors for %d %s from the paint database%s. Colors are estimated from the names." % [db_n, id["year"], id["make"].capitalize(), " (nearby years: none listed for this exact year yet)" if near else ""]) if db_n > 0 else "No factory colors for %d %s in the paint database yet: add yours from the photo." % [id["year"], id["make"].capitalize()]
+	else:
+		paint_source_lbl.text = "Generic colors (this project wasn't started from a production car)."
+	for pdef in paints:
+		var pd: Dictionary = pdef
+		var c: Array = pd["color"]
+		var b2 := PorterUI.button("      " + pd["name"], func(): _set_preview_paint(pd))
+		b2.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b2.clip_text = true
+		b2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b2.custom_minimum_size = Vector2(0, 64)
+		var sw2 := ColorRect.new()
+		sw2.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sw2.position = Vector2(14, 17)
+		sw2.size = Vector2(30, 30)
+		sw2.color = Color(c[0], c[1], c[2])
+		b2.add_child(sw2)
+		preview_grid.add_child(b2)
+
+var _pick_for_custom := false
+
+func _toggle_add_paint(on: bool) -> void:
+	add_paint_btn.set_pressed_no_signal(on)
+	add_paint_row.visible = on
+	_pick_for_custom = on
+	if on:
+		_picked_custom = Color(-1, 0, 0)
+		add_paint_swatch.color = Color(0.15, 0.15, 0.17)
+		_driver_view(false)
+		view.tool = "pick_paint"
+		if not (view.view in PorterProject.VIEWS):
+			_select_view("side")
+		_say("Tap a clean, evenly lit spot of the paint on the photo, then type its factory name (and code if you know it) and Save paint.")
+	elif view.tool == "pick_paint" and not pick_paint_btn.button_pressed:
+		view.tool = "paint"
+
+func _save_custom_paint() -> void:
+	if _picked_custom.r < 0.0:
+		_say("Tap the paint on the photo first.")
+		return
+	project.add_custom_paint(add_paint_name.text, add_paint_code.text, _picked_custom)
+	project.save()
+	add_paint_name.text = ""
+	add_paint_code.text = ""
+	_toggle_add_paint(false)
+	_fill_preview_paints()
+	_say("Paint saved to this car: it's in Preview color now, and export will add it to the car's paint list.")
+
 func _on_paint_pick(s: Vector2) -> void:
 	var pv: String = view.view
 	if not (pv in PorterProject.VIEWS):
@@ -1733,7 +1827,13 @@ func _on_paint_pick(s: Vector2) -> void:
 	if px.x < 0 or px.y < 0 or px.x >= sz.x or px.y >= sz.y:
 		_say("That's off the photo. Tap on the car's paint.")
 		return
-	project.set_paint_key(PaintKey.sample(img, Vector2i(px), 4))
+	var sampled := PaintKey.sample(img, Vector2i(px), 4)
+	if _pick_for_custom:
+		_picked_custom = sampled
+		add_paint_swatch.color = sampled
+		_say("Color picked. Type its factory name (and code if you know it), then Save paint. Tap again to re-pick.")
+		return
+	project.set_paint_key(sampled)
 	project.save()
 	_toggle_pick_paint(false)
 	view.show_paint_match = true

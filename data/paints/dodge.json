@@ -1,0 +1,139 @@
+{
+ "make": "Dodge",
+ "paints": [
+  {
+   "name": "Dark Garnet Red Pearl",
+   "codes": "RV/XRV",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.198,
+    0.028,
+    0.044
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Dark-Garnet-Red-Pearl-Clearcoat-RV-XRV.html"
+   ]
+  },
+  {
+   "name": "Deep Molten Red Pearl",
+   "codes": "R8/BR8",
+   "years": [
+    2003,
+    2004,
+    2005,
+    2006,
+    2007
+   ],
+   "models": [
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.372,
+    0.042,
+    0.042
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/Ram-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Flame Red",
+   "codes": "R4/PR4",
+   "years": [
+    2003
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.8,
+    0.06,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Flame-Red-Clearcoat-R4-PR4.html"
+   ]
+  },
+  {
+   "name": "Graphite Grey Pearl Metallic",
+   "codes": "DR/ZDR",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.25,
+    0.26,
+    0.28
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Graphite-Grey-Pearl-Metallic-Clearcoat-DR-ZDR.html"
+   ]
+  },
+  {
+   "name": "Light Khaki Metallic",
+   "codes": "JC/AJC",
+   "years": [
+    2003,
+    2004,
+    2005,
+    2006,
+    2007
+   ],
+   "models": [
+    "Ram"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.74,
+    0.708,
+    0.61
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/Ram-Pick-up.html"
+   ]
+  },
+  {
+   "name": "Timberline Green Pearl",
+   "codes": "GW/AGW",
+   "years": [
+    2003
+   ],
+   "models": [
+    "Ram"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Timberline-Green-Pearl-Clearcoat-GW-AGW.html"
+   ]
+  }
+ ]
+}

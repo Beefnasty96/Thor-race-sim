@@ -1,0 +1,117 @@
+# make | name | codes | years | models | source
+# GM (codes: two-digit RPO / WA number)
+Chevrolet|White|50/WA8624|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Black|41/WA8555|1999|all|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Victory Red|74/WA9260|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Pewter Metallic|11/WA382E|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Sebring Silver Metallic|13/WA9566|1999|Camaro,Tahoe|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Storm Gray Metallic|14/WA391E|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Indigo Metallic|39/WA9792|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Emerald Green Metallic|43/WA177B|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Dark Toreador Metallic|51/WA334D|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Dark Green Gray Metallic|18/WA9795|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Light Autumnwood Metallic|55/WA228A|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Smokey Carmel Metallic|65/WA333D|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Meadow Green Metallic|68/WA566F|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Copper Metallic|69/WA381E|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Silvermist Metallic|17/WA331D|1999|trucks,SUVs|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999-Chevrolet-Tahoe.html
+Chevrolet|Torch Red|70/WA9075|1999|Corvette|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html
+Chevrolet|Dark Blue|29/WA7349|1999|trucks|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html
+Chevrolet|Red Tint Metallic Tricoat|86/WA379E|1999|trucks,Cadillac|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html
+Chevrolet|Arctic White|10/WA9567|1999|Corvette,Camaro|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html
+Chevrolet|Dark Cherry Metallic|77/WA9800|1999|cars|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html
+Chevrolet|Bright Red|81/WA8774|1999|cars,trucks|https://www.paintscratch.com/touch_up_paint/Chevrolet/1999.html
+Chevrolet|Atlantic Blue Metallic|30/WA158A|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Light Quasar Blue Metallic|20/WA9790|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Radar Blue Metallic|21/WA9018|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Medium Dark Teal Metallic|36/WA9828|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Bright Teal Metallic|38/WA9794|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Beige Metallic|57/WA9805|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Dark Garnet Red Metallic|76/WA9154|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/full-pickup
+Chevrolet|Dark Autumnwood Metallic|56/WA161A|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/cab(slash)chassis
+Chevrolet|Light Stellar Blue Metallic|27/WA146B|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/cab(slash)chassis
+Chevrolet|Gunmetal Metallic|14/WA8915|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/cab(slash)chassis
+Chevrolet|Light Gray Metallic|14/WA9789|1995|trucks,SUVs|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/s10-pickup
+Chevrolet|Khaki|52/WA9087|1995|S-10|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/s10-pickup
+Chevrolet|Tan|61/WA8265|1995|trucks|https://automotivetouchup.com/touch-up-paint/chevrolet/1995/s10-pickup
+Chevrolet|Pewter Metallic|11/WA382E|2000|Camaro|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Silver Metallic|13/WA9021|2000|cars|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Blue Metallic|20/WA532F|2000|Camaro|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Navy Blue Metallic|28/WA352E|2000|Camaro,Corvette|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Mystic Teal Metallic|79/WA320C|2000|Camaro|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Hugger Orange|99/WA523F|2000|Camaro|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Bright Green Metallic|31/WA319D|2000|Camaro|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Camaro.html
+Chevrolet|Polo Green Metallic|91/WA9529|2000|Corvette|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html
+Chevrolet|Medium Green Pri Metallic|47/WA9539|2000|cars,trucks|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html
+Chevrolet|Yellow|79/WA423G|2000|Corvette|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html
+Chevrolet|Bright Blue Metallic|23/WA348D|2000|Corvette|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html
+Chevrolet|Red Pearl Tricoat|86/WA127B|2000|Corvette|https://paintscratch.com/touch_up_paint/Chevrolet/2000-Chevrolet-Corvette.html
+Chevrolet|Fine Silver Birch Metallic|59/WA926L|2004|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Dark Spiral Gray Metallic|62/WA805K|2004|trucks|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Dark Blue Metallic|47/WA9095|2004|trucks|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Dark Ming Blue Metallic|25/WA722J|2004|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Sport Red Metallic|63/WA817K|2004|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Cashmere Metallic|15/WA929L|2004|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Arrival Blue Metallic|91/WA815K|2004|trucks|https://paintscratch.com/touch_up_paint/Chevrolet/2004-Chevrolet-Silverado.html
+Chevrolet|Graystone Metallic|16/WA213M|2008|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|Stealth Gray Metallic|46/WA928L|2008|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|White Diamond Pri Metallic Tricoat|98/WA800J|2008|trucks,SUVs,Cadillac|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|Red Jewel|80/WA301N|2008|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|Gold Mist Metallic|51/WA316N|2008|trucks,SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|Sonoma Jewel Metallic|66/WA412P|2008|SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|Ink Slate Metallic|87/WA503Q|2008|SUVs|https://paintscratch.com/touch_up_paint/Chevrolet/2008-Chevrolet-Tahoe.html
+Chevrolet|Arc White|16/WA152D|2004|trucks|https://www.automotivetouchup.com/touch-up-paint/chevrolet/2004/truck
+Chevrolet|Wheatland Yellow|86/WA253A|2004|trucks|https://www.automotivetouchup.com/touch-up-paint/chevrolet/2004/truck
+Chevrolet|Woodland Green|46/WA9015|2004|trucks|https://www.automotivetouchup.com/touch-up-paint/chevrolet/2004/truck
+Pontiac|Galaxy Silver Metallic|12/WA519F|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Bright White|16/WA9753|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Dark Bronzemist Metallic|76/WA528F|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Light Driftwood Metallic|33/WA5322|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Dark Tropic Teal Pri Metallic|37/WA765J|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Redfire Metallic|72/WA526F|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Ultra Silver Metallic|95/WA8867|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Black|41/WA8555|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Pontiac|Bright Red|81/WA8774|2002|all|https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html
+Cadillac|White Diamond Pri Metallic Tri-coat|98/WA800J|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Light Bronze Mist Metallic|54/WA534F|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Galaxy Silver Metallic|12/WA519F|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Dark Ming Blue Pri Metallic|25/WA722J|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Black|41/WA8555|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Dark Otter Gray Pri Metallic|32/WA648H|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Dark Classic Green Pri Metallic|34/WA647H|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|White|40/WA8554|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Cream White|45/WA509F|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Red Pearl Tricoat|86/WA379E|2002|all|https://paintscratch.com/touch_up_paint/Cadillac/2002-Cadillac-All-Other-Models.html
+Cadillac|Stealth Gray|30A/WA183E|2002|all|https://www.automotivetouchup.com/touch-up-paint/cadillac/2002/all-models
+Cadillac|Shale Beige|57/WA213C|2002|all|https://www.automotivetouchup.com/touch-up-paint/cadillac/2002/all-models
+Cadillac|Medium Red Metallic|44/WA408G|2002|all|https://www.automotivetouchup.com/touch-up-paint/cadillac/2002/all-models
+# Ford (two-letter code / M number)
+Ford|Oxford White|YZ/M6466|1999|all|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Oxford-White-Clearcoat-YZ-M6466.html
+Ford|Black Ebony|UA/M6373|1999|all|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Black-Ebony-Clearcoat-UA-M6373.html
+Ford|Vermillion|F1/M6886|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Vermillion-Clearcoat-F1-M6886.html
+Ford|Light Prairie Tan Metallic|BM/M6882|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Light-Prairie-Tan-Metallic-Clearcoat-BM-M6882.html
+Ford|Woodland Green Metallic|FV/M6873|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Woodland-Green-Metallic-Clearcoat-FV-M6873.html
+Ford|Dark Tourmaline Metallic|NB/M6797|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Dark-Tourmaline-Metallic-Clearcoat-NB-M6797.html
+Ford|Thistle Pearl|JS/M6896|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Thistle-Pearl-Clearcoat-JS-M6896.html
+Ford|Royal Blue Metallic|LE/M6799|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Royal-Blue-Metallic-Clearcoat-LE-M6799.html
+Ford|Harvest Gold Metallic|B2/M6926|1999|trucks|https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Vermillion-Clearcoat-F1-M6886.html
+Ford|Mineral Gray Pri Metallic|TK/M7020|2002|Mustang,trucks|https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Mineral-Gray-Pri-Metallic-Clearcoat-TK-M7020-M7026.html
+Ford|Zinc Yellow|B7/M7000|2002|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Zinc-Yellow-Clearcoat-B7-M7000-M6999.html
+Ford|Colorado Red|D3/M7042|2002|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Colorado-Red-Clearcoat-D3-M7042.html
+Ford|Electric Green Metallic|SW/M6953|2002|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2002-Ford-Mustang-Electric-Green-Metallic-Clearcoat-SW-M6953-M6954.html
+Ford|Screaming Yellow|D6/M7109|2006|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Screaming-Yellow-Clearcoat-D6-M7109.html
+Ford|Lime Gold Metallic|P1|2006|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Lime-Gold-Metallic-Clearcoat-P1.html
+Ford|Vista Blue Metallic|G9/M7147A|2006|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Vista-Blue-Metallic-Clearcoat-G9-M7147A.html
+Ford|Redfire Pearl Metallic|G2|2006|Mustang|https://www.paintscratch.com/touch_up_paint/Ford/2006-Ford-Mustang-Mineral-Gray-Pri-Metallic-Clearcoat-TK-M7020-M7026.html
+# Dodge / Jeep (two-letter + three-letter Chrysler code)
+Dodge|Timberline Green Pearl|GW/AGW|2003|Ram|https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Timberline-Green-Pearl-Clearcoat-GW-AGW.html
+Dodge|Dark Garnet Red Pearl|RV/XRV|2003|Ram|https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Dark-Garnet-Red-Pearl-Clearcoat-RV-XRV.html
+Dodge|Graphite Grey Pearl Metallic|DR/ZDR|2003|Ram|https://paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Graphite-Grey-Pearl-Metallic-Clearcoat-DR-ZDR.html
+Dodge|Flame Red|R4/PR4|2003|all|https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Flame-Red-Clearcoat-R4-PR4.html
+Dodge|Light Khaki Metallic|JC/AJC|2003-2007|Ram|https://www.paintscratch.com/touch_up_paint/Dodge/Ram-Pick-up.html
+Dodge|Deep Molten Red Pearl|R8/BR8|2003-2007|Ram|https://www.paintscratch.com/touch_up_paint/Dodge/Ram-Pick-up.html
+Jeep|Shale Green Metallic|GR/XGR|2000|all|https://paintscratch.com/touch_up_paint/Jeep/2000-Jeep-All-Models-Shale-Green-Metallic-Clearcoat-GR-XGR.html
+# Toyota (modern, from Toyota's 2026 Tacoma press release)
+Toyota|Heritage Blue||2026|Tacoma|https://pressroom.toyota.com/?p=111059
+Toyota|Wave Maker||2026|Tacoma|https://pressroom.toyota.com/?p=111059
+Toyota|Bronze Oxide||2026|Tacoma|https://www.toyota.com/tacoma/photo-gallery

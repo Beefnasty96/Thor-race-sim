@@ -1,0 +1,194 @@
+{
+ "make": "Pontiac",
+ "paints": [
+  {
+   "name": "Black",
+   "codes": "41/WA8555",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Bright Red",
+   "codes": "81/WA8774",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.693,
+    0.033,
+    0.033
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Bright White",
+   "codes": "16/WA9753",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.921,
+    0.921,
+    0.897
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Dark Bronzemist Metallic",
+   "codes": "76/WA528F",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.248,
+    0.176,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Dark Tropic Teal Pri Metallic",
+   "codes": "37/WA765J",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.028,
+    0.209,
+    0.209
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Galaxy Silver Metallic",
+   "codes": "12/WA519F",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Light Driftwood Metallic",
+   "codes": "33/WA5322",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.74,
+    0.695,
+    0.623
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Redfire Metallic",
+   "codes": "72/WA526F",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.6,
+    0.08,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  },
+  {
+   "name": "Ultra Silver Metallic",
+   "codes": "95/WA8867",
+   "years": [
+    2002
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Pontiac/2002-Pontiac-Grand-Am.html"
+   ]
+  }
+ ]
+}

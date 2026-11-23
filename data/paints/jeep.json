@@ -1,0 +1,26 @@
+{
+ "make": "Jeep",
+ "paints": [
+  {
+   "name": "Shale Green Metallic",
+   "codes": "GR/XGR",
+   "years": [
+    2000
+   ],
+   "models": [
+    "all"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://paintscratch.com/touch_up_paint/Jeep/2000-Jeep-All-Models-Shale-Green-Metallic-Clearcoat-GR-XGR.html"
+   ]
+  }
+ ]
+}
