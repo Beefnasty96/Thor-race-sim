@@ -3,6 +3,7 @@ extends VBoxContainer
 ## Car Porter step 2: model the body over the reference photos.
 
 signal back_to_photos
+signal photo_requested(view_name: String)     # porter_main opens the picker, then calls on_photo_loaded
 
 const TRI_BUDGET := 1500              # GT1-style body budget (full, mirrored)
 
@@ -40,6 +41,22 @@ var arch_row: Control
 var window_btn: Button
 var window_row: Control
 var driver_btn: Button
+# interior
+var dash_mesh: HalfMesh
+var body_mesh: HalfMesh               # the body while the dash is being edited
+var editing_dash := false
+var dash_bar: Control                 # "editing the dash" banner in the Shape panel
+var interior_panel: Control
+var dash_view: DashPhotoView
+var steer_view: SteeringCropView
+var gauge_btns := {}
+var gauge_type := ""
+var gauge_sel := -1
+var gauge_info: Label
+var hole_btn: Button
+var hole_row: Control
+var seat_btn: Button
+var steer_labels := {}
 
 func setup(p: PorterProject) -> void:
 	project = p
@@ -55,6 +72,8 @@ func setup(p: PorterProject) -> void:
 		_show_template_picker(true)
 	else:
 		view.setup(project, mesh)
+	dash_mesh = project.load_dash()
+	view.dash = dash_mesh
 	_select_view("side")
 	_refresh_info()
 
@@ -62,11 +81,18 @@ func _process(delta: float) -> void:
 	if _save_t > 0.0:
 		_save_t -= delta
 		if _save_t <= 0.0:
-			project.save_mesh(mesh)
+			_save_mesh()
+
+func _save_mesh() -> void:
+	if editing_dash:
+		project.save_dash(mesh)
+	elif mesh:
+		project.save_mesh(mesh)
 
 func save_now() -> void:
-	if mesh:
-		project.save_mesh(mesh)
+	_save_mesh()
+	if editing_dash and body_mesh:
+		project.save_mesh(body_mesh)
 
 # ---------------------------------------------------------------- layout
 
@@ -86,9 +112,11 @@ func _build() -> void:
 	mode_btns["shape"] = PorterUI.toggle("Shape", true, func(on): _set_mode("shape", on))
 	mode_btns["paint"] = PorterUI.toggle("Paint", false, func(on): _set_mode("paint", on))
 	mode_btns["wheels"] = PorterUI.toggle("Wheels", false, func(on): _set_mode("wheels", on))
+	mode_btns["interior"] = PorterUI.toggle("Interior", false, func(on): _set_mode("interior", on))
 	hb.add_child(mode_btns["shape"])
 	hb.add_child(mode_btns["paint"])
 	hb.add_child(mode_btns["wheels"])
+	hb.add_child(mode_btns["interior"])
 	hb.add_child(VSeparator.new())
 	for v in [["side", "Side"], ["front", "Front"], ["rear", "Rear"], ["top", "Top"], ["3d", "3D"]]:
 		var key: String = v[0]
@@ -126,9 +154,12 @@ func _build() -> void:
 	paint_panel.visible = false
 	wheel_panel = _build_wheel_panel()
 	wheel_panel.visible = false
+	interior_panel = _build_interior_panel()
+	interior_panel.visible = false
 	body.add_child(shape_panel)
 	body.add_child(paint_panel)
 	body.add_child(wheel_panel)
+	body.add_child(interior_panel)
 
 func _build_panel() -> Control:
 	var panel := PanelContainer.new()
@@ -145,6 +176,14 @@ func _build_panel() -> Control:
 	v.add_theme_constant_override("separation", 10)
 	pad.add_child(v)
 
+	dash_bar = VBoxContainer.new()
+	dash_bar.add_child(UIKit.label("EDITING THE DASHBOARD", 24, UIKit.WARN))
+	var db_tip := UIKit.label("All the point tools work on the dash now (it mirrors like the body). The body is the faint ghost around it.", 20, UIKit.DIM)
+	db_tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dash_bar.add_child(db_tip)
+	dash_bar.add_child(_grow(PorterUI.button("Done editing the dash ▶ Interior", _end_edit_dash)))
+	dash_bar.visible = false
+	v.add_child(dash_bar)
 	info = UIKit.label("", 22, UIKit.DIM)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(info)
@@ -444,13 +483,25 @@ func _show_template_picker(first: bool) -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 16)
 	pc.add_child(v)
-	v.add_child(UIKit.label("CHOOSE A STARTING SHAPE", 36, Color.WHITE))
-	v.add_child(UIKit.label("It's scaled to this car's real length, width, height, wheelbase and overhang. You'll shape it to the photos from here.", 24, UIKit.DIM))
+	v.add_child(UIKit.label("CHOOSE A STARTING SHAPE" if not editing_dash else "CHOOSE A DASHBOARD SHAPE", 36, Color.WHITE))
+	v.add_child(UIKit.label("It's scaled to this car's real length, width, height, wheelbase and overhang. You'll shape it to the photos from here." if not editing_dash else "Sized to the cab and placed in front of the driver's seat.", 24, UIKit.DIM))
 	var g := GridContainer.new()
 	g.columns = 3
 	g.add_theme_constant_override("h_separation", 16)
 	g.add_theme_constant_override("v_separation", 16)
-	for key in HalfMesh.TEMPLATES:
+	if editing_dash:
+		for key in InteriorBuilder.DASH_TEMPLATES:
+			var dk: String = key
+			var db := PorterUI.button(InteriorBuilder.DASH_TEMPLATES[dk]["label"], func():
+				mesh.push_undo()
+				mesh.restore(InteriorBuilder.dash_from_template(dk, project).snapshot())
+				mesh.template = "dash_" + dk
+				_after_structural()
+				pc.queue_free()
+				_picker = null, 380)
+			db.custom_minimum_size.y = 110
+			g.add_child(db)
+	for key in (HalfMesh.TEMPLATES if not editing_dash else {}):
 		var k: String = key
 		var b := PorterUI.button(HalfMesh.TEMPLATES[k]["label"], func():
 			if not first:
@@ -494,11 +545,18 @@ func _set_mode(m: String, on: bool) -> void:
 		_toggle_cut_window(false)
 	for k in mode_btns:
 		mode_btns[k].set_pressed_no_signal(k == m)
+	if editing_dash and m != "shape":
+		_end_edit_dash(false)
 	shape_panel.visible = m == "shape"
 	paint_panel.visible = m == "paint"
 	wheel_panel.visible = m == "wheels"
+	interior_panel.visible = m == "interior"
+	if m != "interior":
+		_stop_placing()
+		if hole_btn and hole_btn.button_pressed:
+			_toggle_hole(false)
 	var painting := m != "shape"
-	view.tool = {"paint": "paint", "wheels": "wheels"}.get(m, "")
+	view.tool = {"paint": "paint", "wheels": "wheels", "interior": "interior"}.get(m, "")
 	view.show_paint = painting
 	view.clear_selection()
 	view.set_xray(m == "shape" and xray_btn.button_pressed)
@@ -507,6 +565,8 @@ func _set_mode(m: String, on: bool) -> void:
 		_select_view("3d")
 		_pick_wheel_axle(false)
 		_say("The wheel picture is cut from your side photo around each wheel. Drag the photo to center it, pinch to size the orange circle to the tire's edge. Only the rim inside the blue circle is kept: the game builds the tire so it can squash, flex and go flat.")
+	elif m == "interior":
+		_open_interior()
 	else:
 		_say("Pick a part on the right, then tap faces to paint them." if painting else "")
 
@@ -866,6 +926,8 @@ func _finish_window() -> void:
 
 func _driver_view(on: bool) -> void:
 	driver_btn.set_pressed_no_signal(on)
+	if seat_btn:
+		seat_btn.set_pressed_no_signal(on)
 	view.driver_view = on
 	if on:
 		if window_btn.button_pressed:
@@ -877,3 +939,408 @@ func _driver_view(on: bool) -> void:
 	else:
 		view._update_cam()
 	view.overlay.queue_redraw()
+
+# ---------------------------------------------------------------- interior
+
+func _section(v: VBoxContainer, title: String) -> void:
+	var sep := HSeparator.new()
+	v.add_child(sep)
+	v.add_child(UIKit.label(title, 24, UIKit.ACCENT))
+
+func _tip(v: VBoxContainer, t: String) -> void:
+	var l := UIKit.label(t, 20, UIKit.DIM)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(l)
+
+## A row: label, value, − and + buttons. get_text() -> String shows the value.
+func _stepper(v: VBoxContainer, key: String, label: String, minus: Callable, plus: Callable) -> void:
+	var row := HBoxContainer.new()
+	var l := UIKit.label(label, 22, Color.WHITE)
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(l)
+	var val := UIKit.label("", 22, UIKit.ACCENT)
+	val.custom_minimum_size.x = 130
+	steer_labels[key] = val
+	row.add_child(val)
+	row.add_child(PorterUI.button("−", minus, 76))
+	row.add_child(PorterUI.button("+", plus, 76))
+	v.add_child(row)
+
+func _build_interior_panel() -> Control:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(640, 0)
+	var sc := ScrollContainer.new()
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(sc)
+	var pad := MarginContainer.new()
+	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pad.add_theme_constant_override("margin_right", 22)
+	sc.add_child(pad)
+	var v := VBoxContainer.new()
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.add_theme_constant_override("separation", 10)
+	pad.add_child(v)
+
+	v.add_child(UIKit.label("DRIVER'S SEAT", 24, UIKit.ACCENT))
+	seat_btn = _grow(PorterUI.toggle("Driver's seat view", false, func(on): _driver_view(on)))
+	v.add_child(seat_btn)
+	_stepper(v, "eye_y", "Eye height", func(): _move_eye(Vector3(0, -0.01, 0)), func(): _move_eye(Vector3(0, 0.01, 0)))
+	_stepper(v, "eye_z", "Seat back / forward", func(): _move_eye(Vector3(0, 0, 0.01)), func(): _move_eye(Vector3(0, 0, -0.01)))
+	_stepper(v, "eye_x", "Seat toward door / center", func(): _move_eye(Vector3(-0.01, 0, 0)), func(): _move_eye(Vector3(0.01, 0, 0)))
+
+	_section(v, "DASHBOARD")
+	var tg := GridContainer.new()
+	tg.columns = 3
+	for key in InteriorBuilder.DASH_TEMPLATES:
+		var k: String = key
+		tg.add_child(_grow(PorterUI.button(InteriorBuilder.DASH_TEMPLATES[k]["label"].get_slice(" (", 0), func(): _new_dash(k))))
+	v.add_child(tg)
+	v.add_child(_grow(PorterUI.button("Edit the dash shape (point tools)", _start_edit_dash)))
+	v.add_child(_grow(PorterUI.button("Load dash photo (from the driver's seat)…", func(): photo_requested.emit("dash"))))
+	dash_view = DashPhotoView.new()
+	dash_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dash_view.fit_changed.connect(func(final):
+		if final:
+			project.save()
+			view.refresh_cabin())
+	dash_view.gauge_tapped.connect(_on_gauge_tap)
+	v.add_child(dash_view)
+	var g := GridContainer.new()
+	g.columns = 6
+	for spec in [["◀", func(): dash_view.nudge_move(-1, 0)], ["▶", func(): dash_view.nudge_move(1, 0)],
+			["▲", func(): dash_view.nudge_move(0, -1)], ["▼", func(): dash_view.nudge_move(0, 1)],
+			["−", func(): dash_view.nudge_size(1.0 / 1.01)], ["+", func(): dash_view.nudge_size(1.01)]]:
+		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
+	v.add_child(g)
+	var r1 := HBoxContainer.new()
+	r1.add_child(_grow(PorterUI.button("Fit photo to the dash", func():
+		var img := project.load_photo("dash")
+		if img and dash_mesh:
+			DashPhotoView.fit_to_dash(project, dash_mesh, img.get_width())
+			project.save()
+			dash_view.queue_redraw()
+			view.refresh_cabin())))
+	r1.add_child(_grow(PorterUI.button("Photo on the dash face", _dash_photo_faces)))
+	v.add_child(r1)
+
+	_section(v, "GAUGES (live in the game)")
+	var gg := GridContainer.new()
+	gg.columns = 3
+	for key in InteriorBuilder.GAUGE_TYPES:
+		var k: String = key
+		gauge_btns[k] = _grow(PorterUI.toggle(InteriorBuilder.GAUGE_TYPES[k]["label"], false, func(on): _pick_gauge_type(k, on)))
+		gg.add_child(gauge_btns[k])
+	v.add_child(gg)
+	gauge_info = UIKit.label("", 20, UIKit.DIM)
+	gauge_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(gauge_info)
+	_stepper(v, "g_size", "Gauge size", func(): _gauge_edit("r", 1.0 / 1.06), func(): _gauge_edit("r", 1.06))
+	_stepper(v, "g_max", "Full scale (mph / rpm)", func(): _gauge_edit("max", -1.0), func(): _gauge_edit("max", 1.0))
+	var r2 := HBoxContainer.new()
+	r2.add_child(_grow(PorterUI.button("Delete gauge", _delete_gauge)))
+	r2.add_child(_grow(PorterUI.button("Done placing", _stop_placing)))
+	v.add_child(r2)
+
+	_section(v, "STEERING WHEEL")
+	v.add_child(_grow(PorterUI.button("Load steering wheel photo (face-on)…", func(): photo_requested.emit("steering"))))
+	steer_view = SteeringCropView.new()
+	steer_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	steer_view.crop_changed.connect(func(final):
+		if final:
+			_apply_steer_crop())
+	steer_view.hole_point_added.connect(func(): _say("%d points. Keep tapping around the gap, then Finish hole." % steer_view.hole_pts.size()))
+	v.add_child(steer_view)
+	var g2 := GridContainer.new()
+	g2.columns = 6
+	for spec in [["◀", func(): steer_view.nudge_move(-1, 0)], ["▶", func(): steer_view.nudge_move(1, 0)],
+			["▲", func(): steer_view.nudge_move(0, -1)], ["▼", func(): steer_view.nudge_move(0, 1)],
+			["−", func(): steer_view.nudge_size(1.0 / 1.01)], ["+", func(): steer_view.nudge_size(1.01)]]:
+		g2.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
+	v.add_child(g2)
+	hole_btn = _grow(PorterUI.toggle("Draw a hole (gap between spokes)", false, func(on): _toggle_hole(on)))
+	v.add_child(hole_btn)
+	hole_row = HBoxContainer.new()
+	hole_row.add_child(_grow(PorterUI.button("Finish hole", _finish_hole)))
+	hole_row.add_child(_grow(PorterUI.button("Undo point", func():
+		if steer_view.hole_pts.size() > 0:
+			steer_view.hole_pts.pop_back()
+			steer_view.queue_redraw())))
+	hole_row.add_child(_grow(PorterUI.button("Cancel", func(): _toggle_hole(false))))
+	hole_row.visible = false
+	v.add_child(hole_row)
+	v.add_child(_grow(PorterUI.button("Remove the last hole", func():
+		var holes: Array = project.steering()["holes"]
+		if holes.size() > 0:
+			holes.pop_back()
+			project.save()
+			steer_view.queue_redraw()
+			view.refresh_cabin()
+			_refresh_interior_labels())))
+	_stepper(v, "s_dia", "Diameter", func(): _steer_set("diameter_m", -0.0127), func(): _steer_set("diameter_m", 0.0127))
+	_stepper(v, "s_thk", "Rim thickness", func(): _steer_set("thickness_m", -0.005), func(): _steer_set("thickness_m", 0.005))
+	_stepper(v, "s_tilt", "Tilt", func(): _steer_set("tilt_deg", -2.0), func(): _steer_set("tilt_deg", 2.0))
+	_stepper(v, "s_y", "Height", func(): _steer_move(Vector3(0, -0.01, 0)), func(): _steer_move(Vector3(0, 0.01, 0)))
+	_stepper(v, "s_z", "Toward driver / dash", func(): _steer_move(Vector3(0, 0, 0.01)), func(): _steer_move(Vector3(0, 0, -0.01)))
+	_tip(v, "The steering wheel is a round template with your photo on it. Fit the orange circle to the rim, then draw around each gap between the spokes: those holes are cut right through, so you see the gauges through them from the driver's seat. In the game it turns with the car's real steering lock.")
+	return panel
+
+func _open_interior() -> void:
+	dash_view.setup(project, dash_mesh)
+	steer_view.setup(project)
+	_refresh_interior_labels()
+	_driver_view(true)
+	if dash_mesh == null:
+		_say("Interior: pick a dashboard shape to start, load a dash photo taken from the driver's seat, place the gauges, then do the steering wheel.")
+	else:
+		_say("Interior: drag in the 3D view to look around from the driver's seat.")
+
+func _refresh_interior_labels() -> void:
+	if steer_labels.is_empty():
+		return
+	var e := project.driver_eye()
+	var s := project.steering()
+	var c := project.steering_center()
+	steer_labels["eye_y"].text = "%.2f m" % e.y
+	steer_labels["eye_z"].text = "%.2f m" % e.z
+	steer_labels["eye_x"].text = "%.2f m" % e.x
+	steer_labels["s_dia"].text = "%.1f in" % (float(s["diameter_m"]) / 0.0254)
+	steer_labels["s_thk"].text = "%.1f cm" % (float(s["thickness_m"]) * 100.0)
+	steer_labels["s_tilt"].text = "%d°" % int(round(float(s["tilt_deg"])))
+	steer_labels["s_y"].text = "%.2f m" % c.y
+	steer_labels["s_z"].text = "%.2f m" % c.z
+	var gs: Array = project.interior.get("gauges", [])
+	if gauge_sel >= 0 and gauge_sel < gs.size():
+		var g: Dictionary = gs[gauge_sel]
+		steer_labels["g_size"].text = "%.1f cm" % (float(g["r"]) * 200.0)
+		steer_labels["g_max"].text = ("%d" % int(g["max"])) if g["type"] in ["speedo", "tach"] else "—"
+	else:
+		steer_labels["g_size"].text = "—"
+		steer_labels["g_max"].text = "—"
+	var holes: int = (s["holes"] as Array).size()
+	gauge_info.text = "%d gauges on the dash. Pick a type, then tap on the dash photo where it goes. Tap a gauge to select it.  ·  Steering wheel: %d holes cut." % [gs.size(), holes]
+
+func _interior_changed() -> void:
+	project.save()
+	view.refresh_cabin()
+	_refresh_interior_labels()
+
+func _move_eye(d: Vector3) -> void:
+	var had_center: bool = (project.steering().get("center", []) as Array).size() == 3
+	var c := project.steering_center()
+	project.set_driver_eye(project.driver_eye() + d)
+	if not had_center:
+		project.set_steering_center(c)       # the wheel stays put when the seat moves
+	view._update_cam()
+	_interior_changed()
+
+# ---- dashboard
+
+func _new_dash(key: String) -> void:
+	dash_mesh = InteriorBuilder.dash_from_template(key, project)
+	project.save_dash(dash_mesh)
+	view.dash = dash_mesh
+	var img := project.load_photo("dash")
+	if img:
+		DashPhotoView.fit_to_dash(project, dash_mesh, img.get_width())
+		project.save()
+	# gauges follow the new dash face
+	for g in project.interior.get("gauges", []):
+		var z := InteriorBuilder.dash_z_at(dash_mesh, g["x"], g["y"])
+		g["on_dash"] = not is_nan(z)
+		if not is_nan(z):
+			g["z"] = snappedf(z, 0.001)
+	dash_view.setup(project, dash_mesh)
+	_interior_changed()
+	_say("Dashboard: %s. Reshape it with “Edit the dash shape”, or load a dash photo." % InteriorBuilder.DASH_TEMPLATES[key]["label"])
+
+func _start_edit_dash() -> void:
+	if dash_mesh == null:
+		_new_dash("truck")
+	_driver_view(false)
+	_save_mesh()
+	body_mesh = mesh
+	mesh = dash_mesh
+	editing_dash = true
+	view.ghost = body_mesh
+	view.mesh = dash_mesh
+	dash_bar.visible = true
+	_set_mode("shape", true)
+	_select_view("side")
+	_say("Editing the dashboard. Side view: drag points to match the dash profile; Front view for its width. “Start over from a template…” offers dash shapes now.")
+
+func _end_edit_dash(to_interior: bool = true) -> void:
+	if not editing_dash:
+		return
+	project.save_dash(mesh)
+	dash_mesh = mesh
+	mesh = body_mesh
+	body_mesh = null
+	editing_dash = false
+	view.ghost = null
+	view.mesh = mesh
+	view.dash = dash_mesh
+	view.clear_selection()
+	dash_bar.visible = false
+	# gauges re-seat on the reshaped dash
+	for g in project.interior.get("gauges", []):
+		var z := InteriorBuilder.dash_z_at(dash_mesh, g["x"], g["y"])
+		g["on_dash"] = not is_nan(z)
+		if not is_nan(z):
+			g["z"] = snappedf(z, 0.001)
+	project.save()
+	view.rebuild_body()
+	_refresh_info()
+	if to_interior:
+		_set_mode("interior", true)
+
+## Faces looking at the driver take the dash photo; the rest are black trim.
+func _dash_photo_faces() -> void:
+	if dash_mesh == null:
+		_say("Pick a dashboard shape first.")
+		return
+	for fi in dash_mesh.faces.size():
+		var n := dash_mesh.face_normal(dash_mesh.faces[fi])
+		dash_mesh.regions[fi] = "photo:dash" if n.z > 0.35 else "trim"
+	project.save_dash(dash_mesh)
+	view.refresh_cabin()
+	_say("Photo on every face that looks at the driver; the top and sides are black trim. Fine-tune in Paint while editing the dash.")
+
+# ---- gauges
+
+func _pick_gauge_type(k: String, on: bool) -> void:
+	for t in gauge_btns:
+		gauge_btns[t].set_pressed_no_signal(on and t == k)
+	gauge_type = k if on else ""
+	dash_view.placing = on
+	dash_view.queue_redraw()
+	if on:
+		if project.load_photo("dash") == null or dash_mesh == null:
+			_say("Pick a dashboard shape and load a dash photo first, then place gauges on it.")
+		else:
+			_say("Tap on the dash photo where the %s goes." % InteriorBuilder.GAUGE_TYPES[k]["label"].to_lower())
+
+func _stop_placing() -> void:
+	gauge_type = ""
+	for t in gauge_btns:
+		gauge_btns[t].set_pressed_no_signal(false)
+	if dash_view:
+		dash_view.placing = false
+		dash_view.queue_redraw()
+
+func _on_gauge_tap(p: Vector2, hit: int) -> void:
+	var gs: Array = project.interior.get("gauges", [])
+	if hit >= 0:
+		gauge_sel = hit
+	elif gauge_type != "":
+		var g := InteriorBuilder.make_gauge(gauge_type, p.x, p.y, dash_mesh)
+		gs.append(g)
+		project.interior["gauges"] = gs
+		gauge_sel = gs.size() - 1
+		if not g["on_dash"]:
+			_say("That spot isn't on the dash face (outside the blue outline). Move it with Delete + tap again, or reshape the dash.")
+		else:
+			_say("%s placed. Size it with Gauge size; pick another type or Done placing." % InteriorBuilder.GAUGE_TYPES[gauge_type]["label"])
+	dash_view.selected = gauge_sel
+	dash_view.queue_redraw()
+	_interior_changed()
+
+func _gauge_edit(key: String, k: float) -> void:
+	var gs: Array = project.interior.get("gauges", [])
+	if gauge_sel < 0 or gauge_sel >= gs.size():
+		_say("Tap a gauge on the dash photo to select it first.")
+		return
+	var g: Dictionary = gs[gauge_sel]
+	if key == "r":
+		g["r"] = clampf(snappedf(float(g["r"]) * k, 0.001), 0.008, 0.12)
+	else:
+		if g["type"] == "speedo":
+			g["max"] = clampf(float(g["max"]) + k * 10.0, 40.0, 240.0)
+		elif g["type"] == "tach":
+			g["max"] = clampf(float(g["max"]) + k * 500.0, 3000.0, 12000.0)
+	dash_view.queue_redraw()
+	_interior_changed()
+
+func _delete_gauge() -> void:
+	var gs: Array = project.interior.get("gauges", [])
+	if gauge_sel < 0 or gauge_sel >= gs.size():
+		return
+	gs.remove_at(gauge_sel)
+	gauge_sel = -1
+	dash_view.selected = -1
+	dash_view.queue_redraw()
+	_interior_changed()
+
+# ---- steering wheel
+
+func _apply_steer_crop() -> void:
+	project.steering()["crop"] = steer_view.crop.duplicate()
+	project.make_steering_texture()
+	view.steering_picture_changed()
+	_interior_changed()
+
+func _toggle_hole(on: bool) -> void:
+	steer_view.hole_pts.clear()
+	steer_view.drawing = on
+	hole_btn.set_pressed_no_signal(on)
+	hole_row.visible = on
+	steer_view.queue_redraw()
+	if on:
+		if project.load_photo("steering") == null:
+			_say("Load a steering wheel photo first; the holes are drawn on it.")
+		else:
+			_say("Tap around one gap between the spokes on the photo, then Finish hole.")
+
+func _finish_hole() -> void:
+	if steer_view.hole_pts.size() < 3:
+		_say("A hole needs at least 3 points.")
+		return
+	var poly := PackedVector2Array(steer_view.hole_pts)
+	if Geometry2D.triangulate_polygon(poly).is_empty():
+		_say("That outline crosses itself. Undo a point or two and go around in order.")
+		return
+	var arr := []
+	for p in poly:
+		arr.append([snappedf(p.x, 0.001), snappedf(p.y, 0.001)])
+	var holes: Array = project.steering()["holes"]
+	holes.append(arr)
+	var left := InteriorBuilder.face_area(holes) / PI
+	if left < 0.05:
+		holes.pop_back()
+		_say("That would cut away almost the whole wheel.")
+		return
+	steer_view.hole_pts.clear()
+	steer_view.queue_redraw()
+	_interior_changed()
+	_say("Hole cut (%d so far). Draw the next gap, or Cancel when done." % holes.size())
+
+func _steer_set(key: String, d: float) -> void:
+	var s := project.steering()
+	var lim := {"diameter_m": [0.25, 0.50], "thickness_m": [0.015, 0.06], "tilt_deg": [0.0, 60.0]}
+	s[key] = clampf(float(s[key]) + d, lim[key][0], lim[key][1])
+	_interior_changed()
+
+func _steer_move(d: Vector3) -> void:
+	project.set_steering_center(project.steering_center() + d)
+	_interior_changed()
+
+## porter_main calls this after a photo for `view_name` was imported.
+func on_photo_loaded(view_name: String) -> void:
+	if view_name == "dash":
+		var img := project.load_photo("dash")
+		if img and dash_mesh:
+			DashPhotoView.fit_to_dash(project, dash_mesh, img.get_width())
+		project.save()
+		dash_view.setup(project, dash_mesh)
+		if dash_mesh == null:
+			_say("Dash photo loaded. Pick a dashboard shape so it has something to sit on.")
+		else:
+			_dash_photo_faces()
+			_say("Dash photo loaded and fitted. Drag / pinch it so the blue outline sits on the dash, then place the gauges.")
+	elif view_name == "steering":
+		project.steering()["crop"] = {}
+		steer_view.setup(project)
+		project.steering()["crop"] = steer_view.crop.duplicate()
+		project.make_steering_texture()
+		view.steering_picture_changed()
+		_say("Steering photo loaded. Fit the orange circle to the wheel's rim, then draw the holes between the spokes.")
+	_interior_changed()

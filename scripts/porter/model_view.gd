@@ -31,6 +31,12 @@ var show_interior := true             # hollow shell inside (paint/wheels modes)
 var driver_view := false              # 3D camera in the driver's seat
 var glass_mi: MeshInstance3D
 var interior_mi: MeshInstance3D
+var dash: HalfMesh                    # interior dashboard (shown inside the body)
+var ghost: HalfMesh                   # body shown see-through while the dash is edited
+var ghost_mi: MeshInstance3D
+var cabin: Node3D                     # dash + steering wheel + gauges
+var show_cabin := true
+var demo_reading := 0.35              # needle position for the gauge preview (0..1)
 var paint_colors := {}                # region -> Color used for display (body paint etc.)
 var show_paint := false               # colour faces by region (Paint mode)
 var sel_verts := {}                   # id -> true
@@ -131,6 +137,16 @@ func _init() -> void:
 	im.roughness = 0.9
 	interior_mi.material_override = im
 	vp.add_child(interior_mi)
+	ghost_mi = MeshInstance3D.new()
+	var ghm := StandardMaterial3D.new()
+	ghm.albedo_color = Color(0.55, 0.7, 0.9, 0.16)
+	ghm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ghm.cull_mode = BaseMaterial3D.CULL_DISABLED
+	ghm.no_depth_test = false
+	ghost_mi.material_override = ghm
+	vp.add_child(ghost_mi)
+	cabin = Node3D.new()
+	vp.add_child(cabin)
 	overlay = Control.new()
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -193,6 +209,8 @@ func rebuild_body() -> void:
 	if _deco_paint != show_paint:
 		_deco_paint = show_paint
 		_rebuild_deco()                 # wheels switch between plain and textured
+	ghost_mi.mesh = ghost.build_mesh({}, true) if ghost else null
+	refresh_cabin()
 	glass_mi.mesh = mesh.build_glass() if show_paint else null
 	interior_mi.mesh = mesh.build_interior() if (show_paint and show_interior) else null
 	if not show_paint:
@@ -214,6 +232,128 @@ func rebuild_body() -> void:
 	_apply_material()
 	overlay.queue_redraw()
 	overlay.queue_redraw()
+
+# ---------------------------------------------------------------- cabin
+
+var _steer_tex_cache: Texture2D
+var _steer_tex_dirty := true
+
+## Mark the steering picture as changed (re-read on the next refresh).
+func steering_picture_changed() -> void:
+	_steer_tex_dirty = true
+
+## Dashboard (photo on its face), steering wheel and gauges inside the body.
+## Hidden while the dash itself is the mesh being edited (it is drawn as the
+## body then).
+func refresh_cabin() -> void:
+	for c in cabin.get_children():
+		c.queue_free()
+	if project == null or not show_cabin:
+		return
+	var editing_dash := ghost != null
+	if dash and not editing_dash:
+		var img := project.load_photo("dash")
+		var images := {"dash": img}
+		var built := PhotoTexturer.build(dash, project, paint_colors, images)
+		var am: ArrayMesh = built[0]
+		var dm := StandardMaterial3D.new()
+		dm.vertex_color_use_as_albedo = true
+		dm.roughness = 0.8
+		am.surface_set_material(0, dm)
+		if (built[1] as Array).size() > 0:
+			var tm := StandardMaterial3D.new()
+			var ti := img.duplicate() as Image
+			ti.generate_mipmaps()
+			tm.albedo_texture = ImageTexture.create_from_image(ti)
+			tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			tm.roughness = 0.8
+			am.surface_set_material(1, tm)
+		var mi := MeshInstance3D.new()
+		mi.mesh = am
+		cabin.add_child(mi)
+	# gauges: dark face, white ring, orange needle
+	for g in project.interior.get("gauges", []):
+		cabin.add_child(_gauge_node(g))
+	# steering wheel + column
+	var s := project.steering()
+	if _steer_tex_dirty:
+		_steer_tex_dirty = false
+		var simg := project.load_steering_texture()
+		_steer_tex_cache = ImageTexture.create_from_image(simg) if simg else null
+	var wheel := MeshInstance3D.new()
+	wheel.name = "SteeringWheel"
+	wheel.mesh = InteriorBuilder.steering_mesh(s["diameter_m"], s["thickness_m"], s["holes"])
+	var wm := StandardMaterial3D.new()
+	wm.roughness = 0.6
+	if _steer_tex_cache:
+		wm.albedo_texture = _steer_tex_cache
+	else:
+		wm.albedo_color = Color(0.12, 0.12, 0.13)
+	wheel.material_override = wm
+	var c := project.steering_center()
+	wheel.transform = InteriorBuilder.steering_transform(c, s["tilt_deg"])
+	cabin.add_child(wheel)
+	var col := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.03
+	cm.bottom_radius = 0.035
+	cm.height = 0.45
+	cm.radial_segments = 8
+	col.mesh = cm
+	var colm := StandardMaterial3D.new()
+	colm.albedo_color = Color(0.1, 0.1, 0.11)
+	col.material_override = colm
+	# the column runs from behind the hub forward-down, along the wheel's axis
+	var axis := wheel.transform.basis.z.normalized()
+	col.transform = Transform3D(Basis(Quaternion(Vector3.UP, -axis)), c - axis * (0.45 * 0.5 + s["thickness_m"]))
+	cabin.add_child(col)
+
+func _gauge_node(g: Dictionary) -> Node3D:
+	var root := Node3D.new()
+	root.position = Vector3(g["x"], g["y"], float(g["z"]) + 0.004)
+	var r: float = g["r"]
+	var face := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = r
+	cyl.bottom_radius = r
+	cyl.height = 0.004
+	cyl.radial_segments = 20
+	face.mesh = cyl
+	face.rotation = Vector3(PI * 0.5, 0, 0)
+	var fm := StandardMaterial3D.new()
+	fm.albedo_color = Color(0.04, 0.04, 0.05, 0.55)
+	fm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	face.material_override = fm
+	root.add_child(face)
+	var ring := MeshInstance3D.new()
+	var tm := TorusMesh.new()
+	tm.inner_radius = r * 0.92
+	tm.outer_radius = r
+	tm.rings = 20
+	ring.mesh = tm
+	ring.rotation = Vector3(PI * 0.5, 0, 0)
+	var rm := StandardMaterial3D.new()
+	rm.albedo_color = Color(0.85, 0.88, 0.92)
+	rm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ring.material_override = rm
+	root.add_child(ring)
+	var pivot := Node3D.new()
+	pivot.position.z = 0.004
+	pivot.rotation.z = -InteriorBuilder.needle_angle(demo_reading)
+	var nd := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(maxf(r * 0.07, 0.002), r * 0.85, 0.002)
+	nd.mesh = bm
+	nd.position.y = r * 0.42
+	var nm := StandardMaterial3D.new()
+	nm.albedo_color = Color(1.0, 0.45, 0.1)
+	nm.emission_enabled = true
+	nm.emission = Color(1.0, 0.45, 0.1)
+	nm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	nd.material_override = nm
+	pivot.add_child(nd)
+	root.add_child(pivot)
+	return root
 
 # ---------------------------------------------------------------- scene dressing
 
@@ -339,11 +479,10 @@ func _update_cam() -> void:
 		return
 	if view == "3d" and driver_view:
 		# left-hand drive: driver's eye behind the windshield, left of center
-		var d := project.dims
 		cam.projection = Camera3D.PROJECTION_PERSPECTIVE
 		cam.fov = 75.0
 		cam.near = 0.02
-		cam.position = Vector3(-d["width_m"] * 0.2, d["height_m"] * 0.68, -d["wheelbase_m"] * 0.12)
+		cam.position = project.driver_eye()
 		cam.basis = Basis.from_euler(Vector3(pitch * 0.5 - deg_to_rad(5.0), yaw + deg_to_rad(140.0), 0))
 		return
 	if view == "3d":
@@ -574,7 +713,7 @@ func _begin() -> void:
 		"size": ortho_size, "dist": dist}
 
 func _on_tap(s: Vector2) -> void:
-	if tool == "wheels":
+	if tool == "wheels" or tool == "interior":
 		return
 	if tool == "draw_window":
 		if view == "3d":

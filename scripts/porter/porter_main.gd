@@ -19,6 +19,7 @@ var _file_dialog: FileDialog
 var safe: MarginContainer          # everything sits inside the phone's safe area
 var _safe_check := 0.0
 var modeler: PorterModeler
+var _modeler_photo := ""            # interior photo the modeler asked for ("" = editor view)
 
 const DIM_FIELDS := [
 	["length_m", "Length"], ["width_m", "Width"], ["height_m", "Height"],
@@ -258,6 +259,9 @@ func show_modeler() -> void:
 	modeler = PorterModeler.new()
 	modeler.setup(project)
 	modeler.back_to_photos.connect(show_editor)
+	modeler.photo_requested.connect(func(v: String):
+		_modeler_photo = v
+		_pick_photo())
 	_set_screen(modeler)
 
 # =============================================================== reference photo editor
@@ -532,7 +536,7 @@ func _pick_photo() -> void:
 func _system_picker() -> void:
 	var filters := PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp ; Images"])
 	if DisplayServer.has_feature(DisplayServer.FEATURE_NATIVE_DIALOG_FILE):
-		DisplayServer.file_dialog_show("Choose the %s photo" % PorterProject.VIEW_LABELS[current_view].to_lower(),
+		DisplayServer.file_dialog_show("Choose the %s photo" % PorterProject.VIEW_LABELS[_modeler_photo if _modeler_photo != "" else current_view].to_lower(),
 			OS.get_system_dir(OS.SYSTEM_DIR_PICTURES), "", false, DisplayServer.FILE_DIALOG_MODE_OPEN_FILE,
 			filters, _on_native_pick)
 	else:
@@ -555,6 +559,16 @@ func _on_native_pick(status: bool, paths: PackedStringArray, _filter: int) -> vo
 		_say("No photo loaded. If you picked one, Android's picker couldn't open it from that app: use the thumbnails in “Load photo…”, or pick it under “Images” or “Downloads” in the picker's side menu.")
 
 func _import_photo_file(path: String) -> void:
+	if _modeler_photo != "" and modeler and is_instance_valid(modeler):
+		var v := _modeler_photo
+		_modeler_photo = ""
+		var e := project.import_photo(v, path)
+		if e != "":
+			modeler._say(e + " (" + path.get_file() + ")")
+			return
+		modeler.on_photo_loaded(v)
+		return
+	_modeler_photo = ""
 	_say("Loading photo…")
 	var err := project.import_photo(current_view, path)
 	if err != "":
