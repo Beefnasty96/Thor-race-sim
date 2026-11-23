@@ -490,25 +490,43 @@ func cut_arch_profile(profile: Array) -> String:
 	return ""
 
 ## Height of the side's bottom edge at depth z (lowest side edge there).
+## Only the outer side counts (not a wheel well's inner wall).
 func _bottom_edge_height(z: float) -> float:
 	var low := INF
+	var outer := _side_x_at(z)
 	for e in edges():
 		if is_center(e.x) or is_center(e.y):
 			continue
 		var a := verts[e.x]
 		var b := verts[e.y]
+		if minf(absf(a.x), absf(b.x)) < outer - 0.1:
+			continue
 		if (a.z - z) * (b.z - z) <= 0.0 and absf(a.z - b.z) > 0.01:
 			low = minf(low, lerpf(a.y, b.y, (z - a.z) / (b.z - a.z)))
 	return low
 
+## How far out the body side reaches at depth z (largest |x| of the edges
+## running past z).
+func _side_x_at(z: float) -> float:
+	var out := 0.0
+	for e in edges():
+		var a := verts[e.x]
+		var b := verts[e.y]
+		if (a.z - z) * (b.z - z) <= 0.0 and absf(a.z - b.z) > 0.01:
+			out = maxf(out, absf(lerpf(a.x, b.x, (z - a.z) / (b.z - a.z))))
+	return out
+
 ## Point on the side's bottom edge at depth z (reuses a point within 1 cm,
 ## otherwise splits the edge there).
 func _point_on_bottom_edge(z: float, low: float) -> int:
+	var outer := _side_x_at(z)
 	for i in verts.size():
-		if not is_center(i) and absf(verts[i].y - low) < 0.03 and absf(verts[i].z - z) < 0.01:
+		if not is_center(i) and absf(verts[i].y - low) < 0.03 and absf(verts[i].z - z) < 0.01 and absf(verts[i].x) > outer - 0.1:
 			return i
 	for e in edges():
 		if is_center(e.x) or is_center(e.y):
+			continue
+		if minf(absf(verts[e.x].x), absf(verts[e.y].x)) < outer - 0.1:
 			continue
 		var a := verts[e.x]
 		var b := verts[e.y]
@@ -1189,3 +1207,149 @@ func _add_outward(f: PackedInt32Array, axis_y: float) -> void:
 	if n.dot(out) < 0.0:
 		f.reverse()
 	faces.append(f)
+
+# ---------------------------------------------------------------- wheel wells
+
+## The arch outline on the body side at an axle: the side-bottom points of
+## the underbody faces that an arch cut lifted, plus the one at each end
+## still on the bottom edge. Returns [ids sorted front to rear, bottom height]
+## or [] when there's no open arch here (none cut, or a wheel well is built).
+func find_arch(axle_z: float, radius: float) -> Array:
+	var under := _underbody_faces()
+	var cand := {}
+	for fi in under:
+		for i in faces[fi]:
+			var p := verts[i]
+			if p.x < -0.15 and absf(p.z - axle_z) < radius * 1.9:
+				cand[i] = true
+	if cand.size() < 3:
+		return []
+	var ids: Array = cand.keys()
+	ids.sort_custom(func(a, b): return verts[a].z < verts[b].z)
+	var low := INF
+	for i in ids:
+		low = minf(low, verts[i].y)
+	# the lifted run around the axle, plus one bottom-edge point on each side
+	var mid := -1
+	for k in ids.size():
+		if verts[ids[k]].y > low + 0.02 and (mid < 0 or absf(verts[ids[k]].z - axle_z) < absf(verts[ids[mid]].z - axle_z)):
+			mid = k
+	if mid < 0 or absf(verts[ids[mid]].z - axle_z) > radius:
+		return []
+	var first := mid
+	var last := mid
+	while first > 0 and verts[ids[first - 1]].y > low + 0.02:
+		first -= 1
+	while last < ids.size() - 1 and verts[ids[last + 1]].y > low + 0.02:
+		last += 1
+	if first < 1 or last > ids.size() - 2:
+		return []
+	var a := verts[ids[first - 1]].y
+	var b := verts[ids[last + 1]].y
+	if absf(a - b) > 0.02:
+		return []
+	return [ids.slice(first - 1, last + 2), minf(a, b)]
+
+## Faces under the car: touching the centerline, reaching out to the side,
+## facing down.
+func _underbody_faces() -> Array:
+	var out := []
+	for fi in faces.size():
+		var f: PackedInt32Array = faces[fi]
+		var has_c := false
+		var has_side := false
+		for i in f:
+			if is_center(i):
+				has_c = true
+			elif verts[i].x < -0.15:
+				has_side = true
+		if has_c and has_side and face_normal(f).y < -0.2:
+			out.append(fi)
+	return out
+
+## Build the wheel well behind an arch: a liner from the arch outline inward
+## to `inner_x`, an inner wall there down to the bottom edge, and the
+## underbody brought back flat with the wheel opening left open below. Shares
+## every edge with the body (no cracks). `center_y` is the wheel center
+## height (the liner faces it). Returns "" or a message.
+func add_wheel_tub(axle_z: float, center_y: float, radius: float, inner_x: float) -> String:
+	var found := find_arch(axle_z, radius)
+	if found.is_empty():
+		return "No open arch here (cut one first, or it already has a wheel well)."
+	var P: Array = found[0]
+	var low: float = found[1]
+	var n := P.size() - 1
+	var max_x := -INF
+	for i in P:
+		max_x = maxf(max_x, verts[i].x)
+	inner_x = minf(maxf(inner_x, max_x + 0.04), -0.03)
+	if inner_x <= max_x:
+		return "The body side is too close to the centerline for a wheel well."
+	_fix_regions()
+	# T: liner top along the arch at the inner wall; B: the wall's bottom edge
+	var T := []
+	var B := []
+	for k in n + 1:
+		var p := verts[P[k]]
+		B.append(verts.size())
+		verts.append(Vector3(inner_x, low, p.z))
+		if k == 0 or k == n:
+			T.append(B[k])
+		else:
+			T.append(verts.size())
+			verts.append(Vector3(inner_x, p.y, p.z))
+	# the underbody: interior arch points -> the wall's bottom edge
+	var interior := {}
+	for k in range(1, n):
+		interior[P[k]] = k
+	var ends := {P[0]: 0, P[n]: n}
+	for fi in _underbody_faces():
+		var f: PackedInt32Array = faces[fi]
+		var hit := false
+		for i in f:
+			if interior.has(i):
+				hit = true
+		if not hit:
+			continue
+		var nf := PackedInt32Array()
+		var m := f.size()
+		for k in m:
+			var v := f[k]
+			if not interior.has(v):
+				nf.append(v)
+				continue
+			var prev := f[(k - 1 + m) % m]
+			var next := f[(k + 1) % m]
+			if ends.has(prev):
+				nf.append(B[ends[prev]])
+			nf.append(B[interior[v]])
+			if ends.has(next):
+				nf.append(B[ends[next]])
+		faces[fi] = nf
+	var wheel := Vector2(axle_z, center_y)
+	# liner: arch outline -> inner wall, facing the wheel
+	for k in n:
+		if T[k] == T[k + 1]:
+			continue
+		var q := PackedInt32Array([P[k], P[k + 1], T[k + 1], T[k]])
+		var c := face_center(q)
+		var toward := Vector3(0.0, wheel.y - c.y, wheel.x - c.z)
+		if face_normal(q).dot(toward) < 0.0:
+			q.reverse()
+		faces.append(q)
+		regions.append("trim")
+	# inner wall: strips from the bottom edge up to the liner, facing the wheel (-X)
+	for k in n:
+		var w := PackedInt32Array()
+		for id in [B[k], T[k], T[k + 1], B[k + 1]]:
+			if w.is_empty() or w[w.size() - 1] != id:
+				w.append(id)
+		if w.size() > 1 and w[0] == w[w.size() - 1]:
+			w.remove_at(w.size() - 1)
+		if w.size() < 3:
+			continue
+		if face_normal(w).x > 0.0:
+			w.reverse()
+		faces.append(w)
+		regions.append("trim")
+	return ""

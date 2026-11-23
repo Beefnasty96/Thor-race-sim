@@ -39,6 +39,9 @@ func _closed_and_consistent(m: HalfMesh) -> bool:
 			return false                        # hole
 	return true
 
+func f_x0(m: HalfMesh, f: PackedInt32Array) -> float:
+	return m.verts[f[0]].x
+
 func _all_left(m: HalfMesh) -> bool:
 	for p in m.verts:
 		if p.x > 1e-6:
@@ -345,6 +348,63 @@ func _initialize() -> void:
 				flipped += 1
 	_check(flipped == 0, "every triangle faces the same way as its face")
 	_check(ar.build_mesh().get_surface_count() == 1, "body with arches renders")
+	# wheel wells behind the arches
+	var tw: float = def["tires"]["width_m"]
+	var tracks := [d["track_front_m"], d["track_rear_m"]]
+	var tubs_ok := true
+	for k in 2:
+		var az: float = -wb2 if k == 0 else wb2
+		var ix: float = -float(tracks[k]) * 0.5 + tw * 0.5 + 0.03 + (0.05 if k == 0 else 0.0)
+		if ar.add_wheel_tub(az, r_t, r_t * 1.3, ix) != "":
+			tubs_ok = false
+	_check(tubs_ok, "wheel wells build behind both arches")
+	_check(_closed_and_consistent(ar), "body stays closed with wheel wells (no cracks)")
+	_check(ar.add_wheel_tub(-wb2, r_t, r_t * 1.3, -0.5) != "", "a second wheel well at the same arch is refused")
+	var nv_w := ar.verts.size()
+	_check(ar.cut_wheel_arch(-wb2, r_t, r_t * 1.12 + 0.02, 8) != "" and ar.verts.size() == nv_w, "Auto arches won't re-cut an arch that has a wheel well (the inner wall isn't body side)")
+	var walls := 0
+	var liner_ok := true
+	var wall_x := -INF
+	for wfi in ar.faces.size():
+		var f: PackedInt32Array = ar.faces[wfi]
+		var n := ar.face_normal(f)
+		var c := ar.face_center(f)
+		if ar.regions[wfi] != "trim" or absf(c.z + wb2) > r_t * 1.6 or c.y < 0.05:
+			continue
+		var all_inner := true
+		for i in f:
+			if absf(ar.verts[i].x - f_x0(ar, f)) > 1e-4:
+				all_inner = false
+		if all_inner and n.x < -0.99:
+			walls += 1
+			wall_x = ar.verts[f[0]].x
+		elif not all_inner and c.y > r_t * 0.9:
+			# liner over the tire: faces down toward the wheel
+			if n.y > 0.1:
+				liner_ok = false
+	var tire_inner: float = -float(tracks[0]) * 0.5 + tw * 0.5
+	_check(walls >= 3 and wall_x > tire_inner + 0.05 and wall_x < 0.0, "front inner wall is %d cm inboard of the tire (%d strips)" % [int(round((wall_x - tire_inner) * 100.0)), walls])
+	_check(liner_ok, "the liner over the tire faces down at the wheel")
+	# the wheel opening stays open underneath: no face covers the tire's footprint
+	var covered := false
+	for wfi in ar.faces.size():
+		var f2: PackedInt32Array = ar.faces[wfi]
+		if ar.face_normal(f2).y > -0.9 or ar.face_center(f2).y > r_t:
+			continue                     # floor-level faces only (the liner over the tire faces down too)
+		var poly := PackedVector2Array()
+		for i in f2:
+			poly.append(Vector2(ar.verts[i].x, ar.verts[i].z))
+		if Geometry2D.is_point_in_polygon(Vector2(-float(tracks[0]) * 0.5, -wb2), poly):
+			covered = true
+	_check(not covered, "nothing covers the wheel from below (the well is open at the bottom)")
+	var flipped2 := 0
+	for f in ar.faces:
+		var n2 := ar.face_normal(f)
+		for t in ar.triangulate(f):
+			if (ar.verts[t[1]] - ar.verts[t[0]]).cross(ar.verts[t[2]] - ar.verts[t[0]]).dot(n2) < 0.0:
+				flipped2 += 1
+	_check(flipped2 == 0, "wheel well faces triangulate cleanly")
+	_check(ar.build_interior(0.02).get_surface_count() == 1 and ar.triangle_count() < 1500, "hollow shell still builds; %d triangles" % ar.triangle_count())
 	var hi_body := HalfMesh.from_template("suv", d)
 	_check(hi_body.cut_wheel_arch(-wb2, 0.1, 0.12, 8) != "", "a wheel below the body is refused with a message")
 
