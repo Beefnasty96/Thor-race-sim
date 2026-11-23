@@ -1,0 +1,842 @@
+{
+ "make": "Nissan",
+ "paints": [
+  {
+   "name": "Aztec Red",
+   "codes": "AG2",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Black",
+   "codes": "KH3",
+   "years": [
+    1995,
+    1997,
+    2002,
+    2004,
+    2020
+   ],
+   "models": [
+    "240SX",
+    "300ZX",
+    "350Z",
+    "370Z",
+    "Altima"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1997-Nissan-240SX.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Charcoal Pearl Metallic",
+   "codes": "KH2",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.2,
+    0.21,
+    0.22
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Cherry Red Pearl",
+   "codes": "AH3",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.45,
+    0.04,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Cobalt Green Pearl",
+   "codes": "DN1",
+   "years": [
+    1995,
+    1997
+   ],
+   "models": [
+    "240SX",
+    "300ZX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1997-Nissan-240SX.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Pearl",
+   "codes": "TK3",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Dark Green Pearl",
+   "codes": "DJ2",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.066,
+    0.182,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Dark Red Purple Metallic",
+   "codes": "LP2",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.341,
+    0.039,
+    0.039
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "KL0",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Ultra Red",
+   "codes": "AJ4",
+   "years": [
+    1995,
+    1997
+   ],
+   "models": [
+    "240SX",
+    "300ZX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1997-Nissan-240SX.html",
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "White Pearl Tri-coat",
+   "codes": "QN0",
+   "years": [
+    1995
+   ],
+   "models": [
+    "300ZX"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1995-Nissan-300ZX.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Pearl",
+   "codes": "BN6",
+   "years": [
+    1997
+   ],
+   "models": [
+    "240SX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1997-Nissan-240SX.html"
+   ]
+  },
+  {
+   "name": "Reddish Purple Pearl",
+   "codes": "LS1",
+   "years": [
+    1997
+   ],
+   "models": [
+    "240SX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1997-Nissan-240SX.html"
+   ]
+  },
+  {
+   "name": "White Pearl Tri-coat",
+   "codes": "WK0",
+   "years": [
+    1997
+   ],
+   "models": [
+    "240SX"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/1997-Nissan-240SX.html"
+   ]
+  },
+  {
+   "name": "Blue Metallic",
+   "codes": "BX4",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Champagne Mist Metallic",
+   "codes": "EY1",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.75,
+    0.68,
+    0.55
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Cloud White",
+   "codes": "QM1",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Liquid Aluminum Metallic",
+   "codes": "KY4",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.7,
+    0.71,
+    0.72
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Mystic Emerald Metallic",
+   "codes": "DY2",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.05,
+    0.3,
+    0.18
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Neptune Metallic",
+   "codes": "FY0",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.2,
+    0.4
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Polished Pewter Metallic",
+   "codes": "KY2",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.5,
+    0.5,
+    0.48
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Red Mica Pearl",
+   "codes": "AX3",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Satin White Pearl Tri-coat",
+   "codes": "QX3",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Sheer Silver Metallic",
+   "codes": "KY1",
+   "years": [
+    2002
+   ],
+   "models": [
+    "Altima"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2002-Nissan-Altima.html"
+   ]
+  },
+  {
+   "name": "Chrome Silver Metallic",
+   "codes": "KY0",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Daytona Blue Pearl Metallic",
+   "codes": "B17",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.1,
+    0.3,
+    0.62
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Glacier Pearl Tri-Coat",
+   "codes": "QX1",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.93,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Lemans Sunset Metallic",
+   "codes": "A17",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.85,
+    0.4,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Redline",
+   "codes": "AX6",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.75,
+    0.05,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "K25",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Silverstone Metallic",
+   "codes": "WV2",
+   "years": [
+    2004
+   ],
+   "models": [
+    "350Z"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2004-Nissan-350Z.html"
+   ]
+  },
+  {
+   "name": "Black Pearl",
+   "codes": "G41",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Blue Pearl",
+   "codes": "RAY",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Dynamic Sunstone Red Tricoat",
+   "codes": "NBA",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Gray Metallic",
+   "codes": "KAD",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Red Pearl",
+   "codes": "A54",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Silver Metallic",
+   "codes": "K23",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "White Pearl Tricoat",
+   "codes": "QAB",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  },
+  {
+   "name": "Yellow",
+   "codes": "EAC",
+   "years": [
+    2020
+   ],
+   "models": [
+    "370Z"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.8,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Nissan/2020-Nissan-370Z.html"
+   ]
+  }
+ ]
+}

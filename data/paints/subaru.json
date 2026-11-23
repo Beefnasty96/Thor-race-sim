@@ -1,0 +1,855 @@
+{
+ "make": "Subaru",
+ "paints": [
+  {
+   "name": "Black Granite",
+   "codes": "54A",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.24,
+    0.25,
+    0.27
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Dark Blue Pearl",
+   "codes": "466",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.072,
+    0.138,
+    0.286
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Dark Green Pearl",
+   "codes": "433",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.066,
+    0.182,
+    0.11
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Dark Red Mica Pearl",
+   "codes": "841",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.341,
+    0.039,
+    0.039
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Fawn Metallic",
+   "codes": "076",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.53,
+    0.4
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Glacier White",
+   "codes": "230",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.93,
+    0.93
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Light Silver Metallic",
+   "codes": "262",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.779,
+    0.785,
+    0.798
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Rio Red",
+   "codes": "946",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Ruby Pearl",
+   "codes": "947",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.5,
+    0.05,
+    0.1
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Slate Gray Metallic",
+   "codes": "49B",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Sydney Blue Pri Metallic",
+   "codes": "55A",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Timberline Green Pearl",
+   "codes": "83N",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Titanium Pearl",
+   "codes": "89N",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.55,
+    0.55,
+    0.53
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "White Birch",
+   "codes": "82X",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Wintergreen Metallic",
+   "codes": "444",
+   "years": [
+    2000
+   ],
+   "models": [
+    "Legacy"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.3,
+    0.22
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2000-Subaru-Legacy.html"
+   ]
+  },
+  {
+   "name": "Aspen White",
+   "codes": "51E",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Blue Ridge Pearl Metallic",
+   "codes": "95H",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Graystone Metallic",
+   "codes": "09V",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.45,
+    0.45,
+    0.43
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Ice Blue",
+   "codes": "23G",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Java Black Metallic",
+   "codes": "18L",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Midnight Black Pri Metallic",
+   "codes": "08V",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Pacifica Blue Metallic",
+   "codes": "23W",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Platinum Silver Metallic",
+   "codes": "01G",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "San Remo Red",
+   "codes": "22G",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Savanna Green Metallic",
+   "codes": "07V",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Sedona Red Pearl",
+   "codes": "94H",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Sonic Yellow",
+   "codes": "13V",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.85,
+    0.15
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Steel Gray Metallic",
+   "codes": "26D",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.46,
+    0.48,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "WR Blue Pearl",
+   "codes": "02C",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.08,
+    0.2,
+    0.55
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Woodland Green Pearl Metallic",
+   "codes": "29W",
+   "years": [
+    2004
+   ],
+   "models": [
+    "Impreza"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.12,
+    0.33,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2004-Subaru-Impreza.html"
+   ]
+  },
+  {
+   "name": "Ceramic White",
+   "codes": "M6Y",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Cool Gray Khaki",
+   "codes": "PAF",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Crystal Black Silica Pearl",
+   "codes": "D4S",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Crystal White Tricoat",
+   "codes": "K1X",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Ice Silver Metallic",
+   "codes": "G1U",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Lapis Blue Metallic",
+   "codes": "K3X",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.13,
+    0.25,
+    0.52
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Lithium Red Pearl",
+   "codes": "NAA",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Magnetite Gray Metallic",
+   "codes": "P8Y",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.42,
+    0.43,
+    0.45
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "Pure Red",
+   "codes": "M7Y",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  },
+  {
+   "name": "World Rally Blue 2 Tricoat",
+   "codes": "K7X",
+   "years": [
+    2020
+   ],
+   "models": [
+    "STI",
+    "WRX"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.1,
+    0.25,
+    0.62
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.paintscratch.com/touch_up_paint/Subaru/2020-Subaru-WRX.html"
+   ]
+  }
+ ]
+}
