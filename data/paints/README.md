@@ -35,3 +35,8 @@ for the 1990s–2000s, then 2015+ for all major makes.
   Suburban, Colorado) from Chevrolet press releases and GM Authority color
   guides, with GM RPO / touch-up codes where the source gives them. Lines
   without a code join the coded entry of the same name. Total: 496 colors.
+- Batch 5: 2021 F-150, 2021–2022 Bronco and Bronco Sport (Ford Authority,
+  Ford announcements via motor1), 2021 Ram TRX (Stellantis press release),
+  2021–2022 Tundra (Toyota pressroom and color guides), and the 2020
+  Silverado 1500 (2019 lineup minus Oakwood, per GM Authority). Ram colors
+  are stored under Dodge with the older Ram trucks. Total: 532 colors.

@@ -854,12 +854,15 @@
    "name": "Magnetic Gray Metallic",
    "codes": "1G3",
    "years": [
-    2020
+    2020,
+    2021,
+    2022
    ],
    "models": [
     "4Runner",
     "Camry",
-    "Tacoma"
+    "Tacoma",
+    "Tundra"
    ],
    "finish": "metallic",
    "metallic": 0.6,
@@ -872,7 +875,9 @@
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Tacoma.html",
     "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-4Runner.html",
-    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+    "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html",
+    "https://pressroom.toyota.com/?p=64924",
+    "https://autowise.com/?p=181866"
    ]
   },
   {
@@ -1104,6 +1109,243 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Toyota/2020-Toyota-Camry.html"
+   ]
+  },
+  {
+   "name": "Lunar Rock",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.6,
+    0.62,
+    0.6
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://pressroom.toyota.com/?p=64924",
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Midnight Black",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://pressroom.toyota.com/?p=64924"
+   ]
+  },
+  {
+   "name": "Super White",
+   "codes": "040",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.92,
+    0.9
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://pressroom.toyota.com/?p=64924",
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Wind Chill Pearl",
+   "codes": "089",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "pearl",
+   "metallic": 0.45,
+   "rgb": [
+    0.93,
+    0.93,
+    0.91
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://pressroom.toyota.com/?p=64924",
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Army Green",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.35,
+    0.38,
+    0.28
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Blueprint",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.12,
+    0.2,
+    0.4
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Celestial Silver Metallic",
+   "codes": "1J9",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Midnight Black Metallic",
+   "codes": "218",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Smoked Mesquite",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.45,
+    0.4,
+    0.33
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Solar Octane",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.9,
+    0.45,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
+   ]
+  },
+  {
+   "name": "Supersonic Red",
+   "codes": "",
+   "years": [
+    2022
+   ],
+   "models": [
+    "Tundra"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.7,
+    0.04,
+    0.06
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://autowise.com/?p=181866"
    ]
   },
   {

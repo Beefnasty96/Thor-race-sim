@@ -1,0 +1,68 @@
+# Batch 5: Ford, Ram, Toyota 2020-2022 from press releases and color guides; 2020 Silverado
+# make | name | codes | years | models | source
+Ford|Agate Black||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Antimatter Blue||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Carbonized Grey||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Guard||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Iconic Silver||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Kodiak Brown||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Lead Foot||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Oxford White||2021|F-150,F-Series|https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck
+Ford|Space White|A3|2021|F-150,F-Series|https://fordauthority.com/2021/06/2021-ford-f-150-gains-new-space-white-color-first-look/amp
+Ford|Code Orange|CN|2021|F-150,F-Series,Raptor|https://fordauthority.com/2021/07/2021-ford-f-150-raptor-gains-new-code-orange-color-first-look/amp
+Ford|Smoked Quartz Tinted Clearcoat||2021|F-150,F-Series|https://fordauthority.com/2021/06/2021-ford-f-150-gains-new-guard-color-first-look/amp
+Ford|Shadow Black||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Iconic Silver||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Area 51||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Carbonized Gray||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Cactus Gray||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Oxford White||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Race Red||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Cyber Orange Metallic Tri-Coat||2021-2022|Bronco|https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/
+Ford|Rapid Red Metallic||2021|Bronco|https://www.fordmuscle.com/?p=7046
+Ford|Velocity Blue||2021|Bronco|https://www.fordmuscle.com/?p=7046
+Ford|Antimatter Blue||2021|Bronco|https://www.fordmuscle.com/?p=7046
+Ford|Lightning Blue||2021|Bronco|https://www.motor1.com/news/445705/ford-bronco-first-edition-lightning-blue/
+Ford|Area 51||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Cyber Orange||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Kodiak Brown||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Shadow Black||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Alto Blue||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Cactus Gray||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Rapid Red||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Carbonized Gray||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Iconic Silver||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Ford|Oxford White||2021|Bronco Sport|https://www.akinsford.com/blog/?p=8903
+Dodge|Flame Red||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Dodge|Hydro Blue||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Dodge|Granite Crystal||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Dodge|Billet Silver||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Dodge|Diamond Black Crystal||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Dodge|Bright White||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Dodge|Ignition Orange||2021|Ram,Ram 1500,TRX|https://media.stellantisnorthamerica.com/print.do?id=21984
+Toyota|Lunar Rock||2021|Tundra|https://pressroom.toyota.com/?p=64924
+Toyota|Magnetic Gray Metallic|1G3|2021|Tundra|https://pressroom.toyota.com/?p=64924
+Toyota|Midnight Black||2021|Tundra|https://pressroom.toyota.com/?p=64924
+Toyota|Super White|040|2021|Tundra|https://pressroom.toyota.com/?p=64924
+Toyota|Wind Chill Pearl|089|2021|Tundra|https://pressroom.toyota.com/?p=64924
+Toyota|Super White|040|2022|Tundra|https://autowise.com/?p=181866
+Toyota|Wind Chill Pearl|089|2022|Tundra|https://autowise.com/?p=181866
+Toyota|Magnetic Gray Metallic|1G3|2022|Tundra|https://autowise.com/?p=181866
+Toyota|Celestial Silver Metallic|1J9|2022|Tundra|https://autowise.com/?p=181866
+Toyota|Midnight Black Metallic|218|2022|Tundra|https://autowise.com/?p=181866
+Toyota|Supersonic Red||2022|Tundra|https://autowise.com/?p=181866
+Toyota|Smoked Mesquite||2022|Tundra|https://autowise.com/?p=181866
+Toyota|Army Green||2022|Tundra|https://autowise.com/?p=181866
+Toyota|Lunar Rock||2022|Tundra|https://autowise.com/?p=181866
+Toyota|Blueprint||2022|Tundra|https://autowise.com/?p=181866
+Toyota|Solar Octane||2022|Tundra|https://autowise.com/?p=181866
+Chevrolet|Iridescent Pearl Tricoat|G1W|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Havana Brown Metallic||2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Satin Steel Metallic|G9K|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Northsky Blue Metallic|GA0|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Silver Ice Metallic||2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Summit White|GAZ|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Black|GBA|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Shadow Gray Metallic|GJI|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Cajun Red Tintcoat||2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp
+Chevrolet|Red Hot|G7C|2020|Silverado,Silverado 1500|https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp

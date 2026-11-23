@@ -1609,7 +1609,8 @@
     "https://www.corvsport.com/2020-c8-corvette/",
     "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1638,7 +1639,8 @@
    "name": "Cajun Red Tintcoat",
    "codes": "",
    "years": [
-    2019
+    2019,
+    2020
    ],
    "models": [
     "Colorado",
@@ -1655,7 +1657,8 @@
    "rgb_estimated": true,
    "sources": [
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1708,7 +1711,8 @@
    "name": "Havana Brown Metallic",
    "codes": "",
    "years": [
-    2019
+    2019,
+    2020
    ],
    "models": [
     "Silverado",
@@ -1723,7 +1727,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1731,6 +1736,7 @@
    "codes": "G1W",
    "years": [
     2019,
+    2020,
     2021
    ],
    "models": [
@@ -1749,7 +1755,8 @@
    "rgb_estimated": true,
    "sources": [
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1798,7 +1805,8 @@
    "name": "Northsky Blue Metallic",
    "codes": "GA0",
    "years": [
-    2019
+    2019,
+    2020
    ],
    "models": [
     "Silverado",
@@ -1813,7 +1821,8 @@
    ],
    "rgb_estimated": true,
    "sources": [
-    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1905,7 +1914,8 @@
    "sources": [
     "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1956,7 +1966,8 @@
    "sources": [
     "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -1989,7 +2000,8 @@
     "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
     "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/colorado/2019-chevrolet-colorado/2019-chevrolet-colorado-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -2019,7 +2031,8 @@
    "name": "Silver Ice Metallic",
    "codes": "",
    "years": [
-    2019
+    2019,
+    2020
    ],
    "models": [
     "Camaro",
@@ -2036,7 +2049,8 @@
    "rgb_estimated": true,
    "sources": [
     "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {
@@ -2087,7 +2101,8 @@
    "sources": [
     "https://gmauthority.com/blog/gm/chevrolet/camaro/2019-chevrolet-camaro/2019-chevrolet-camaro-colors/",
     "https://gmauthority.com/blog/gm/chevrolet/silverado/2019-chevrolet-silverado/2019-chevrolet-silverado-1500/2019-chevrolet-silverado-1500-colors/",
-    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/"
+    "https://gmauthority.com/blog/gm/chevrolet/tahoe/2021-chevrolet-tahoe/2021-chevrolet-tahoe-colors/2021-chevrolet-tahoe-exterior-colors/",
+    "https://gmauthority.com/blog/2019/10/2020-silverado-1500-heres-whats-new-and-different/amp"
    ]
   },
   {

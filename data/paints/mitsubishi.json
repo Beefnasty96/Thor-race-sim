@@ -470,9 +470,9 @@
    "finish": "solid",
    "metallic": 0.05,
    "rgb": [
-    0.13,
-    0.25,
-    0.52
+    0.1,
+    0.35,
+    0.75
    ],
    "rgb_estimated": true,
    "sources": [
