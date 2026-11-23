@@ -182,7 +182,8 @@
    "codes": "W7/GW7",
    "years": [
     2002,
-    2020
+    2020,
+    2021
    ],
    "models": [
     "Challenger",
@@ -190,7 +191,8 @@
     "Pickup",
     "Ram",
     "Ram 1500",
-    "Ram 2500"
+    "Ram 2500",
+    "TRX"
    ],
    "finish": "solid",
    "metallic": 0.05,
@@ -203,7 +205,8 @@
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html",
     "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Challenger.html",
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html",
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
    ]
   },
   {
@@ -260,7 +263,8 @@
    "years": [
     2002,
     2003,
-    2020
+    2020,
+    2021
    ],
    "models": [
     "Pick-up",
@@ -268,6 +272,7 @@
     "Ram",
     "Ram 1500",
     "Ram 2500",
+    "TRX",
     "all"
    ],
    "finish": "solid",
@@ -281,7 +286,8 @@
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2003-Dodge-Ram-Pick-up-Flame-Red-Clearcoat-R4-PR4.html",
     "https://www.paintscratch.com/touch_up_paint/Dodge/2002-Dodge-Pick-up.html",
-    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
+    "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html",
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
    ]
   },
   {
@@ -790,6 +796,121 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Dodge/2020-Dodge-Ram-Series.html"
+   ]
+  },
+  {
+   "name": "Billet Silver",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Ram",
+    "Ram 1500",
+    "TRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
+   ]
+  },
+  {
+   "name": "Diamond Black Crystal",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Ram",
+    "Ram 1500",
+    "TRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
+   ]
+  },
+  {
+   "name": "Granite Crystal",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Ram",
+    "Ram 1500",
+    "TRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.24,
+    0.25,
+    0.27
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
+   ]
+  },
+  {
+   "name": "Hydro Blue",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Ram",
+    "Ram 1500",
+    "TRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.05,
+    0.4,
+    0.75
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
+   ]
+  },
+  {
+   "name": "Ignition Orange",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Ram",
+    "Ram 1500",
+    "TRX"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.92,
+    0.38,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://media.stellantisnorthamerica.com/print.do?id=21984"
    ]
   }
  ]

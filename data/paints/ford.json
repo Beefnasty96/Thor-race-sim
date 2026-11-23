@@ -288,9 +288,13 @@
    "years": [
     1999,
     2015,
-    2020
+    2020,
+    2021,
+    2022
    ],
    "models": [
+    "Bronco",
+    "Bronco Sport",
     "F-150",
     "F-250",
     "F-350",
@@ -310,7 +314,10 @@
     "https://www.paintscratch.com/touch_up_paint/Ford/1999-Ford-F-Series-Oxford-White-Clearcoat-YZ-M6466.html",
     "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
     "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html",
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html",
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck",
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/",
+    "https://www.akinsford.com/blog/?p=8903"
    ]
   },
   {
@@ -712,9 +719,12 @@
    "codes": "PQ/M7236",
    "years": [
     2015,
-    2020
+    2020,
+    2021,
+    2022
    ],
    "models": [
+    "Bronco",
     "F-150",
     "F-250",
     "F-350",
@@ -732,7 +742,8 @@
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
     "https://www.paintscratch.com/touch_up_paint/Ford/2015-Ford-Mustang.html",
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html",
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/"
    ]
   },
   {
@@ -1132,9 +1143,11 @@
    "name": "Velocity Blue",
    "codes": "E7",
    "years": [
-    2020
+    2020,
+    2021
    ],
    "models": [
+    "Bronco",
     "F-150",
     "F-250",
     "F-350",
@@ -1151,7 +1164,461 @@
    "rgb_estimated": true,
    "sources": [
     "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-Mustang.html",
-    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html"
+    "https://www.paintscratch.com/touch_up_paint/Ford/2020-Ford-F-Series.html",
+    "https://www.fordmuscle.com/?p=7046"
+   ]
+  },
+  {
+   "name": "Agate Black",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.04,
+    0.04,
+    0.045
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck"
+   ]
+  },
+  {
+   "name": "Alto Blue",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.45,
+    0.6,
+    0.7
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Antimatter Blue",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco",
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.08,
+    0.1,
+    0.2
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck",
+    "https://www.fordmuscle.com/?p=7046"
+   ]
+  },
+  {
+   "name": "Area 51",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Bronco",
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.3,
+    0.45,
+    0.48
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/",
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Cactus Gray",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Bronco",
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.5,
+    0.52,
+    0.5
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/",
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Carbonized Gray",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Bronco",
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.28,
+    0.29,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/",
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Carbonized Grey",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.28,
+    0.29,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck"
+   ]
+  },
+  {
+   "name": "Code Orange",
+   "codes": "CN",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series",
+    "Raptor"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.45,
+    0.05
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2021/07/2021-ford-f-150-raptor-gains-new-code-orange-color-first-look/amp"
+   ]
+  },
+  {
+   "name": "Cyber Orange",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.95,
+    0.5,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Cyber Orange Metallic Tri-Coat",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Bronco"
+   ],
+   "finish": "tricoat",
+   "metallic": 0.5,
+   "rgb": [
+    0.95,
+    0.5,
+    0.08
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/"
+   ]
+  },
+  {
+   "name": "Guard",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.3,
+    0.35,
+    0.3
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck"
+   ]
+  },
+  {
+   "name": "Iconic Silver",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Bronco",
+    "Bronco Sport",
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.66,
+    0.67,
+    0.69
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck",
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/",
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Kodiak Brown",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco Sport",
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.3,
+    0.22,
+    0.16
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck",
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Lead Foot",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.35,
+    0.36,
+    0.37
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2020/07/2021-f-150-colors-15-hues-on-offer-for-fords-all-new-pickup-truck"
+   ]
+  },
+  {
+   "name": "Lightning Blue",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.1,
+    0.35,
+    0.75
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.motor1.com/news/445705/ford-bronco-first-edition-lightning-blue/"
+   ]
+  },
+  {
+   "name": "Rapid Red",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Rapid Red Metallic",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "Bronco"
+   ],
+   "finish": "metallic",
+   "metallic": 0.6,
+   "rgb": [
+    0.62,
+    0.07,
+    0.07
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.fordmuscle.com/?p=7046"
+   ]
+  },
+  {
+   "name": "Shadow Black",
+   "codes": "",
+   "years": [
+    2021,
+    2022
+   ],
+   "models": [
+    "Bronco",
+    "Bronco Sport"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.035,
+    0.035,
+    0.04
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://www.motor1.com/news/525522/2022-ford-bronco-exterior-colors/",
+    "https://www.akinsford.com/blog/?p=8903"
+   ]
+  },
+  {
+   "name": "Smoked Quartz Tinted Clearcoat",
+   "codes": "",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "tintcoat",
+   "metallic": 0.55,
+   "rgb": [
+    0.3,
+    0.27,
+    0.27
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2021/06/2021-ford-f-150-gains-new-guard-color-first-look/amp"
+   ]
+  },
+  {
+   "name": "Space White",
+   "codes": "A3",
+   "years": [
+    2021
+   ],
+   "models": [
+    "F-150",
+    "F-Series"
+   ],
+   "finish": "solid",
+   "metallic": 0.05,
+   "rgb": [
+    0.9,
+    0.9,
+    0.88
+   ],
+   "rgb_estimated": true,
+   "sources": [
+    "https://fordauthority.com/2021/06/2021-ford-f-150-gains-new-space-white-color-first-look/amp"
    ]
   }
  ]
