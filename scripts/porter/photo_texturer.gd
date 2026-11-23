@@ -34,6 +34,14 @@ static func world_to_frame(project: PorterProject, view: String, p: Vector3) -> 
 			return Vector2(-absf(p.x), p.y)
 		"ceiling":     # phone overhead, top toward the windshield: car's left is on the right
 			return Vector2(-p.x, -p.z)
+		"bedfloor":    # looking down into the bed, top of the photo toward the cab
+			return Vector2(p.x, -p.z)
+		"bedside":     # facing a bed wall from across the bed: forward to the right; both walls use it
+			return Vector2(-p.z, p.y)
+		"bedfront":    # from the tailgate looking at the cab
+			return Vector2(p.x, p.y)
+		"bedgate":     # from the cab end looking back at the tailgate
+			return Vector2(-p.x, p.y)
 		_:
 			return Vector2(p.z + mid, p.x)
 

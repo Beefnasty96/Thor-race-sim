@@ -85,6 +85,13 @@ var add_paint_name: LineEdit
 var add_paint_code: LineEdit
 var _picked_custom := Color(-1, 0, 0)
 var depth_row: Control                # closer / farther (driver's-seat editing)
+# pickup bed
+var bed_view := "bedfloor"
+var bed_tabs := {}
+var bed_photo_view: DashPhotoView
+var bed_load_btn: Button
+var bed_paint_btns := {}
+var bed_labels := {}
 var steer_labels := {}
 
 func setup(p: PorterProject) -> void:
@@ -255,6 +262,7 @@ func _build_panel() -> Control:
 	ra = HBoxContainer.new()
 	ra.add_child(_grow(PorterUI.button("Build wheel wells (for arches already cut)", _wheel_wells_button)))
 	v.add_child(ra)
+	_build_bed_shape(v)
 	arch_row = HBoxContainer.new()
 	arch_row.add_child(_grow(PorterUI.button("Finish arch", _finish_arch)))
 	arch_row.add_child(_grow(PorterUI.button("Undo point", func():
@@ -724,6 +732,7 @@ func _build_paint_panel() -> Control:
 	var ptip := UIKit.label("Each face takes the photo that looks straight at it, lined up from your Photos step. Match the shape to the photos first for the cleanest result. Pick the paint color below so the paint shop can recolor photo faces too.", 20, UIKit.DIM)
 	ptip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(ptip)
+	_build_bed_paint(v)
 	_build_recolor_section(v)
 	v.add_child(HSeparator.new())
 	v.add_child(UIKit.label("PREVIEW COLOR", 24, UIKit.ACCENT))
@@ -801,6 +810,8 @@ func _pick_region(k: String, on: bool) -> void:
 	region = k
 	for key in region_btns:
 		region_btns[key][0].set_pressed_no_signal(key == k)
+	for t in bed_paint_btns:
+		bed_paint_btns[t].set_pressed_no_signal(false)
 	src_row.visible = k == "photo"
 	if k == "photo" and project.photo_count() == 0:
 		_say("Add photos in the Photos step first.")
@@ -1517,6 +1528,23 @@ func on_photo_loaded(view_name: String) -> void:
 		_pick_inside_view(view_name)
 		view.rebuild_body()
 		_say("%s photo loaded. Paint it on: pick “%s photo” under Paint the inside and tap panels from the driver's seat (or Auto). Then drag / pinch it onto the blue outline." % [PorterProject.VIEW_LABELS[view_name], PorterProject.VIEW_LABELS[view_name]])
+	elif view_name in HalfMesh.BED_PHOTOS:
+		view.photo_changed(view_name)
+		var img3 := project.load_photo(view_name)
+		if img3:
+			DashPhotoView.fit_to_outline(project, view_name, DashPhotoView.panel_outline(project, mesh, view_name), img3.get_width(), img3.get_height())
+		project.save()
+		_pick_bed_view(view_name)
+		if mesh.has_bed():
+			var n := mesh.bed_faces_for(view_name)
+			if not n.is_empty():
+				mesh.push_undo()
+				mesh.set_region(n, "photo:" + view_name)
+			view.rebuild_body()
+			_queue_save()
+			_say("%s photo on. Drag / pinch it so the blue outline sits on the bed in the photo." % PorterProject.VIEW_LABELS[view_name])
+		else:
+			_say("%s photo loaded. Hollow out the bed in Shape, then it goes on." % PorterProject.VIEW_LABELS[view_name])
 	elif view_name == "steering":
 		project.steering()["crop"] = {}
 		steer_view.setup(project)
@@ -1865,3 +1893,190 @@ func _pick_brush(val: float, on: bool) -> void:
 func _brush_size(k: float) -> void:
 	mask_editor.brush_px = clampf(mask_editor.brush_px * k, 8.0, 200.0)
 	_refresh_key_ui()
+
+# ---------------------------------------------------------------- pickup bed
+
+const BED_DEPTH_DEFAULT := 0.5        # full-size bed, about 20 in
+const BED_RAIL_DEFAULT := 0.05
+
+func _bed_settings() -> Dictionary:
+	if not project.interior.has("bed"):
+		project.interior["bed"] = {"depth_m": BED_DEPTH_DEFAULT, "rail_m": BED_RAIL_DEFAULT}
+	return project.interior["bed"]
+
+func _len_text(m: float) -> String:
+	return ("%.1f in" % (m / 0.0254)) if project.units == "imperial" else ("%d cm" % roundi(m * 100.0))
+
+func _bed_stepper(v: VBoxContainer, key: String, label: String, step: float, lo: float, hi: float) -> void:
+	var row := HBoxContainer.new()
+	var l := UIKit.label(label, 22, Color.WHITE)
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(l)
+	var val := UIKit.label("", 22, UIKit.ACCENT)
+	val.custom_minimum_size.x = 130
+	bed_labels[key] = val
+	row.add_child(val)
+	row.add_child(PorterUI.button("−", func(): _bed_step(key, -step, lo, hi), 76))
+	row.add_child(PorterUI.button("+", func(): _bed_step(key, step, lo, hi), 76))
+	v.add_child(row)
+
+func _bed_step(key: String, d: float, lo: float, hi: float) -> void:
+	var b := _bed_settings()
+	b[key] = clampf(float(b[key]) + d, lo, hi)
+	_refresh_bed_labels()
+	if key == "depth_m" and mesh.has_bed():
+		mesh.push_undo()
+		mesh.set_bed_depth(b[key])
+		_after_structural()
+		var h := mesh.bed_heights()
+		if not h.is_empty() and float(h[1]) - float(h[0]) < float(b[key]) - 0.005:
+			_say("The floor is as low as the body allows (%s deep). Lower the body's bottom to go deeper." % _len_text(float(h[1]) - float(h[0])))
+	elif key == "rail_m" and mesh.has_bed():
+		_say("Rail width applies when the bed is built: Undo the bed and hollow it again.")
+	_queue_save()
+
+func _refresh_bed_labels() -> void:
+	var b := _bed_settings()
+	if bed_labels.has("depth_m"):
+		bed_labels["depth_m"].text = _len_text(b["depth_m"])
+		bed_labels["rail_m"].text = _len_text(b["rail_m"])
+
+func _build_bed_shape(v: VBoxContainer) -> void:
+	v.add_child(UIKit.label("PICKUP BED", 24, UIKit.ACCENT))
+	_bed_stepper(v, "depth_m", "Bed depth", 0.0254, 0.15, 0.9)
+	_bed_stepper(v, "rail_m", "Rail width", 0.005, 0.02, 0.15)
+	v.add_child(_grow(PorterUI.button("Hollow out the bed", _hollow_bed)))
+	_tip(v, "Opens the flat top behind the cab into a bed: rails along the sides, front and tailgate, walls down to a floor, and wheel-well humps over the rear tires. It's bed liner until you put photos on it (Paint ▸ Pickup bed). Depth changes move the floor live.")
+	_refresh_bed_labels()
+
+## Wheel-well humps for the bed: over the rear wheel, from the wheel well's
+## inner wall (or the tire's inner face plus clearance) out to the bed wall,
+## as tall as the wheel well's top.
+func _bed_humps() -> Array:
+	var axle_z: float = project.dims["wheelbase_m"] * 0.5
+	var r := project.tire_radius(true)
+	var ix := _well_inner_x(true)
+	var top := -INF
+	var z0 := INF
+	var z1 := -INF
+	for p in mesh.verts:
+		if absf(p.x - ix) < 0.004 and absf(p.z - axle_z) < r * 2.0:
+			top = maxf(top, p.y)
+			z0 = minf(z0, p.z)
+			z1 = maxf(z1, p.z)
+	if top == -INF or z1 - z0 < r:
+		top = r * 2.0 + 0.06
+		z0 = axle_z - r * 1.15
+		z1 = axle_z + r * 1.15
+	return [[z0, z1, top + 0.03, ix]]
+
+func _hollow_bed() -> void:
+	var b := _bed_settings()
+	mesh.push_undo()
+	var msg := mesh.hollow_bed(b["depth_m"], b["rail_m"], _bed_humps())
+	if msg != "":
+		mesh.undo()
+		_say(msg)
+		return
+	var has := {}
+	for k in HalfMesh.BED_PHOTOS:
+		has[k] = project.load_photo(k) != null
+	mesh.auto_bed_paint(has)
+	_after_structural()
+	var h := mesh.bed_heights()
+	_say("Bed hollowed: %s deep with %s rails and wheel-well humps. Paint ▸ Pickup bed puts your bed photos on it. Undo takes it back." % [_len_text(float(h[1]) - float(h[0])), _len_text(b["rail_m"])])
+
+func _build_bed_paint(v: VBoxContainer) -> void:
+	_section(v, "PICKUP BED")
+	var tabs_row := GridContainer.new()
+	tabs_row.columns = 2
+	for k in HalfMesh.BED_PHOTOS:
+		var key: String = k
+		bed_tabs[key] = _grow(PorterUI.toggle(PorterProject.VIEW_LABELS[key], key == bed_view, func(on): _pick_bed_view(key) if on else bed_tabs[key].set_pressed_no_signal(true)))
+		tabs_row.add_child(bed_tabs[key])
+	v.add_child(tabs_row)
+	bed_load_btn = _grow(PorterUI.button("", func(): photo_requested.emit(bed_view)))
+	v.add_child(bed_load_btn)
+	bed_photo_view = DashPhotoView.new()
+	bed_photo_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bed_photo_view.fit_changed.connect(func(final):
+		if final:
+			project.save()
+			view.rebuild_body())
+	v.add_child(bed_photo_view)
+	var g := GridContainer.new()
+	g.columns = 6
+	for spec in [["◀", func(): bed_photo_view.nudge_move(-1, 0)], ["▶", func(): bed_photo_view.nudge_move(1, 0)],
+			["▲", func(): bed_photo_view.nudge_move(0, -1)], ["▼", func(): bed_photo_view.nudge_move(0, 1)],
+			["−", func(): bed_photo_view.nudge_size(1.0 / 1.01)], ["+", func(): bed_photo_view.nudge_size(1.01)]]:
+		g.add_child(_grow(PorterUI.button(spec[0], spec[1], 80)))
+	v.add_child(g)
+	_stretch_rows(v, bed_photo_view)
+	var r := HBoxContainer.new()
+	r.add_child(_grow(PorterUI.button("Flip", func(): bed_photo_view.flip())))
+	r.add_child(_grow(PorterUI.button("Rotate 90°", func(): bed_photo_view.rotate_90())))
+	r.add_child(_grow(PorterUI.button("Fit to outline", func():
+		var img := project.load_photo(bed_view)
+		if img:
+			DashPhotoView.fit_to_outline(project, bed_view, DashPhotoView.panel_outline(project, mesh, bed_view), img.get_width(), img.get_height())
+			project.save()
+			bed_photo_view.queue_redraw()
+			view.rebuild_body())))
+	v.add_child(r)
+	v.add_child(UIKit.label("Paint the bed (tap its faces)", 22, Color.WHITE))
+	var pg := GridContainer.new()
+	pg.columns = 3
+	var choices := []
+	for k in HalfMesh.BED_PHOTOS:
+		choices.append(["photo:" + k, PorterProject.VIEW_LABELS[k] + " photo"])
+	choices.append(["bed", "Bed liner"])
+	for c in choices:
+		var val: String = c[0]
+		bed_paint_btns[val] = _grow(PorterUI.toggle(c[1], false, func(on): _pick_bed_paint(val, on)))
+		pg.add_child(bed_paint_btns[val])
+	v.add_child(pg)
+	v.add_child(_grow(PorterUI.button("Auto: photos where loaded, liner elsewhere", _auto_bed)))
+	_tip(v, "Photos: floor from above with the top of the phone toward the cab; one bed side from across the bed (both sides use it, mirrored); the front wall from the tailgate; the tailgate's inside from the cab end. Drag / pinch each onto the blue outline; Flip / Rotate if it's turned.")
+	_pick_bed_view(bed_view)
+
+func _pick_bed_view(k: String) -> void:
+	bed_view = k
+	for t in bed_tabs:
+		bed_tabs[t].set_pressed_no_signal(t == k)
+	bed_load_btn.text = "Load %s photo…" % PorterProject.VIEW_LABELS[k].to_lower()
+	bed_photo_view.setup(project, dash_mesh, k, mesh)
+
+func _pick_bed_paint(val: String, on: bool) -> void:
+	for t in bed_paint_btns:
+		bed_paint_btns[t].set_pressed_no_signal(on and t == val)
+	if not on:
+		_pick_region("paint", true)
+		return
+	region = val
+	for key in region_btns:
+		region_btns[key][0].set_pressed_no_signal(false)
+	src_row.visible = false
+	if val.begins_with("photo:"):
+		var pv := val.get_slice(":", 1)
+		_pick_bed_view(pv)
+		if project.load_photo(pv) == null:
+			_say("Load the %s photo first (button above), then tap bed faces." % PorterProject.VIEW_LABELS[pv].to_lower())
+			return
+	if not mesh.has_bed():
+		_say("Hollow out the bed first (Shape ▸ Pickup bed).")
+		return
+	_say("Tap faces in the bed to paint them %s." % bed_paint_btns[val].text.to_lower())
+
+func _auto_bed() -> void:
+	if not mesh.has_bed():
+		_say("Hollow out the bed first (Shape ▸ Pickup bed).")
+		return
+	var has := {}
+	for k in HalfMesh.BED_PHOTOS:
+		has[k] = project.load_photo(k) != null
+	mesh.push_undo()
+	var n := mesh.auto_bed_paint(has)
+	view.rebuild_body()
+	bed_photo_view.queue_redraw()
+	_queue_save()
+	_say("Bed painted: %d faces (photos where loaded, liner elsewhere)." % n)

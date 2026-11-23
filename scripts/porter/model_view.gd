@@ -228,7 +228,7 @@ func rebuild_body() -> void:
 		overlay.queue_redraw()
 		return
 	var images := {}
-	for v in PorterProject.VIEWS:
+	for v in PorterProject.VIEWS + HalfMesh.BED_PHOTOS:
 		images[v] = _photo(v)["img"]
 	var built := PhotoTexturer.build(mesh, project, paint_colors, images)
 	var am: ArrayMesh = built[0]

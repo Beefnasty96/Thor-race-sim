@@ -51,18 +51,19 @@ static func panel_outline(p: PorterProject, m: HalfMesh, view: String) -> Array:
 	if m == null:
 		return out
 	var ids := []
+	var bed: bool = view in HalfMesh.BED_PHOTOS
 	for fi in m.faces.size():
-		if m.inner_region_of(fi) == "photo:" + view:
+		if (m.region_of(fi) if bed else m.inner_region_of(fi)) == "photo:" + view:
 			ids.append(fi)
 	if ids.is_empty():
-		ids = InteriorBuilder.suits_inner_photo(m, view)
+		ids = m.bed_faces_for(view) if bed else InteriorBuilder.suits_inner_photo(m, view)
 	for fi in ids:
 		var f: PackedInt32Array = m.faces[fi]
 		for k in f.size():
 			var a := m.verts[f[k]]
 			var b := m.verts[f[(k + 1) % f.size()]]
 			out.append([PhotoTexturer.world_to_frame(p, view, a), PhotoTexturer.world_to_frame(p, view, b)])
-			if view == "ceiling":
+			if view == "ceiling" or view == "bedfloor":
 				out.append([PhotoTexturer.world_to_frame(p, view, Vector3(-a.x, a.y, a.z)), PhotoTexturer.world_to_frame(p, view, Vector3(-b.x, b.y, b.z))])
 	return out
 
@@ -71,7 +72,8 @@ static func fit_to_dash(p: PorterProject, d: HalfMesh, img_w: float) -> void:
 	fit_to_outline(p, "dash", InteriorBuilder.dash_outline(d), img_w)
 
 ## Fit a photo so its width spans an outline, centered on it.
-static func fit_to_outline(p: PorterProject, view: String, edges: Array, img_w: float) -> void:
+## With the photo's height too, the whole outline fits inside the photo.
+static func fit_to_outline(p: PorterProject, view: String, edges: Array, img_w: float, img_h: float = 0.0) -> void:
 	var lo := Vector2(INF, INF)
 	var hi := Vector2(-INF, -INF)
 	for e in edges:
@@ -86,6 +88,8 @@ static func fit_to_outline(p: PorterProject, view: String, edges: Array, img_w: 
 	if lo.x == INF:
 		return
 	v["mpp"] = (hi.x - lo.x) / maxf(img_w, 1.0)
+	if img_h > 0.0:
+		v["mpp"] = maxf(v["mpp"], (hi.y - lo.y) / img_h)
 	v["cx"] = (lo.x + hi.x) * 0.5
 	v["cy"] = (lo.y + hi.y) * 0.5
 	if view == "door":
