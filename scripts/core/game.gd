@@ -27,6 +27,10 @@ var settings: Dictionary = {
 	"stick_deadzone": 0.10,      # XInput-style deadzones (fraction of travel)
 	"trigger_deadzone": 0.06,
 	"rumble": 1.0,               # XInput vibration motors strength
+	"touch_controls": "auto",    # auto (touch screen, no controller) | on | off
+	"touch_steer": "tilt",       # tilt | buttons
+	"touch_tilt_invert": false,
+	"touch_tilt_range": 30.0,    # degrees of tilt for full lock
 }
 
 var best_laps: Dictionary = {}   # "track|car|body|drive" -> seconds

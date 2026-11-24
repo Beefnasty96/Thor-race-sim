@@ -72,7 +72,21 @@ func _process(dt: float) -> void:
 		6:
 			main.car.in_throttle = 0.7
 			if t > 6.0:
-				_shot("04_driving"); step += 1; t = 0
+				_shot("04_driving")
+				step = -100   # hold the driver while the await below runs
+				# touch controls, buttons mode, gas held
+				Game.settings["touch_controls"] = "on"
+				Game.settings["touch_steer"] = "buttons"
+				main._update_touch(true)
+				main.touch._held["gas"] = true
+				main.touch._held["left"] = true
+				await get_tree().create_timer(0.6).timeout
+				print("TOUCH overlay visible=%s size=%s" % [main.touch.visible, main.touch.size])
+				_shot("04b_touch_controls")
+				main.touch.release_all()
+				Game.settings["touch_controls"] = "auto"
+				main._update_touch()
+				step = 7; t = 0
 				main.car.in_throttle = 0.0
 		7:
 			if view_i >= views.size():

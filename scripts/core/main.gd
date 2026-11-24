@@ -19,6 +19,7 @@ var car: Vehicle
 var model: CarModel
 var cam: ChaseCamera
 var hud: HUD
+var touch: TouchControls
 var ui: CanvasLayer
 var menu_root: Control
 var spec_label: RichTextLabel
@@ -38,6 +39,7 @@ func _ready() -> void:
 	Input.joy_connection_changed.connect(func(id, connected):
 		if hud and state == State.RACE:
 			hud.flash(("CONTROLLER CONNECTED" if connected else "CONTROLLER DISCONNECTED"), 2.0)
+			_update_touch()
 		if not connected and state == State.RACE:
 			_pause())
 	ui = CanvasLayer.new()
@@ -52,6 +54,10 @@ func _ready() -> void:
 	hud = HUD.new()
 	hud.visible = false
 	theme_root.add_child(hud)
+	touch = TouchControls.new()
+	touch.settings = Game.settings
+	touch.visible = false
+	theme_root.add_child(touch)
 	_load_location(Game.settings.get("location", "proving_ground"))
 	_spawn_car()
 	tests.result.connect(func(t): hud.flash(t, 3.0))
@@ -368,7 +374,7 @@ func _store_condition() -> void:
 # =====================================================================
 func _clear_menu() -> void:
 	for c in menu_root.get_children():
-		if c != hud:
+		if c != hud and c != touch:
 			c.queue_free()
 	spec_label = null
 
@@ -395,6 +401,7 @@ func _show_main_menu() -> void:
 	get_tree().paused = false
 	_clear_menu()
 	hud.visible = false
+	_update_touch()
 	cam.mode = ChaseCamera.Mode.ORBIT
 	var v := _panel(0.06, 300, 480)
 	v.add_child(UIKit.label("RACING SIM", 54, Color.WHITE))
@@ -440,9 +447,25 @@ func _start_race() -> void:
 	cam.snap()
 	hud.cam_name = ChaseCamera.MODE_NAMES[cam.mode]
 	hud.flash(location_name().to_upper(), 2.0)
+	_update_touch(true)
+
+## Show the on-screen controls while driving when they're wanted (setting,
+## touch screen, no controller); hide and let go of everything otherwise.
+func _update_touch(fresh: bool = false) -> void:
+	var want := state == State.RACE and TouchControls.wanted(Game.settings)
+	hud.touch_layout = want
+	if want and (fresh or not touch.visible):
+		touch.visible = true
+		touch.start()
+		if fresh and touch.use_tilt():
+			hud.flash("TILT TO STEER  ·  CENTER resets straight ahead", 3.0)
+	elif not want and touch.visible:
+		touch.release_all()
+		touch.visible = false
 
 func _pause() -> void:
 	state = State.PAUSED
+	_update_touch()
 	_clear_menu()
 	var v := _panel(0.36, 280, 480)
 	v.add_child(UIKit.label("PAUSED", 44, Color.WHITE))
@@ -450,7 +473,7 @@ func _pause() -> void:
 	_button(v, "Restart from start", func(): _resume(); car.reset_to(_spawn_xform()); cam.snap(); hud.lap_time = 0.0; _lap_valid = false; _checkpoints = 0; tests.reset_run())
 	_button(v, "Reset to track", func(): _resume(); _reset_on_track())
 	_button(v, "Exit to menu", func(): _store_condition(); _show_main_menu())
-	v.add_child(UIKit.label("Controls (XInput): RT throttle · LT brake · Left stick steer\nRB/LB shift (manual) · A handbrake · Y camera · X look back\nD-pad ↑ transfer case · D-pad ↓ auto/manual · Back telemetry · RS reset", 18, UIKit.DIM))
+	v.add_child(UIKit.label("Controls (XInput): RT throttle · LT brake · Left stick steer\nRB/LB shift (manual) · A handbrake · Y camera · X look back\nD-pad ↑ transfer case · D-pad ↓ auto/manual · Back telemetry · RS reset\nTouch: hold GAS / BRAKE, tilt to steer (or ◀ ▶) · Settings ▸ Touch controls", 18, UIKit.DIM))
 	get_tree().paused = false
 	car.in_throttle = 0.0
 	r.call_deferred("grab_focus")
@@ -458,6 +481,7 @@ func _pause() -> void:
 func _resume() -> void:
 	_clear_menu()
 	state = State.RACE
+	_update_touch()
 	Game.settings["camera"] = cam.mode
 
 # ---------------------------------------------------------------------
@@ -695,7 +719,12 @@ func _show_settings() -> void:
 	var r5 := UIKit.OptionRow.new().setup("trigger_deadzone", "Trigger deadzone", tz_vals, tz_vals.map(func(x): return "%d%%" % roundi(x * 100) + ("  (XInput default)" if x == 0.12 else "")), st.get("trigger_deadzone", 0.06))
 	var rb_vals := [0.0, 0.25, 0.5, 0.75, 1.0]
 	var r6 := UIKit.OptionRow.new().setup("rumble", "Rumble", rb_vals, rb_vals.map(func(x): return "Off" if x == 0.0 else "%d%%" % roundi(x * 100)), st.get("rumble", 1.0))
-	for r in [r1, r2, r3, r4, r5, r6]:
+	var r7 := UIKit.OptionRow.new().setup("touch_controls", "Touch controls", ["auto", "on", "off"], ["Auto (touch screen, no controller)", "On", "Off"], st.get("touch_controls", "auto"))
+	var r8 := UIKit.OptionRow.new().setup("touch_steer", "Touch steering", ["tilt", "buttons"], ["Tilt the device", "◀ ▶ buttons"], st.get("touch_steer", "tilt"))
+	var tr_vals := [15.0, 20.0, 25.0, 30.0, 40.0, 50.0]
+	var r9 := UIKit.OptionRow.new().setup("touch_tilt_range", "Tilt for full lock", tr_vals, tr_vals.map(func(x): return "%d°" % roundi(x)), st.get("touch_tilt_range", 30.0))
+	var r10 := UIKit.OptionRow.new().setup("touch_tilt_invert", "Tilt direction", [false, true], ["Normal", "Reversed"], st.get("touch_tilt_invert", false))
+	for r in [r1, r2, r3, r4, r5, r6, r7, r8, r9, r10]:
 		r.value_changed.connect(func(k, val):
 			Game.settings[k] = val
 			InputSetup.apply_deadzones(Game.settings)
