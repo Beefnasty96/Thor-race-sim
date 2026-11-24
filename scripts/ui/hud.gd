@@ -14,6 +14,7 @@ var message := ""
 var message_t := 0.0
 var cam_name := ""
 var show_laps := true
+var touch_layout := false         # on-screen pedals showing: tach moves to bottom-center, telemetry off
 var tests: TestRig
 var _minimap: Array = []          # Array[PackedVector2Array]
 var _mm_world: Array = []         # source polylines (world space)
@@ -68,7 +69,10 @@ func _draw() -> void:
 		return
 	var vs := get_viewport_rect().size
 	var font := get_theme_default_font()
-	_draw_tach(Vector2(vs.x - 230, vs.y - 210), 165.0, font)
+	if touch_layout:
+		_draw_tach(Vector2(vs.x * 0.5, vs.y - 210), 165.0, font)
+	else:
+		_draw_tach(Vector2(vs.x - 230, vs.y - 210), 165.0, font)
 	if show_laps:
 		_draw_timing(font)
 	elif tests:
@@ -83,7 +87,7 @@ func _draw() -> void:
 		draw_circle(_mm(car.global_position), 8.0, UIKit.BAD)
 		if _mm_start != Vector3.INF:
 			draw_circle(_mm(_mm_start), 4.0, Color.WHITE)
-	if show_telemetry:
+	if show_telemetry and not touch_layout:
 		_draw_telemetry(Vector2(30, vs.y - 345), font)
 	if message_t > 0.0:
 		var a := clampf(message_t, 0, 1)
